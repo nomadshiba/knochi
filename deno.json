@@ -1,5 +1,6 @@
 {
     "tasks": {
+        "prepare": "deno task generate",
         "dev": "deno task bundle && (deno task bundle:dev & deno task start:dev)",
         "start": "deno run -A --env-file app/serve.ts",
         "start:dev": "deno run -A --env-file --watch app/serve.ts",

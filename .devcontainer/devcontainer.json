@@ -11,13 +11,14 @@
     // "forwardPorts": [],
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    // "postCreateCommand": "yarn install",
+    "postCreateCommand": "deno install && deno task prepare",
 
     // Configure tool-specific properties.
     "customizations": {
         "vscode": {
             "extensions": [
-                "justjavac.vscode-deno-extensionpack"
+                "justjavac.vscode-deno-extensionpack",
+                "qwtel.sqlite-viewer"
             ]
         }
     }

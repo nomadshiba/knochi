@@ -1,7 +1,7 @@
 import { Str, StructCodec, UnionCodec } from "@nomadshiba/codec";
 import { Timestamp } from "~/libs/codecs/Timestamp.ts";
-import { UUID } from "~/libs/codecs/UUID.ts";
 import { Url } from "~/libs/codecs/URL.ts";
+import { UUID } from "~/libs/codecs/UUID.ts";
 
 export const ProviderOutput = new StructCodec({
     id: UUID,
