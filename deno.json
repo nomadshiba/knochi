@@ -14,7 +14,7 @@
         "lib": ["esnext", "deno.window", "dom", "dom.iterable"]
     },
     "fmt": {
-        "lineWidth": 120,
+        "lineWidth": 140,
         "indentWidth": 4
     },
     "lint": {

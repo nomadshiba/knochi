@@ -17,12 +17,10 @@ export namespace Schema {
 
     // Internal Helpers
     type IsParam<T extends string> = T extends `:${infer U}` ? U : never;
-    type InferPattern<K extends SchemaKey> = K extends `${string} ${infer Path}?${infer Search}`
-        ? { Path: Path; Search: Search }
+    type InferPattern<K extends SchemaKey> = K extends `${string} ${infer Path}?${infer Search}` ? { Path: Path; Search: Search }
         : K extends `${string} ${infer Path}` ? { Path: Path; Search: "" }
         : never;
-    type MapPathParams<T extends string> = T extends `/${infer U}/${infer Rest}`
-        ? [IsParam<U>, ...MapPathParams<`/${Rest}`>]
+    type MapPathParams<T extends string> = T extends `/${infer U}/${infer Rest}` ? [IsParam<U>, ...MapPathParams<`/${Rest}`>]
         : T extends `/${infer U}` ? [IsParam<U>]
         : [];
     type MapSearchParams<T extends string> = T extends `${string}=${infer U}&${infer Rest}`
