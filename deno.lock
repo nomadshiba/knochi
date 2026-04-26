@@ -7,8 +7,7 @@
     "jsr:@kysely/kysely@~0.28.16": "0.28.16",
     "jsr:@maheshbansod/kysely-codegen@~0.1.1": "0.1.1",
     "jsr:@marshift/kysely-deno-sqlite3@1": "1.0.0",
-    "jsr:@nomadshiba/codec@0.2.2": "0.2.2",
-    "jsr:@nomadshiba/codec@~0.2.2": "0.2.2",
+    "jsr:@nomadshiba/codec@~0.2.4": "0.2.4",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/cli@^1.0.29": "1.0.29",
     "jsr:@std/crypto@^1.1.0": "1.1.0",
@@ -87,8 +86,8 @@
         "jsr:@kysely/kysely@0.28"
       ]
     },
-    "@nomadshiba/codec@0.2.2": {
-      "integrity": "f5f606c39a18fbefec9c6824f78c6bb907295a796bf6d142ab4b478024e3add8"
+    "@nomadshiba/codec@0.2.4": {
+      "integrity": "6beb71654b7a15e475b3c75bbde5132ecdf9fe78785782504936174b7e369f1d"
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
@@ -868,7 +867,7 @@
       "jsr:@kysely/kysely@~0.28.16",
       "jsr:@maheshbansod/kysely-codegen@~0.1.1",
       "jsr:@marshift/kysely-deno-sqlite3@1",
-      "jsr:@nomadshiba/codec@~0.2.2",
+      "jsr:@nomadshiba/codec@~0.2.4",
       "jsr:@std/http@^1.1.0",
       "jsr:@std/path@^1.1.4",
       "jsr:@std/uuid@^1.1.1"
