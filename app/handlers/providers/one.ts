@@ -1,50 +1,49 @@
-import { jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
 import { Codec } from "@nomadshiba/codec";
 import { db } from "~/database/client.ts";
 import { ProviderOutput } from "~/handlers/providers/ProviderOutput.ts";
 import { router } from "~/router.ts";
 
 router.registerHandler("GET /v1/providers/:providerId", async ({ params }) => {
-    const row = await db.selectFrom("provider")
-        .where("provider.id", "=", params.pathname.providerId)
+    const id = params.pathname.providerId;
+
+    const providerRow = await db.selectFrom("provider")
+        .where("provider.id", "=", id)
         .selectAll("provider")
-        .select((eb) => [
-            jsonObjectFrom(
-                eb.selectFrom("provider_connection_kind_oai")
-                    .whereRef("provider_connection_kind_oai.id", "=", "provider.id")
-                    .selectAll("provider_connection_kind_oai"),
-            ).$notNull().as("Connection"),
-        ])
         .executeTakeFirst();
 
-    if (!row) {
+    if (!providerRow) {
         return { status: "NotFound" };
     }
 
     let connection: Codec.InferInput<typeof ProviderOutput>["connection"] | undefined;
-    if (row.connection_kind === "oai") {
+    if (providerRow.connection_kind === "oai") {
+        const connectionRow = await db.selectFrom("provider_connection_kind_oai")
+            .where("id", "=", id)
+            .selectAll()
+            .executeTakeFirstOrThrow();
+
         connection = {
             kind: "oai",
             value: {
-                base: row.Connection.base,
-                key: row.Connection.key,
+                base: connectionRow.base,
+                key: connectionRow.key,
             },
         };
     } else {
         return {
             status: "NotImplemented",
-            message: `Connection kind not implemented: ${row.connection_kind}`,
+            message: `Connection kind not implemented: ${providerRow.connection_kind}`,
         };
     }
 
     return {
         status: "OK",
         data: {
-            id: row.id,
-            name: row.name,
+            id: providerRow.id,
+            name: providerRow.name,
             connection,
-            created: row.created,
-            updated: row.updated,
+            created: providerRow.created,
+            updated: providerRow.updated,
         },
     };
 });
