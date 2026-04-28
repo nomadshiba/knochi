@@ -1,6 +1,6 @@
 import { StructCodec } from "@nomadshiba/codec";
-import { MessageRole } from "~/handlers/chats/messages/MessageRole.ts";
+import { MessageContent } from "~/handlers/chats/messages/MessageContent.ts";
 
 export const ChatMessageInput = new StructCodec({
-    role: MessageRole,
+    content: MessageContent,
 });

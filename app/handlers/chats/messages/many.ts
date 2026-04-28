@@ -1,22 +1,12 @@
-import { jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
+import { jsonArrayFrom, jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
 import { Codec } from "@nomadshiba/codec";
 import { db } from "~/database/client.ts";
 import { router } from "~/router.ts";
-import { ChatMessageOutput } from "~/handlers/chats/messages/ChatMessageOutput.ts";
-
-type MessageRole = Codec.InferInput<typeof ChatMessageOutput>["role"];
+import { MessageContent } from "~/handlers/chats/messages/MessageContent.ts";
+import { RouteResponse } from "~/libs/RouterResponse.ts";
 
 router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
     const chatId = params.pathname.chatId;
-
-    const chatExists = await db.selectFrom("chat")
-        .where("chat.id", "=", chatId)
-        .select("chat.id")
-        .executeTakeFirst();
-
-    if (!chatExists) {
-        return { status: "NotFound" };
-    }
 
     const rows = await db.selectFrom("chat_message")
         .where("chat_message.chat_id", "=", chatId)
@@ -35,7 +25,25 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
             jsonObjectFrom(
                 eb.selectFrom("chat_message_role_assistant")
                     .whereRef("chat_message_role_assistant.id", "=", "chat_message.id")
-                    .selectAll("chat_message_role_assistant"),
+                    .selectAll("chat_message_role_assistant")
+                    .select((eb) => [
+                        jsonArrayFrom(
+                            eb.selectFrom("chat_message_role_assistant_toolcall")
+                                .whereRef("chat_message_role_assistant_toolcall.chat_message_id", "=", "chat_message_id")
+                                .selectAll("chat_message_role_assistant_toolcall")
+                                .select((eb) =>
+                                    jsonObjectFrom(
+                                        eb.selectFrom("chat_message_role_assistant_toolcall_type_function")
+                                            .whereRef(
+                                                "chat_message_role_assistant_toolcall_type_function.id",
+                                                "=",
+                                                "chat_message_role_assistant_toolcall.id",
+                                            )
+                                            .selectAll("chat_message_role_assistant_toolcall_type_function"),
+                                    ).as("TypeFunction")
+                                ),
+                        ).as("ToolCalls"),
+                    ]),
             ).as("RoleAssistant"),
             jsonObjectFrom(
                 eb.selectFrom("chat_message_role_tool")
@@ -43,39 +51,62 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                     .selectAll("chat_message_role_tool"),
             ).as("RoleTool"),
         ])
-        .orderBy("chat_message.created", "asc")
         .execute();
-
-    const messages = rows.map((row): Codec.InferInput<typeof ChatMessageOutput> => {
-        let role: MessageRole;
-        if (row.role === "system" && row.RoleSystem) {
-            role = { kind: "system", value: { content: row.RoleSystem.content } } satisfies MessageRole;
-        } else if (row.role === "user" && row.RoleUser) {
-            role = { kind: "user", value: { content: row.RoleUser.content } } satisfies MessageRole;
-        } else if (row.role === "assistant" && row.RoleAssistant) {
-            role = {
-                kind: "assistant",
-                value: { content: row.RoleAssistant.content ?? undefined, refusal: row.RoleAssistant.refusal ?? undefined },
-            } satisfies MessageRole;
-        } else if (row.role === "tool" && row.RoleTool) {
-            role = {
-                kind: "tool",
-                value: { content: row.RoleTool.content, tool_call_id: row.RoleTool.tool_call_id },
-            } satisfies MessageRole;
-        } else {
-            throw new Error(`Unknown role: ${row.role}`);
-        }
-
-        return {
-            id: row.id,
-            chat_id: row.chat_id,
-            role,
-            created: row.created,
-        };
-    });
 
     return {
         status: "OK",
-        data: messages,
+        data: rows.map((row) => {
+            let content: Codec.InferOutput<typeof MessageContent>;
+            if (row.role === "system" && row.RoleSystem) {
+                content = {
+                    kind: "system",
+                    value: {
+                        content: row.RoleSystem.content,
+                    },
+                };
+            } else if (row.role === "user" && row.RoleUser) {
+                content = {
+                    kind: "user",
+                    value: {
+                        content: row.RoleUser.content,
+                    },
+                };
+            } else if (row.role === "assistant" && row.RoleAssistant) {
+                content = {
+                    kind: "assistant",
+                    value: {
+                        content: row.RoleAssistant.content ?? undefined,
+                        refusal: row.RoleAssistant.refusal ?? undefined,
+                        tool_calls: row.RoleAssistant.ToolCalls.map((call) => {
+                            if (call.type === "function" && call.TypeFunction) {
+                                return {
+                                    kind: "function",
+                                    value: {
+                                        name: call.TypeFunction.name,
+                                        arguments: call.TypeFunction.arguments,
+                                    },
+                                };
+                            }
+
+                            throw new RouteResponse({ status: "NotImplemented", message: `ToolCall type not implemented: ${call.type}` });
+                        }),
+                    },
+                };
+            } else if (row.role === "tool" && row.RoleTool) {
+                content = {
+                    kind: "tool",
+                    value: { content: row.RoleTool.content, tool_call_id: row.RoleTool.tool_call_id },
+                };
+            } else {
+                throw new RouteResponse({ status: "NotImplemented", message: `Unknown role: ${row.role}` });
+            }
+
+            return {
+                id: row.id,
+                chat_id: row.chat_id,
+                content,
+                created: row.created,
+            };
+        }),
     };
 });

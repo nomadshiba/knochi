@@ -60,7 +60,7 @@ await db.schema.createTable("chat_message_role_assistant").ifNotExists()
 await db.schema.createTable("chat_message_role_assistant_toolcall").ifNotExists()
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("chat_message_id", "text", (col) => col.references("chat_message_role_assistant.id"))
-    .addColumn("type", "text")
+    .addColumn("type", "text", (col) => col.notNull())
     .execute();
 
 await db.schema.createTable("chat_message_role_assistant_toolcall_type_function").ifNotExists()

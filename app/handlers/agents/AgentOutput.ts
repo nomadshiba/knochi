@@ -1,7 +1,8 @@
-import { Str, StructCodec, UnionCodec, Void } from "@nomadshiba/codec";
+import { Codec, Str, StructCodec, UnionCodec, Void } from "@nomadshiba/codec";
 import { Timestamp } from "~/libs/codecs/Timestamp.ts";
 import { UUID } from "~/libs/codecs/UUID.ts";
 
+export type Agent = Codec.InferOutput<typeof AgentOutput>;
 export const AgentOutput = new StructCodec({
     id: UUID,
     name: Str,
