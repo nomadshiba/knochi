@@ -38,11 +38,6 @@ await nest.exist(entity); // true
 await nest.destroy(entity);
 await nest.exist(entity); // false
 
-const query = nest
-    .withAll(Player, Position)
-    .withNone(Banned)
-    .build();
-
 const Health = Component({
     name: "health",
     shape: { value: IntegerField() }, // shape or struct field
@@ -52,60 +47,43 @@ await nest.add(entity, Health.of(100));
 await nest.set(entity, Health.of(50));
 await nest.remove(entity, Health);
 
-await query.toArray();
-for (const chunk of query) {}
+const query = nest.query(({ ref, with, every, some, none }) => every(
+    with(User), // tag
+    some(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
+    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
+    with(HasBoss).of(every(with(HasAge).of({ gte: 60 }), with(HasName).of({ eq: "john" }))),
+    ref(GroupMember).by("user").has({
+        role: { eq: "foo" },
+    }),
+)).select(User, HasName);
+await query.take(10).drop(5).toArray();
+await query.first();
+for (const [entity, { value: name }] of query) {}
 
-await query.filter(({ ref }) => ({
-    name: { OR: [{ eq: "mike" }, { eq: "joe" }] },
-    age: { gte: 18 },
-    boss: { has: { age: { gte: 60 } } },
-    [ref(GroupMember).by("user")]: {
-        has: {
-            role: { eq: "foo" },
-        },
-    },
-}));
-
-// or maybe, hmm i was thinking and uhh maybe
-await nest.query(({ ref, with, all, any, none }) => all(
+const query = nest.query(({ ref, with, every, some, none }) => every(
     with(User).has({
-        name: { ANY: [{ eq: "mike" }, { eq: "joe" }] },
+        name: { some: [{ eq: "mike" }, { eq: "joe" }] },
         age: { gte: 18 },
-        boss: { has: { age: { gte: 60 } } },
+        boss: { has: { name: "john" age: { gte: { 60 } } } }
     }),
     ref(GroupMember).by("user").has({
         role: { eq: "foo" },
     }),
-));
+)).select(User);
 
-// or even with more seperated components
-await nest.query(({ ref, with, all, any, none }) => all(
-    with(User), // tag
-    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
-    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
-    with(HasBoss).has({ user: with(HasAge).of({ gte: 60 }) }),
-    ref(GroupMember).by("user").has({
-        role: { eq: "foo" },
-    }),
-));
+for (const [entity, user] of query) {}
 
-await nest.query(({ ref, with, all, any, none }) => all(
-    with(User), // tag
-    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
-    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
-    with(HasBoss).of(with(HasAge).of({ gte: 60 })),
+nest.query(({ ref, with, every, some, none }) => every(
+    with(User).has({
+        name: { in: ["mike", "joe"] },
+        age: { gte: 18 },
+        boss: { has: { name: "john" age: { gte: { 60 } } } }
+    }),
     ref(GroupMember).by("user").has({
         role: { eq: "foo" },
     }),
-));
-
-await nest.query(({ ref, with, all, any, none }) => all(
-    with(User), // tag
-    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
-    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
-    with(HasBoss).of(all(with(HasAge).of({ gte: 60 }), with(HasName).of({ eq: "john" }))),
-    ref(GroupMember).by("user").has({
-        role: { eq: "foo" },
-    }),
-));
+)).select(User);
 ```
+
+based on the type of the reference field, we can decide if it should be inlined or only extended manually during get. during query, we
+should have no option to change shape of the components, if you are getting the component you are getting it, end of story.
