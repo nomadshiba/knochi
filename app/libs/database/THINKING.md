@@ -14,3 +14,98 @@ something different okay a component is a way to create the values basically som
 values okay also component is a way to like carry those values and etc using the okay also component is a way to like carry those values and
 etc using the reference as type a component has a name right that can be represented on the reference as type a component has a name right
 that can be represented on the database on the own story database on the own story on the own story I guess
+
+## Syntax
+
+```ts
+const Position = Component({
+    name: "position",
+    shape: Vector3,
+    zero() {
+        return { x: 0, y: 0, z: 0 };
+    },
+});
+
+const Player = Tag("player");
+const Banned = Tag("banned");
+
+const entity = await nest.create(
+    Player,
+    Position.create({ x: 0, y: 0, z: 0 }),
+);
+
+await nest.exist(entity); // true
+await nest.destroy(entity);
+await nest.exist(entity); // false
+
+const query = nest
+    .withAll(Player, Position)
+    .withNone(Banned)
+    .build();
+
+const Health = Component({
+    name: "health",
+    shape: { value: IntegerField() }, // shape or struct field
+});
+
+await nest.add(entity, Health.of(100));
+await nest.set(entity, Health.of(50));
+await nest.remove(entity, Health);
+
+await query.toArray();
+for (const chunk of query) {}
+
+await query.filter(({ ref }) => ({
+    name: { OR: [{ eq: "mike" }, { eq: "joe" }] },
+    age: { gte: 18 },
+    boss: { has: { age: { gte: 60 } } },
+    [ref(GroupMember).by("user")]: {
+        has: {
+            role: { eq: "foo" },
+        },
+    },
+}));
+
+// or maybe, hmm i was thinking and uhh maybe
+await nest.query(({ ref, with, all, any, none }) => all(
+    with(User).has({
+        name: { OR: [{ eq: "mike" }, { eq: "joe" }] },
+        age: { gte: 18 },
+        boss: { has: { age: { gte: 60 } } },
+    }),
+    ref(GroupMember).by("user").has({
+        role: { eq: "foo" },
+    }),
+));
+
+// or even with more seperated components
+await nest.query(({ ref, with, all, any, none }) => all(
+    with(User), // tag
+    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
+    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
+    with(HasBoss).has({ user: with(HasAge).of({ gte: 60 }) }),
+    ref(GroupMember).by("user").has({
+        role: { eq: "foo" },
+    }),
+));
+
+await nest.query(({ ref, with, all, any, none }) => all(
+    with(User), // tag
+    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
+    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
+    with(HasBoss).of(with(HasAge).of({ gte: 60 })),
+    ref(GroupMember).by("user").has({
+        role: { eq: "foo" },
+    }),
+));
+
+await nest.query(({ ref, with, all, any, none }) => all(
+    with(User), // tag
+    any(with(HasName).of({ eq: "mike" }), with(HasName).of({ eq: "joe" })),
+    with(HasAge).of({ gte: 18 }), // .of() only exists for the single field components
+    with(HasBoss).of(all(with(HasAge).of({ gte: 60 }), with(HasName).of({ eq: "john" }))),
+    ref(GroupMember).by("user").has({
+        role: { eq: "foo" },
+    }),
+));
+```

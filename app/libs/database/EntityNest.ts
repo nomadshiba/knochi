@@ -1,6 +1,7 @@
 import { StructField, StructFieldGeneric } from "~/libs/database/fields/StructField.ts";
 import { IntegerField } from "~/libs/database/fields/IntegerField.ts";
 import { WeakRefMap } from "~/libs/WeakRefMap.ts";
+import { create } from "node:domain";
 
 export type ComponentOptions<T extends StructFieldGeneric> = {
     name: string;
@@ -33,9 +34,3 @@ const Position = StructField({
 });
 
 defineComponent({ name: "position", struct: Position });
-
-// Syntax
-
-const entity = nest.Create([
-    { component: Position, value: { x: 0, y: 0, z: 0 } },
-]);
