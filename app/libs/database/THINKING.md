@@ -69,7 +69,7 @@ await query.filter(({ ref }) => ({
 // or maybe, hmm i was thinking and uhh maybe
 await nest.query(({ ref, with, all, any, none }) => all(
     with(User).has({
-        name: { OR: [{ eq: "mike" }, { eq: "joe" }] },
+        name: { ANY: [{ eq: "mike" }, { eq: "joe" }] },
         age: { gte: 18 },
         boss: { has: { age: { gte: 60 } } },
     }),
