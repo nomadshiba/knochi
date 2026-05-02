@@ -1,3 +1,8 @@
+## Ideas to consider
+- component doesn't have a name it has a table name, can just be called `table`.
+- then it has shape, we also accept `StructField` as shape as well.
+- many things can both accept array and spreading as well. 
+
 ## Syntax
 
 ```ts
