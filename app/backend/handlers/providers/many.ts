@@ -14,7 +14,6 @@ router.registerHandler("GET /v1/providers", async () => {
             id: row.id,
             name: row.name,
             base: row.base,
-            key: row.key,
             created: row.created,
             updated: row.updated,
         });

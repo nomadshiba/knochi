@@ -19,7 +19,6 @@ router.registerHandler("GET /v1/providers/:providerId", async ({ params }) => {
             id: providerRow.id,
             name: providerRow.name,
             base: providerRow.base,
-            key: providerRow.key,
             created: providerRow.created,
             updated: providerRow.updated,
         },

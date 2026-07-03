@@ -26,6 +26,7 @@
     "imports": {
         "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
         "@kysely/kysely": "jsr:@kysely/kysely@^0.28.16",
+        "kysely": "jsr:@kysely/kysely@^0.28.16",
         "@maheshbansod/kysely-codegen": "jsr:@maheshbansod/kysely-codegen@^0.1.1",
         "@marshift/kysely-deno-sqlite3": "jsr:@marshift/kysely-deno-sqlite3@^1.0.0",
         "@nomadshiba/codec": "jsr:@nomadshiba/codec@^0.2.4",

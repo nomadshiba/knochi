@@ -61,3 +61,15 @@ await db.schema.createTable("chat_message_role_tool").ifNotExists()
     .addColumn("content", "text", (col) => col.notNull())
     .addColumn("tool_call_id", "text", (col) => col.notNull().references("chat_message_role_assistant_toolcall.id"))
     .execute();
+
+await db.schema.createTable("settings").ifNotExists()
+    .addColumn("id", "integer", (col) => col.notNull().primaryKey())
+    .addColumn("last_provider_id", "text", (col) => col.references("provider.id").onDelete("set null"))
+    .addColumn("last_model_id", "text")
+    .addColumn("updated", "integer", (col) => col.notNull())
+    .execute();
+
+await db.insertInto("settings")
+    .values({ id: 0, last_provider_id: null, last_model_id: null, updated: Date.now() })
+    .onConflict((oc) => oc.doNothing())
+    .execute();

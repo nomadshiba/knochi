@@ -6,7 +6,7 @@ export type RouteResponseOptions<TData = unknown> =
     | {
         status: keyof PickByValue<typeof STATUS_CODE, SuccessfulStatus>;
         data: TData;
-        format?: { kind: "application/json" } | { kind: "application/octet-stream"; codec: Codec<_, TData> };
+        codec: Codec<_, TData>;
         response?: ResponseInit;
     }
     | { status: keyof PickByValue<typeof STATUS_CODE, RedirectStatus>; location: string | URL; response?: ResponseInit }
@@ -18,18 +18,9 @@ export class RouteResponse<TData = unknown> extends Response {
         const headers = new Headers(options.response?.headers ?? {});
         let body: BodyInit | null = null;
         if ("data" in options) {
-            const format = options.format ?? { kind: "application/json" };
-            const { kind } = format;
-            if (kind === "application/octet-stream") {
-                const bytes = format.codec.encode(options.data);
-                const blob = new Blob([bytes]);
-                body = blob;
-            } else if (kind === "application/json") {
-                body = JSON.stringify(options.data);
-            } else {
-                throw new Error(`Unhandled Content-Type: ${kind satisfies never}`);
-            }
-            headers.set("Content-Type", kind);
+            const bytes = options.codec.encode(options.data);
+            body = new Blob([bytes]);
+            headers.set("Content-Type", "application/octet-stream");
         } else if ("location" in options) {
             headers.set("Location", String(options.location));
         } else {

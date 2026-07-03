@@ -8,7 +8,6 @@ export const ProviderOutput = new StructCodec({
     id: UUID,
     name: Str,
     base: Url,
-    key: Str,
     created: Timestamp,
     updated: Timestamp,
 });

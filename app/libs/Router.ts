@@ -23,8 +23,7 @@ export namespace Schema {
     type MapPathParams<T extends string> = T extends `/${infer U}/${infer Rest}` ? [IsParam<U>, ...MapPathParams<`/${Rest}`>]
         : T extends `/${infer U}` ? [IsParam<U>]
         : [];
-    type MapSearchParams<T extends string> = T extends `${string}=${infer U}&${infer Rest}`
-        ? [IsParam<U>, ...MapSearchParams<Rest>]
+    type MapSearchParams<T extends string> = T extends `${string}=${infer U}&${infer Rest}` ? [IsParam<U>, ...MapSearchParams<Rest>]
         : T extends `${string}=${infer U}` ? [IsParam<U>]
         : [];
 }
@@ -33,6 +32,8 @@ export type RouteEvent = { request: Request; url: URL };
 
 // WTF do i have to extract that for????
 type InferItem<T extends Schema, K extends keyof T> = Extract<T[K], Schema[keyof Schema]>;
+
+type OmitCodec<T> = T extends { data: unknown } ? Omit<T, "codec"> : T;
 
 export type RouteHandler<
     TSchema extends Schema = _,
@@ -53,8 +54,8 @@ export type RouteHandlerOptions<
     meta: TMeta;
 };
 
-export type RouteHandlerResult<TSchema extends Schema, TSchemaKey extends SchemaKey<TSchema>> = RouteResponseOptions<
-    Codec.InferInput<InferItem<TSchema, TSchemaKey>["output"]>
+export type RouteHandlerResult<TSchema extends Schema, TSchemaKey extends SchemaKey<TSchema>> = OmitCodec<
+    RouteResponseOptions<Codec.InferInput<InferItem<TSchema, TSchemaKey>["output"]>>
 >;
 
 export type RouteMiddlewareOptions<TSchema extends Schema = _> = {
@@ -99,11 +100,11 @@ export class Router<const TSchema extends Schema, TMeta> {
                 bucket = new Map();
                 prefixBucketMap.set(prefix, bucket);
             }
-            let patternMatch = bucket.get(pathname);
+            let patternMatch = bucket.get(pattern);
             if (!patternMatch) {
-                const pattern = new URLPattern({ pathname, search });
-                patternMatch = { pattern, methods: new Map() };
-                bucket.set(pathname, patternMatch);
+                const patternUrl = new URLPattern({ pathname, search });
+                patternMatch = { pattern: patternUrl, methods: new Map() };
+                bucket.set(pattern, patternMatch);
             }
             patternMatch.methods.set(method, { input, output, handler: null });
         }
@@ -168,14 +169,14 @@ export class Router<const TSchema extends Schema, TMeta> {
                 const contentType = request.headers.get("Content-Type");
 
                 let data;
-                try {
-                    if (contentType === "application/json") {
-                        [data] = item.input.decode(item.input.encode(await request.json()));
-                    } else if (contentType === "application/octet-stream") {
+                if (contentType === "application/octet-stream") {
+                    try {
                         [data] = item.input.decode(await request.bytes());
+                    } catch (reason) {
+                        return new RouteResponse({ status: "BadRequest", message: String(reason) });
                     }
-                } catch (reason) {
-                    return new RouteResponse({ status: "BadRequest", message: String(reason) });
+                } else if (contentType !== null) {
+                    return new RouteResponse({ status: "UnsupportedMediaType" });
                 }
 
                 try {
@@ -183,14 +184,7 @@ export class Router<const TSchema extends Schema, TMeta> {
                     const options = await handler({ event, params, data, meta });
 
                     if ("data" in options) {
-                        if (contentType === "application/json") {
-                            return new RouteResponse(options);
-                        }
-                        if (contentType === "application/octet-stream") {
-                            options.format = { kind: "application/octet-stream", codec: item.output };
-                            return new RouteResponse(options);
-                        }
-                        return new RouteResponse({ status: "UnsupportedMediaType" });
+                        return new RouteResponse({ ...options, codec: item.output });
                     }
                     return new RouteResponse(options);
                 } catch (reason) {
