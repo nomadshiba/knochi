@@ -4,12 +4,14 @@ import { db } from "~/backend/database/client.ts";
 import { router } from "~/router.ts";
 import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { RouteResponse } from "~/libs/RouterResponse.ts";
+import { renderToolCall, renderToolResult } from "~/backend/tools/registry.ts";
 
 router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
     const chatId = params.pathname.chatId;
 
     const rows = await db.selectFrom("chat_message")
         .where("chat_message.chat_id", "=", chatId)
+        .orderBy("chat_message.created", "asc")
         .select([
             "chat_message.id",
             "chat_message.chat_id",
@@ -70,6 +72,15 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
         ])
         .execute();
 
+    const toolCallNameById = new Map<string, string>();
+    for (const row of rows) {
+        if (row.RoleAssistant?.ToolCalls) {
+            for (const tc of row.RoleAssistant.ToolCalls) {
+                if (tc.TypeFunction) toolCallNameById.set(tc.id, tc.TypeFunction.name);
+            }
+        }
+    }
+
     return {
         status: "OK",
         data: rows.map((row) => {
@@ -77,16 +88,12 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
             if (row.role === "system" && row.RoleSystem) {
                 content = {
                     kind: "system",
-                    value: {
-                        content: row.RoleSystem.content,
-                    },
+                    value: { content: row.RoleSystem.content },
                 };
             } else if (row.role === "user" && row.RoleUser) {
                 content = {
                     kind: "user",
-                    value: {
-                        content: row.RoleUser.content,
-                    },
+                    value: { content: row.RoleUser.content },
                 };
             } else if (row.role === "assistant" && row.RoleAssistant) {
                 content = {
@@ -94,36 +101,37 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                     value: {
                         content: row.RoleAssistant.content ?? undefined,
                         refusal: row.RoleAssistant.refusal ?? undefined,
-                        tool_calls: row.RoleAssistant.ToolCalls.map((call) => {
+                        tool_calls: (row.RoleAssistant.ToolCalls ?? []).map((call) => {
                             if (call.type === "function" && call.TypeFunction) {
                                 return {
                                     kind: "function",
                                     value: {
+                                        id: call.id,
                                         name: call.TypeFunction.name,
                                         arguments: call.TypeFunction.arguments,
+                                        display: renderToolCall(call.TypeFunction.name, call.TypeFunction.arguments),
                                     },
                                 };
                             }
-
                             throw new RouteResponse({ status: "NotImplemented", message: `ToolCall type not implemented: ${call.type}` });
                         }),
                     },
                 };
             } else if (row.role === "tool" && row.RoleTool) {
+                const toolName = toolCallNameById.get(row.RoleTool.tool_call_id) ?? "tool";
                 content = {
                     kind: "tool",
-                    value: { content: row.RoleTool.content, tool_call_id: row.RoleTool.tool_call_id },
+                    value: {
+                        content: row.RoleTool.content,
+                        tool_call_id: row.RoleTool.tool_call_id,
+                        display: renderToolResult(toolName, "", row.RoleTool.content),
+                    },
                 };
             } else {
                 throw new RouteResponse({ status: "NotImplemented", message: `Unknown role: ${row.role}` });
             }
 
-            return {
-                id: row.id,
-                chat_id: row.chat_id,
-                content,
-                created: row.created,
-            };
+            return { id: row.id, chat_id: row.chat_id, content, created: row.created };
         }),
     };
 });

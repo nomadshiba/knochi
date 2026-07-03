@@ -116,6 +116,10 @@ export async function loadChatMessages(chatId: string): Promise<LoadedMessage[]>
     return result;
 }
 
+function formatToolResultContent(toolCallId: string, content: string): string {
+    return `[tool_call_id: ${toolCallId}]\n${content}`;
+}
+
 export function toProviderMessages(messages: LoadedMessage[]): ProviderChatMessage[] {
     const out: ProviderChatMessage[] = [];
     for (const m of messages) {
@@ -140,7 +144,10 @@ export function toProviderMessages(messages: LoadedMessage[]): ProviderChatMessa
                 } satisfies ProviderAssistantMessage,
             );
         } else if (m.role === "tool" && m.tool) {
-            out.push({ role: "tool", content: m.tool.content, tool_call_id: m.tool.tool_call_id } satisfies ProviderToolMessage);
+            out.push(
+                { role: "tool", content: formatToolResultContent(m.tool.tool_call_id, m.tool.content), tool_call_id: m.tool.tool_call_id } satisfies
+                    ProviderToolMessage,
+            );
         }
     }
     return out;
@@ -278,7 +285,8 @@ export async function runAgent(params: {
             let result: ProviderToolMessage;
             if (tool) {
                 try {
-                    result = await tool.execute(history, call);
+                    const currentHistory = await loadChatMessages(chatId);
+                    result = await tool.execute(currentHistory, call);
                 } catch (error) {
                     result = { role: "tool", content: `Error: ${String(error)}`, tool_call_id: call.id };
                 }
@@ -289,7 +297,7 @@ export async function runAgent(params: {
             await storeToolMessage(chatId, result);
             const resultDisplay = tool ? tool.renderResult(call.function.name, call.function.arguments, result.content) : result.content;
             chatBus.emit(chatId, { kind: "tool_result", value: { tool_call_id: call.id, content: result.content, display: resultDisplay } });
-            messages = [...messages, result];
+            messages = [...messages, { ...result, content: formatToolResultContent(result.tool_call_id, result.content) }];
         }
     }
 }

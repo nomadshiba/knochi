@@ -16,7 +16,8 @@ export const AssistantAgent = {
             "The worker has network and import permissions but no filesystem or env access.",
             "Use it for computations, fetching data, or any code that helps answer the user.",
             "In the worker, set `self.onmessage = (e) => {...}` and call `self.postMessage(result)` to return.",
-            "The `e.data` contains the optional `input` string you pass.",
+            "`e.data.input` is the input string you pass.",
+            "Pass `use: [id, ...]` with previous tool_call_ids to make their results available as `e.data.results[id]` (pre-parsed if JSON).",
         ].join("\n");
     },
 } as const satisfies Agent;

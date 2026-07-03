@@ -26,18 +26,23 @@ export class ScriptTool extends Tool {
             function: {
                 name: "script",
                 description:
-                    "Run TypeScript code in a sandboxed Deno Worker. The code runs in a Worker with restricted permissions. Use `self.postMessage(result)` to return a value. The input `data` is available via `self.onmessage`. Returns the posted value as a string.",
+                    "Run TypeScript code in a sandboxed Deno Worker. The code runs in a Worker with restricted permissions. Use `self.onmessage = (e) => {...}` and call `self.postMessage(result)` to return a value. `e.data.input` is the input string. Previous tool results referenced via `use` are available as `e.data.results[id]` (pre-parsed if JSON). Returns the posted value as a string.",
                 parameters: {
                     type: "object",
                     properties: {
                         code: {
                             type: "string",
                             description:
-                                "TypeScript code to run in the worker. Use `self.onmessage = (e) => {...}` and call `self.postMessage(result)` to return.",
+                                "TypeScript code to run in the worker. Use `self.onmessage = (e) => {...}` and call `self.postMessage(result)` to return. Access previous tool results via `e.data.results[id]`.",
                         },
                         input: {
                             type: "string",
-                            description: "Optional input data to pass to the worker via postMessage.",
+                            description: "Optional input data to pass to the worker via postMessage (e.data).",
+                        },
+                        use: {
+                            type: "array",
+                            items: { type: "string" },
+                            description: "IDs (tool_call_id) of previous tool results to make available as RESULTS[id] (pre-parsed if JSON).",
                         },
                     },
                     required: ["code"],
@@ -46,30 +51,28 @@ export class ScriptTool extends Tool {
         };
     }
 
-    execute(_history: LoadedMessage[], call: ProviderToolCall): Promise<ProviderToolMessage> {
-        return this.run(call);
+    execute(history: LoadedMessage[], call: ProviderToolCall): Promise<ProviderToolMessage> {
+        return this.run(call, history);
     }
 
     override renderCall(_name: string, args: string): string {
-        let code: string | undefined;
+        let parsed: { code?: string; use?: string[] };
         try {
-            code = (JSON.parse(args) as { code?: string }).code;
+            parsed = JSON.parse(args);
         } catch {
-            code = undefined;
+            return `~~script~~(${args})`;
         }
-        if (!code) return `script(${args})`;
-        const firstLine = code.split("\n")[0].trim();
-        const preview = code.length > 60 ? code.slice(0, 60) + "..." : code;
-        return `script \`${firstLine.length > 30 ? preview.slice(0, 30) + "..." : preview}\``;
+        if (!parsed.code) return `~~script~~(${args})`;
+        const usePart = parsed.use?.length ? `\n\n**use:** \`${parsed.use.join("`, `")}\`` : "";
+        return `### script\n\n\`\`\`typescript\n${parsed.code}\n\`\`\`${usePart}`;
     }
 
     override renderResult(_name: string, _args: string, result: string): string {
-        const preview = result.length > 200 ? result.slice(0, 200) + "..." : result;
-        return `script -> ${preview}`;
+        return `### result\n\n\`\`\`\n${result}\n\`\`\``;
     }
 
-    async run(call: ProviderToolCall): Promise<ProviderToolMessage> {
-        let args: { code?: string; input?: string };
+    async run(call: ProviderToolCall, history: LoadedMessage[]): Promise<ProviderToolMessage> {
+        let args: { code?: string; input?: string; use?: string[] };
         try {
             args = JSON.parse(call.function.arguments);
         } catch {
@@ -80,6 +83,16 @@ export class ScriptTool extends Tool {
         if (!code) return this.toolResult(call, "Error: missing 'code' argument");
 
         const input = args.input ?? "";
+        const useIds = args.use ?? [];
+
+        const results: Record<string, unknown> = {};
+        for (const msg of history) {
+            if (msg.role === "tool" && msg.tool) {
+                if (useIds.includes(msg.tool.tool_call_id)) {
+                    results[msg.tool.tool_call_id] = this.tryParse(msg.tool.content);
+                }
+            }
+        }
 
         const workerUrl = "data:application/typescript," + encodeURIComponent(code);
         let worker: Worker;
@@ -127,8 +140,16 @@ export class ScriptTool extends Tool {
             worker.onmessageerror = () => {
                 finish(this.toolResult(call, "Error: message error in worker"));
             };
-            worker.postMessage(input);
+            worker.postMessage({ input, results });
         });
+    }
+
+    private tryParse(content: string): unknown {
+        try {
+            return JSON.parse(content);
+        } catch {
+            return content;
+        }
     }
 
     private toolResult(call: ProviderToolCall, content: string): ProviderToolMessage {

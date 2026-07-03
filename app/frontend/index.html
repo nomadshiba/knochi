@@ -81,6 +81,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
         }
 
         #topbar {
@@ -115,6 +117,7 @@
         .msg {
             margin-bottom: 12px;
             max-width: 80%;
+            min-width: 0;
         }
 
         .msg.user {
@@ -133,6 +136,9 @@
             font-size: 13px;
             white-space: pre-wrap;
             word-break: break-word;
+            max-width: 100%;
+            min-width: 0;
+            overflow-wrap: anywhere;
         }
 
         .msg.user .bubble {
@@ -150,6 +156,55 @@
             border: 1px solid #30363d;
             font-family: monospace;
             font-size: 12px;
+        }
+
+        .msg.tool_call .bubble {
+            background: #1a2332;
+            border: 1px solid #1f6feb;
+            font-family: monospace;
+            font-size: 12px;
+            color: #79c0ff;
+        }
+
+        .bubble h3 {
+            font-size: 12px;
+            color: #8b949e;
+            margin: 4px 0 2px;
+        }
+
+        .bubble pre {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 8px;
+            overflow-x: auto;
+            max-width: 100%;
+            min-width: 0;
+            margin: 4px 0;
+        }
+
+        .bubble pre code {
+            font-family: ui-monospace, monospace;
+            font-size: 12px;
+            white-space: pre;
+            display: block;
+            min-width: 0;
+        }
+
+        .bubble code {
+            font-family: ui-monospace, monospace;
+            font-size: 12px;
+            background: #0d1117;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .bubble p {
+            margin: 2px 0;
+        }
+
+        .bubble strong {
+            color: #c9d1d9;
         }
 
         .msg.assistant-done .bubble {

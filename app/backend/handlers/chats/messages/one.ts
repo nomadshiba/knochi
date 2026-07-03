@@ -4,6 +4,7 @@ import { db } from "~/backend/database/client.ts";
 import { router } from "~/router.ts";
 import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { RouteResponse } from "~/libs/RouterResponse.ts";
+import { renderToolCall, renderToolResult } from "~/backend/tools/registry.ts";
 
 router.registerHandler("GET /v1/chats/:chatId/messages/:messageId", async ({ params }) => {
     const chatId = params.pathname.chatId;
@@ -76,20 +77,23 @@ router.registerHandler("GET /v1/chats/:chatId/messages/:messageId", async ({ par
         return { status: "NotFound" };
     }
 
+    const toolCallNameById = new Map<string, string>();
+    if (row.RoleAssistant?.ToolCalls) {
+        for (const tc of row.RoleAssistant.ToolCalls) {
+            if (tc.TypeFunctions) toolCallNameById.set(tc.id, tc.TypeFunctions.name);
+        }
+    }
+
     let content: Codec.InferOutput<typeof MessageContent>;
     if (row.role === "system" && row.RoleSystem) {
         content = {
             kind: "system",
-            value: {
-                content: row.RoleSystem.content,
-            },
+            value: { content: row.RoleSystem.content },
         };
     } else if (row.role === "user" && row.RoleUser) {
         content = {
             kind: "user",
-            value: {
-                content: row.RoleUser.content,
-            },
+            value: { content: row.RoleUser.content },
         };
     } else if (row.role === "assistant" && row.RoleAssistant) {
         content = {
@@ -97,25 +101,31 @@ router.registerHandler("GET /v1/chats/:chatId/messages/:messageId", async ({ par
             value: {
                 content: row.RoleAssistant.content ?? undefined,
                 refusal: row.RoleAssistant.refusal ?? undefined,
-                tool_calls: row.RoleAssistant.ToolCalls.map((call) => {
+                tool_calls: (row.RoleAssistant.ToolCalls ?? []).map((call) => {
                     if (call.type === "function" && call.TypeFunctions) {
                         return {
                             kind: "function",
                             value: {
+                                id: call.id,
                                 name: call.TypeFunctions.name,
                                 arguments: call.TypeFunctions.arguments,
+                                display: renderToolCall(call.TypeFunctions.name, call.TypeFunctions.arguments),
                             },
                         };
                     }
-
                     throw new RouteResponse({ status: "NotImplemented", message: `ToolCall type not implemented: ${call.type}` });
                 }),
             },
         };
     } else if (row.role === "tool" && row.RoleTool) {
+        const toolName = toolCallNameById.get(row.RoleTool.tool_call_id) ?? "tool";
         content = {
             kind: "tool",
-            value: { content: row.RoleTool.content, tool_call_id: row.RoleTool.tool_call_id },
+            value: {
+                content: row.RoleTool.content,
+                tool_call_id: row.RoleTool.tool_call_id,
+                display: renderToolResult(toolName, "", row.RoleTool.content),
+            },
         };
     } else {
         return {
@@ -126,11 +136,6 @@ router.registerHandler("GET /v1/chats/:chatId/messages/:messageId", async ({ par
 
     return {
         status: "OK",
-        data: {
-            id: row.id,
-            chat_id: row.chat_id,
-            content,
-            created: row.created,
-        },
+        data: { id: row.id, chat_id: row.chat_id, content, created: row.created },
     };
 });

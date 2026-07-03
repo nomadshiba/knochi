@@ -1,5 +1,6 @@
 import { Client } from "~/libs/RouterClient.ts";
 import { RoutesSchema } from "~/routes.ts";
+import { renderMarkdown } from "~/frontend/markdown.ts";
 
 const client = Client.create<RoutesSchema>({
     baseUrl: new URL("/", location.origin),
@@ -19,15 +20,23 @@ type ChatEvent =
     | { kind: "assistant_start"; value: { id: string } }
     | { kind: "assistant_text"; value: { id: string; delta: string } }
     | { kind: "assistant_refusal"; value: { id: string; delta: string } }
-    | { kind: "assistant_tool_call_delta"; value: { id: string; index: number; tool_call_id: string; name: string; arguments: string; display: string } }
+    | {
+        kind: "assistant_tool_call_delta";
+        value: { id: string; index: number; tool_call_id: string; name: string; arguments: string; display: string };
+    }
     | { kind: "assistant_tool_call"; value: { id: string; tool_call_id: string; name: string; arguments: string } }
     | { kind: "assistant_done"; value: { id: string } }
     | { kind: "tool_start"; value: { tool_call_id: string; name: string; arguments: string; display: string } }
     | { kind: "tool_result"; value: { tool_call_id: string; content: string; display: string } }
     | { kind: "error"; value: { message: string } };
 
-type LiveToolCall = { id: string; name: string; args: string; display: string; resultDisplay?: string };
-type LiveMessage = { kind: string; text: string; toolCalls: LiveToolCall[] };
+type LiveToolCall = { id: string; name: string; display: string };
+type LiveEntry =
+    | { kind: "user"; id: string; text: string }
+    | { kind: "assistant"; id: string; text: string }
+    | { kind: "tool_call"; id: string; toolCallId: string; name: string; display: string }
+    | { kind: "tool_result"; id: string; toolCallId: string; name: string; display: string }
+    | { kind: "error"; id: string; text: string };
 
 const state = {
     chats: [] as Chat[],
@@ -38,7 +47,8 @@ const state = {
     agents: [] as Agent[],
     settings: null as Settings | null,
     ws: null as WebSocket | null,
-    liveMessages: new Map<string, LiveMessage>(),
+    liveEntries: [] as LiveEntry[],
+    liveAssistant: null as null | LiveEntry & { kind: "assistant" },
 };
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector(sel) as T;
@@ -96,7 +106,8 @@ async function loadMessages(chatId: string) {
     state.messages = await client.fetch("GET /v1/chats/:chatId/messages", {
         params: { pathname: { chatId }, search: {} },
     });
-    state.liveMessages.clear();
+    state.liveEntries = [];
+    state.liveAssistant = null;
     renderMessages();
 }
 
@@ -117,65 +128,70 @@ function connectWS(chatId: string) {
 
 function handleEvent(event: ChatEvent) {
     if (event.kind === "user_message") {
-        const live: LiveMessage = { kind: "user", text: event.value.content, toolCalls: [] };
-        state.liveMessages.set(event.value.id, live);
+        state.liveEntries.push({ kind: "user", id: event.value.id, text: event.value.content });
         renderLive();
     } else if (event.kind === "assistant_start") {
-        const live: LiveMessage = { kind: "assistant", text: "", toolCalls: [] };
-        state.liveMessages.set(event.value.id, live);
+        state.liveAssistant = { kind: "assistant", id: event.value.id, text: "" };
+        state.liveEntries.push(state.liveAssistant);
         renderLive();
     } else if (event.kind === "assistant_text") {
-        const live = state.liveMessages.get(event.value.id);
-        if (live) {
-            live.text += event.value.delta;
+        if (state.liveAssistant && state.liveAssistant.id === event.value.id) {
+            state.liveAssistant.text += event.value.delta;
             renderLive();
         }
     } else if (event.kind === "assistant_refusal") {
-        const live = state.liveMessages.get(event.value.id);
-        if (live) {
-            live.text += `[refused: ${event.value.delta}]`;
+        if (state.liveAssistant && state.liveAssistant.id === event.value.id) {
+            state.liveAssistant.text += `[refused: ${event.value.delta}]`;
             renderLive();
         }
     } else if (event.kind === "assistant_tool_call_delta") {
-        const live = state.liveMessages.get(event.value.id);
-        if (live) {
-            const existing = live.toolCalls.find((t) => t.id === event.value.tool_call_id);
-            if (existing) {
-                existing.name = event.value.name;
-                existing.args = event.value.arguments;
-                existing.display = event.value.display;
-            } else {
-                live.toolCalls.push({ id: event.value.tool_call_id, name: event.value.name, args: event.value.arguments, display: event.value.display });
-            }
+        const existing = state.liveEntries.find((e): e is LiveEntry & { kind: "tool_call" } =>
+            e.kind === "tool_call" && e.toolCallId === event.value.tool_call_id
+        );
+        if (existing) {
+            existing.name = event.value.name;
+            existing.display = event.value.display;
+            renderLive();
+        } else {
+            state.liveEntries.push({
+                kind: "tool_call",
+                id: event.value.tool_call_id,
+                toolCallId: event.value.tool_call_id,
+                name: event.value.name,
+                display: event.value.display,
+            });
             renderLive();
         }
     } else if (event.kind === "tool_start") {
-        const live = [...state.liveMessages.values()].find((m) => m.toolCalls.some((t) => t.id === event.value.tool_call_id));
-        if (live) {
-            const tc = live.toolCalls.find((t) => t.id === event.value.tool_call_id);
-            if (tc) {
-                tc.display = event.value.display;
-                renderLive();
-            }
+        const existing = state.liveEntries.find((e): e is LiveEntry & { kind: "tool_call" } =>
+            e.kind === "tool_call" && e.toolCallId === event.value.tool_call_id
+        );
+        if (existing) {
+            existing.display = event.value.display;
+        } else {
+            state.liveEntries.push({
+                kind: "tool_call",
+                id: event.value.tool_call_id,
+                toolCallId: event.value.tool_call_id,
+                name: event.value.name,
+                display: event.value.display,
+            });
         }
+        renderLive();
     } else if (event.kind === "tool_result") {
-        for (const live of state.liveMessages.values()) {
-            const tc = live.toolCalls.find((t) => t.id === event.value.tool_call_id);
-            if (tc) {
-                tc.resultDisplay = event.value.display;
-                renderLive();
-                break;
-            }
-        }
+        state.liveEntries.push({
+            kind: "tool_result",
+            id: event.value.tool_call_id,
+            toolCallId: event.value.tool_call_id,
+            name: "tool",
+            display: event.value.display,
+        });
+        renderLive();
     } else if (event.kind === "assistant_done") {
-        const live = state.liveMessages.get(event.value.id);
-        if (live) {
-            live.kind = "assistant-done";
-            renderLive();
-        }
+        state.liveAssistant = null;
+        renderLive();
     } else if (event.kind === "error") {
-        const live: LiveMessage = { kind: "error", text: event.value.message, toolCalls: [] };
-        state.liveMessages.set("error-" + Date.now(), live);
+        state.liveEntries.push({ kind: "error", id: "error-" + Date.now(), text: event.value.message });
         renderLive();
     }
 }
@@ -261,7 +277,7 @@ function renderLive() {
     messagesEl.innerHTML = "";
 
     const hasStored = state.messages.length > 0;
-    const hasLive = state.liveMessages.size > 0;
+    const hasLive = state.liveEntries.length > 0;
     if (!hasStored && !hasLive) {
         const empty = el("div", "empty");
         empty.textContent = "no messages yet. send one below.";
@@ -270,46 +286,51 @@ function renderLive() {
     }
 
     for (const msg of state.messages) {
-        const wrap = el("div", "msg " + msg.content.kind);
-        const role = el("div", "role");
-        role.textContent = msg.content.kind;
-        const bubble = el("div", "bubble");
-        if (msg.content.kind === "user" || msg.content.kind === "system") {
-            bubble.textContent = msg.content.value.content;
+        if (msg.content.kind === "user") {
+            appendBubble("user", "user", msg.content.value.content);
+        } else if (msg.content.kind === "system") {
+            appendBubble("system", "system", msg.content.value.content, true);
         } else if (msg.content.kind === "assistant") {
-            const parts: string[] = [];
-            if (msg.content.value.content) parts.push(msg.content.value.content);
-            if (msg.content.value.refusal) parts.push(`[refused: ${msg.content.value.refusal}]`);
+            if (msg.content.value.content) appendBubble("assistant", "assistant", msg.content.value.content, true);
+            if (msg.content.value.refusal) appendBubble("assistant", "assistant", `**refused:** ${msg.content.value.refusal}`, true);
             for (const tc of msg.content.value.tool_calls) {
-                parts.push(`-> ${tc.value.name}(${tc.value.arguments})`);
+                appendBubble("tool_call", `${tc.value.name} ${tc.value.id}`, tc.value.display, true);
             }
-            bubble.textContent = parts.join("\n");
         } else if (msg.content.kind === "tool") {
-            bubble.textContent = msg.content.value.content;
+            appendBubble("tool", `result ${msg.content.value.tool_call_id}`, msg.content.value.display, true);
         }
-        wrap.appendChild(role);
-        wrap.appendChild(bubble);
-        messagesEl.appendChild(wrap);
     }
 
-    for (const live of state.liveMessages.values()) {
-        const wrap = el("div", "msg " + live.kind);
-        const role = el("div", "role");
-        role.textContent = live.kind;
-        const bubble = el("div", "bubble");
-        const parts: string[] = [];
-        if (live.text) parts.push(live.text);
-        for (const tc of live.toolCalls) {
-            parts.push(`▸ ${tc.display}`);
-            if (tc.resultDisplay) parts.push(`  ${tc.resultDisplay}`);
+    for (const entry of state.liveEntries) {
+        if (entry.kind === "user") {
+            appendBubble("user", "user", entry.text);
+        } else if (entry.kind === "assistant") {
+            appendBubble("assistant", "assistant", entry.text || "...", true);
+        } else if (entry.kind === "tool_call") {
+            appendBubble("tool_call", `${entry.name} ${entry.toolCallId}`, entry.display, true);
+        } else if (entry.kind === "tool_result") {
+            appendBubble("tool", `result ${entry.toolCallId}`, entry.display, true);
+        } else if (entry.kind === "error") {
+            appendBubble("error", "error", entry.text, true);
         }
-        bubble.textContent = parts.join("\n") || "...";
-        wrap.appendChild(role);
-        wrap.appendChild(bubble);
-        messagesEl.appendChild(wrap);
     }
 
     messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function appendBubble(cls: string, label: string, content: string, markdown = false) {
+    const wrap = el("div", "msg " + cls);
+    const role = el("div", "role");
+    role.textContent = label;
+    const bubble = el("div", "bubble");
+    if (markdown) {
+        bubble.innerHTML = renderMarkdown(content);
+    } else {
+        bubble.textContent = content;
+    }
+    wrap.appendChild(role);
+    wrap.appendChild(bubble);
+    messagesEl.appendChild(wrap);
 }
 
 async function selectChat(chat: Chat) {

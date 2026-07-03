@@ -9,7 +9,7 @@ export const MessageContentSystem = new StructCodec({
 });
 
 export const ToolCall = new UnionCodec({
-    function: new StructCodec({ name: Str, arguments: Str }),
+    function: new StructCodec({ id: Str, name: Str, arguments: Str, display: Str }),
 });
 
 export const MessageContentAssistant = new StructCodec({
@@ -21,6 +21,7 @@ export const MessageContentAssistant = new StructCodec({
 export const MessageContentTool = new StructCodec({
     content: Str,
     tool_call_id: Str,
+    display: Str,
 });
 
 export const MessageContent = new UnionCodec({
