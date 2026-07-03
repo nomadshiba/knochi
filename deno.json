@@ -2,8 +2,8 @@
     "tasks": {
         "prepare": "deno task generate",
         "dev": "deno task bundle && (deno task bundle:dev & deno task start:dev)",
-        "start": "deno run -A --env-file app/serve.ts",
-        "start:dev": "deno run -A --env-file --watch app/serve.ts",
+        "start": "deno run -A --no-prompt --env-file app/serve.ts",
+        "start:dev": "deno run -A --no-prompt --env-file --watch app/serve.ts",
         "bundle": "rm -rf app/frontend/dist && deno bundle --outdir=app/frontend/dist ./app/frontend/app.ts",
         "bundle:dev": "deno task bundle && deno bundle --outdir=app/frontend/dist --watch ./app/frontend/app.ts",
         "generate": "deno task generate:db",

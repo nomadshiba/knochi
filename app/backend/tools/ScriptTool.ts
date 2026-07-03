@@ -13,7 +13,8 @@ export type ScriptToolPermissions = {
     import?: boolean;
 };
 
-const WORKER_TIMEOUT = 30_000;
+const PRELOAD_TIMEOUT_MS = 60_000;
+
 
 export class ScriptTool extends Tool {
     constructor(private readonly permissions: ScriptToolPermissions = {}) {
@@ -24,28 +25,63 @@ export class ScriptTool extends Tool {
         const granted = (Object.keys(this.permissions) as (keyof ScriptToolPermissions)[])
             .filter((k) => this.permissions[k]);
         const permsText = granted.length ? `Granted permissions: ${granted.join(", ")}.` : "No extra permissions granted.";
+        const importsText = this.permissions.import
+            ? " Remote imports are allowed."
+            : "";
 
         return {
             type: "function",
             function: {
                 name: "script",
                 description:
-                    `Run TypeScript code in a sandboxed Deno Worker. ${permsText} Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return a value. Previous tool results referenced via \`use\` are available as \`e.data[id]\` (pre-parsed if JSON). Returns the posted value as a string.`,
+                    `Run TypeScript code in a sandboxed Deno Worker. ${permsText}${importsText} Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return a value.\n\n` +
+                    `Prefer \`use\` to reuse previous tool results instead of recomputing or re-fetching them — it's cheaper and avoids duplicated work.\n\n` +
+                    `IMPORTANT: each requested result is keyed by its exact tool_call_id, NOT merged/flattened into e.data directly. ` +
+                    `Example: if you pass \`use: ["call_abc123"]\` and that earlier tool call's raw result was the JSON \`{"notes": [...]}\`, ` +
+                    `then inside the worker you must access it as \`e.data["call_abc123"].notes\` — \`e.data.notes\` will be undefined. ` +
+                    `If \`use\` is empty/omitted, \`e.data\` is just \`{}\`.\n\n` +
+                    (this.permissions.import
+                        ? `If your code imports remote modules, list those exact specifiers in \`preload\` — they'll be fetched/cached first and that time does NOT count against \`timeout\`, only the worker's own startup+execution does.\n\n` +
+                            `IMPORT SOURCE GUIDANCE (try in this order, don't jump to esm.sh out of habit):\n` +
+                            `1. \`jsr:@scope/name\` — check jsr.io first, it's the Deno-native registry.\n` +
+                            `2. \`npm:package-name\` — most npm packages work directly via Deno's npm compat, try this next for anything not on jsr.\n` +
+                            `3. \`https://esm.sh/...\` — use this if the package isn't on jsr/npm, OR if \`npm:\` fails/errors due to Node-compat issues (native bindings, CJS/ESM interop, missing Node builtins, etc). esm.sh serves a pre-converted browser-ESM build which often works when Deno's npm compat layer chokes on a package — it's a legitimate fallback, not just a last resort to avoid. It's just slower to resolve, so prefer jsr/npm when they actually work.\n\n`
+                        : "") +
+                    `Returns the posted value as a string.`,
                 parameters: {
                     type: "object",
                     properties: {
                         code: {
                             type: "string",
                             description:
-                                "TypeScript code to run in the worker. Use `self.onmessage = (e) => {...}` and call `self.postMessage(result)` to return. Access previous tool results via `e.data[id]`. Inline any other values directly in the code.",
+                                `TypeScript code to run in the worker. Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return. ` +
+                                `\`e.data\` is an object mapping each requested tool_call_id (from \`use\`) to its result (pre-parsed if JSON) — access as \`e.data["<tool_call_id>"]\`, never assume fields are merged into \`e.data\` directly. ` +
+                                `Inline any other values directly in the code.${
+                                    this.permissions.import
+                                        ? " You may `import` remote modules — try `jsr:` first, then `npm:`; fall back to `https://esm.sh/...` if the package isn't on jsr/npm or if `npm:` errors with Node-compat issues. List the exact specifiers in `preload` too."
+                                        : ""
+                                }`,
                         },
                         use: {
                             type: "array",
                             items: { type: "string" },
-                            description: "IDs (tool_call_id) of previous tool results to make available as `e.data[id]` (pre-parsed if JSON).",
+                            description:
+                                "IDs (tool_call_id) of previous tool results to make available as `e.data[\"<tool_call_id>\"]` (pre-parsed if JSON). Prefer this over recomputing values you already have.",
+                        },
+                        preload: {
+                            type: "array",
+                            items: { type: "string" },
+                            description:
+                                "Import specifiers used by `code` to fetch/cache before running (this warm-up time is NOT counted against `timeout`). " +
+                                "Try `jsr:@scope/pkg` first, then `npm:package`; fall back to `https://esm.sh/package` if the package isn't on jsr/npm, or if `npm:` fails due to Node-compat issues (native bindings, CJS/ESM interop, missing builtins) — esm.sh's pre-converted ESM build often works in those cases, it's just slower to resolve.",
+                        },
+                        timeout: {
+                            type: "number",
+                            description:
+                                "Timeout in seconds for the worker's own startup+execution (after any `preload` warm-up, which doesn't count). You must always pick a value yourself — there is no default. If a run times out, retry with a longer timeout.",
                         },
                     },
-                    required: ["code"],
+                    required: ["code", "timeout"],
                 },
             },
         };
@@ -56,7 +92,7 @@ export class ScriptTool extends Tool {
     }
 
     override renderCall(_name: string, args: string): string {
-        let parsed: { code?: string; use?: string[] };
+        let parsed: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
             parsed = JSON.parse(args);
         } catch {
@@ -64,7 +100,9 @@ export class ScriptTool extends Tool {
         }
         if (!parsed.code) return `~~script~~(${args})`;
         const usePart = parsed.use?.length ? `\n\n**use:** \`${parsed.use.join("`, `")}\`` : "";
-        return `### script\n\n\`\`\`typescript\n${parsed.code}\n\`\`\`${usePart}`;
+        const preloadPart = parsed.preload?.length ? `\n\n**preload:** \`${parsed.preload.join("`, `")}\`` : "";
+        const timeoutPart = parsed.timeout ? `\n\n**timeout:** ${parsed.timeout}s` : "";
+        return `### script\n\n\`\`\`typescript\n${parsed.code}\n\`\`\`${usePart}${preloadPart}${timeoutPart}`;
     }
 
     override renderResult(_name: string, _args: string, result: string): string {
@@ -72,7 +110,7 @@ export class ScriptTool extends Tool {
     }
 
     async run(call: ProviderToolCall, history: LoadedMessage[]): Promise<ProviderToolMessage> {
-        let args: { code?: string; use?: string[] };
+        let args: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
             args = JSON.parse(call.function.arguments);
         } catch {
@@ -81,6 +119,32 @@ export class ScriptTool extends Tool {
 
         const code = args.code;
         if (!code) return this.toolResult(call, "Error: missing 'code' argument");
+
+        if (typeof args.timeout !== "number" || !Number.isFinite(args.timeout) || args.timeout <= 0) {
+            return this.toolResult(
+                call,
+                "Error: missing/invalid 'timeout' argument. You must pick a timeout in seconds yourself — there is no default. This budget is for the worker's own startup+execution only (preload warm-up doesn't count).",
+            );
+        }
+        const timeoutMs = args.timeout * 1000;
+
+        const preloadSpecifiers = args.preload ?? [];
+        if (preloadSpecifiers.length) {
+            const preloadErrors: string[] = [];
+            await Promise.all(preloadSpecifiers.map(async (spec) => {
+                try {
+                    await Promise.race([
+                        import(spec),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error("preload timed out")), PRELOAD_TIMEOUT_MS)),
+                    ]);
+                } catch (error) {
+                    preloadErrors.push(`${spec}: ${String(error)}`);
+                }
+            }));
+            if (preloadErrors.length) {
+                return this.toolResult(call, `Error preloading imports:\n${preloadErrors.join("\n")}`);
+            }
+        }
 
         const useIds = args.use ?? [];
 
@@ -126,8 +190,13 @@ export class ScriptTool extends Tool {
             };
 
             const timer = setTimeout(() => {
-                finish(this.toolResult(call, "Error: worker timed out"));
-            }, WORKER_TIMEOUT);
+                finish(
+                    this.toolResult(
+                        call,
+                        `Error: worker timed out after ${args.timeout}s (execution only — any preload warm-up already completed). If your code does network requests or other slow operations, retry with a longer 'timeout'.`,
+                    ),
+                );
+            }, timeoutMs);
 
             worker.onmessage = (e: MessageEvent) => {
                 finish(this.toolResult(call, this.stringify(e.data)));

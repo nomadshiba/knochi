@@ -1,9 +1,9 @@
-import { ProviderClient } from "~/backend/providers/ProviderClient.ts";
 import { db } from "~/backend/database/client.ts";
 import { RouteHandler, RouteHandlerOptions } from "~/libs/Router.ts";
 import { RoutesSchema } from "~/routes.ts";
 import { router } from "~/router.ts";
 import type { _ } from "~/types.ts";
+import { getCachedModels } from "~/backend/providers/modelsCache.ts";
 
 async function handleModel({ params }: RouteHandlerOptions<RoutesSchema, "GET /v1/models/:modelName?provider=:provider", _>) {
     const modelName = params.pathname.modelName;
@@ -32,8 +32,7 @@ async function handleModel({ params }: RouteHandlerOptions<RoutesSchema, "GET /v
         return { status: "NotFound", message: "No provider selected" } as const;
     }
 
-    const client = ProviderClient.create({ base: providerRow.base, key: providerRow.key });
-    const models = await client.models();
+    const models = await getCachedModels(providerRow.id, providerRow.base, providerRow.key);
     const model = models.find((m) => m.id === modelName || m.name === modelName);
     if (!model) {
         return { status: "NotFound", message: `Model not found: ${modelName}` } as const;

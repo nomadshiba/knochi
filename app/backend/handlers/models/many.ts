@@ -1,9 +1,9 @@
-import { ProviderClient } from "~/backend/providers/ProviderClient.ts";
 import { db } from "~/backend/database/client.ts";
 import { RouteHandler, RouteHandlerOptions } from "~/libs/Router.ts";
 import { RoutesSchema } from "~/routes.ts";
 import { router } from "~/router.ts";
 import type { _ } from "~/types.ts";
+import { getCachedModels } from "~/backend/providers/modelsCache.ts";
 
 async function handleModels({ params }: RouteHandlerOptions<RoutesSchema, "GET /v1/models?provider=:provider", _>) {
     const providerId = params.search.provider;
@@ -28,8 +28,7 @@ async function handleModels({ params }: RouteHandlerOptions<RoutesSchema, "GET /
 
     const models = [];
     for (const row of providers) {
-        const client = ProviderClient.create({ base: row.base, key: row.key });
-        const providerModels = await client.models();
+        const providerModels = await getCachedModels(row.id, row.base, row.key);
         for (const m of providerModels) {
             models.push({
                 id: m.id,

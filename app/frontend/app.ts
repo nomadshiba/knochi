@@ -111,18 +111,50 @@ async function loadMessages(chatId: string) {
     renderMessages();
 }
 
+let wsReconnectTimer: number | undefined;
+let wsReconnectAttempts = 0;
+let wsChatId: string | null = null;
+
 function connectWS(chatId: string) {
+    wsChatId = chatId;
+
+    if (wsReconnectTimer !== undefined) {
+        clearTimeout(wsReconnectTimer);
+        wsReconnectTimer = undefined;
+    }
     if (state.ws) {
+        state.ws.onclose = null;
         state.ws.close();
         state.ws = null;
     }
+
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(`${proto}//${location.host}/v1/chats/${chatId}/stream`);
+
+    ws.onopen = () => {
+        wsReconnectAttempts = 0;
+        // Subscribed first — now refresh the full history over HTTP so we don't
+        // miss anything that happened while disconnected.
+        loadMessages(chatId).catch((err) => console.error("failed to refresh messages", err));
+    };
+
     ws.onmessage = (e) => {
         const event: ChatEvent = JSON.parse(e.data);
         handleEvent(event);
     };
-    ws.onerror = () => console.error("ws error");
+
+    ws.onerror = () => {
+        console.error("ws error");
+    };
+
+    ws.onclose = () => {
+        if (wsChatId !== chatId) return; // superseded by a newer chat selection
+        state.ws = null;
+        const delay = Math.min(1000 * 2 ** wsReconnectAttempts, 10_000);
+        wsReconnectAttempts++;
+        wsReconnectTimer = setTimeout(() => connectWS(chatId), delay);
+    };
+
     state.ws = ws;
 }
 
@@ -333,10 +365,13 @@ function appendBubble(cls: string, label: string, content: string, markdown = fa
     messagesEl.appendChild(wrap);
 }
 
-async function selectChat(chat: Chat) {
+function selectChat(chat: Chat) {
     state.currentChat = chat;
+    state.messages = [];
+    state.liveEntries = [];
+    state.liveAssistant = null;
     renderChatList();
-    await loadMessages(chat.id);
+    renderLive();
     connectWS(chat.id);
     msgInput.disabled = false;
     sendBtn.disabled = false;
