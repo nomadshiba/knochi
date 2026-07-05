@@ -5,6 +5,7 @@ import { ChatOutput } from "~/backend/handlers/chats/ChatOutput.ts";
 
 router.registerHandler("GET /v1/chats", async () => {
     const rows = await db.selectFrom("chat")
+        .orderBy("created", "desc")
         .selectAll("chat")
         .execute();
 

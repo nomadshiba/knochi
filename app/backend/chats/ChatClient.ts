@@ -1,4 +1,5 @@
 import { v7 } from "@std/uuid";
+import { Codec } from "@nomadshiba/codec";
 import { Agent } from "~/backend/agents/Agent.ts";
 import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { runAgent } from "~/backend/chats/run.ts";
@@ -11,9 +12,11 @@ import {
 } from "~/backend/providers/ProviderClient.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
 import { Emitter } from "~/libs/events/Emitter.ts";
+import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
+import { renderToolCall, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 
 export type ChatEvent =
-    | { type: "messsage"; data: ProviderChatMessage }
+    | { type: "message"; data: Codec.InferInput<typeof ChatMessageOutput> }
     | { type: "stream"; data: ProviderAssistantMessageStream };
 
 export class ChatClient {
@@ -111,6 +114,7 @@ export class ChatClient {
     }
 
     public async pushMessage(message: ProviderChatMessage) {
+        const { role } = message;
         const now = Date.now();
         const id = v7.generate(now);
 
@@ -120,7 +124,8 @@ export class ChatClient {
             .values({ id, chat_id: this.id, role: message.role, created: now })
             .execute();
 
-        if (message.role === "assistant") {
+        let content: (ChatEvent & { type: "message" })["data"]["content"];
+        if (role === "assistant") {
             await tx.insertInto("chat_message_role_assistant")
                 .values({ id, content: message.content ?? null, refusal: message.refusal ?? null })
                 .execute();
@@ -134,18 +139,45 @@ export class ChatClient {
                         .execute();
                 }
             }
-        } else if (message.role === "tool") {
+            content = {
+                kind: "assistant",
+                value: {
+                    content: message.content ?? undefined,
+                    refusal: message.refusal ?? undefined,
+                    tool_calls: message.tool_calls?.map((call) => ({
+                        kind: "function",
+                        value: {
+                            id: call.id,
+                            name: call.function.name,
+                            arguments: call.function.arguments,
+                            display: renderToolCall(call),
+                        },
+                    })) ?? [],
+                },
+            };
+        } else if (role === "tool") {
             await tx.insertInto("chat_message_role_tool")
                 .values({ id, content: message.content, tool_call_id: message.tool_call_id })
                 .execute();
-        } else if (message.role === "system") {
+            content = {
+                kind: "tool",
+                value: { content: message.content, tool_call_id: message.tool_call_id, display: await renderToolResult(message) },
+            };
+        } else if (role === "system") {
             await tx.insertInto("chat_message_role_system").values({ id, content: message.content }).execute();
-        } else if (message.role === "user") {
+            content = { kind: "system", value: { content: message.content } };
+        } else if (role === "user") {
             await tx.insertInto("chat_message_role_user").values({ id, content: message.content }).execute();
+            content = { kind: "user", value: { content: message.content } };
+        } else {
+            throw new Error(`Unknown message role: ${role satisfies never}`);
         }
 
         this.newMessages.push(message);
-        this.emitter.emit({ type: "messsage", data: message });
+        this.emitter.emit({
+            type: "message",
+            data: { id, content, created: now },
+        });
 
         await tx.commit().execute();
 
@@ -158,16 +190,6 @@ export class ChatClient {
                 });
             });
         }
-    }
-
-    private findToolNameByCallId(toolCallId: string): string | undefined {
-        for (const message of this.messages()) {
-            if (message.role === "assistant") {
-                const call = message.tool_calls?.find((c) => c.id === toolCallId);
-                if (call) return call.function.name;
-            }
-        }
-        return undefined;
     }
 }
 

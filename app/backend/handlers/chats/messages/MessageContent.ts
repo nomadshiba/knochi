@@ -21,6 +21,7 @@ export const MessageContentAssistant = new ModelCodec({
 export const MessageContentTool = new StructCodec({
     content: Str,
     tool_call_id: Str,
+    display: Str,
 });
 
 export const MessageContent = new EnumCodec({

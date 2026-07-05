@@ -76,17 +76,17 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
         status: "OK",
         data: await Promise.all(rows.map(async (row) => {
             let content: Codec.InferOutput<typeof MessageContent>;
-            if (row.role === "system" && row.RoleSystem) {
+            if (row.RoleSystem) {
                 content = {
                     kind: "system",
                     value: { content: row.RoleSystem.content },
                 };
-            } else if (row.role === "user" && row.RoleUser) {
+            } else if (row.RoleUser) {
                 content = {
                     kind: "user",
                     value: { content: row.RoleUser.content },
                 };
-            } else if (row.role === "assistant" && row.RoleAssistant) {
+            } else if (row.RoleAssistant) {
                 content = {
                     kind: "assistant",
                     value: {
@@ -112,23 +112,24 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                         }),
                     },
                 };
-            } else if (row.role === "tool" && row.RoleTool) {
+            } else if (row.RoleTool) {
                 content = {
                     kind: "tool",
                     value: {
-                        content: await renderToolResult({
+                        content: row.RoleTool.content,
+                        tool_call_id: row.RoleTool.tool_call_id,
+                        display: await renderToolResult({
                             role: "tool",
                             content: row.RoleTool.content,
                             tool_call_id: row.RoleTool.tool_call_id,
                         }),
-                        tool_call_id: row.RoleTool.tool_call_id,
                     },
                 };
             } else {
                 throw new RouteResponse({ status: "NotImplemented", message: `Unknown role: ${row.role}` });
             }
 
-            return { id: row.id, chat_id: row.chat_id, content, created: row.created };
+            return { id: row.id, content, created: row.created };
         })),
     };
 });

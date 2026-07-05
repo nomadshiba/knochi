@@ -5,7 +5,6 @@ import { UUID } from "~/libs/codecs/UUID.ts";
 
 export const ChatMessageOutput = new StructCodec({
     id: UUID,
-    chat_id: UUID,
     content: MessageContent,
     created: Timestamp,
 });

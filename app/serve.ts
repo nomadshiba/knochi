@@ -1,5 +1,7 @@
 import { handleChatStream } from "~/backend/handlers/chats/messages/stream.ts";
 import { router } from "~/router.ts";
+import appJs from "~/frontend/dist/app.js" with { type: "text" };
+import appHtml from "~/frontend/app.html" with { type: "text" };
 
 await import("~/backend/database/migrate.ts");
 await import("~/backend/handlers/agents/many.ts");
@@ -18,9 +20,9 @@ await import("~/backend/handlers/chats/messages/many.ts");
 await import("~/backend/handlers/chats/messages/delete.ts");
 
 const PORT = Number(Deno.env.get("PORT") ?? 8000);
-const FE_ROOT = new URL("./frontend/", import.meta.url);
-
 const CHAT_WEBSOCKET_REGEX = /^\/v1\/chats\/([0-9a-f-]+)\/stream$/;
+
+const appHtmlTransformed = appHtml.replace("<!-- app.js -->", () => `<script type="module">${appJs}</script>`);
 
 Deno.serve({
     port: PORT,
@@ -31,37 +33,15 @@ Deno.serve({
 }, (request) => {
     const url = new URL(request.url);
 
-    if (url.pathname.startsWith("/v1/")) {
-        const webSocketMatch = url.pathname.match(CHAT_WEBSOCKET_REGEX);
-        if (webSocketMatch && request.headers.get("upgrade") === "websocket") {
-            const chatId = webSocketMatch[1];
-            return handleChatStream(request, chatId);
-        }
-
-        return router.resolveRequest(request);
+    if (url.pathname === "/") {
+        return new Response(appHtmlTransformed, { headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
-    return serveStatic(url, FE_ROOT);
+
+    const webSocketMatch = url.pathname.match(CHAT_WEBSOCKET_REGEX);
+    if (webSocketMatch && request.headers.get("upgrade") === "websocket") {
+        const chatId = webSocketMatch[1];
+        return handleChatStream(request, chatId);
+    }
+
+    return router.resolveRequest(request);
 });
-
-async function serveStatic(url: URL, root: URL): Promise<Response> {
-    let pathname = url.pathname;
-    if (pathname === "/" || pathname === "") pathname = "/index.html";
-    if (pathname === "/app.js") pathname = "/dist/app.js";
-    const filePath = new URL("." + pathname, root);
-    if (!filePath.href.startsWith(root.href)) {
-        return new Response("Forbidden", { status: 403 });
-    }
-    try {
-        const file = await Deno.open(filePath, { read: true });
-        const contentType = filePath.pathname.endsWith(".html")
-            ? "text/html; charset=utf-8"
-            : filePath.pathname.endsWith(".js")
-            ? "application/javascript; charset=utf-8"
-            : "application/octet-stream";
-        return new Response(file.readable, { headers: { "Content-Type": contentType } });
-    } catch {
-        return new Response("Not Found", { status: 404 });
-    }
-}
-
-console.log(`agentserver listening on http://localhost:${PORT}`);

@@ -1,11 +1,11 @@
 {
     "tasks": {
         "prepare": "deno task generate",
-        "dev": "deno task bundle && (deno task bundle:dev & deno task start:dev)",
+        "dev": "deno task bundle && (deno task dev:bundle & deno task dev:start)",
+        "dev:start": "deno run -A --no-prompt --env-file --watch app/serve.ts",
+        "dev:bundle": "deno bundle --outdir=app/frontend/dist --watch ./app/frontend/app.ts",
         "start": "deno run -A --no-prompt --env-file app/serve.ts",
-        "start:dev": "deno run -A --no-prompt --env-file --watch app/serve.ts",
         "bundle": "rm -rf app/frontend/dist && deno bundle --outdir=app/frontend/dist ./app/frontend/app.ts",
-        "bundle:dev": "deno task bundle && deno bundle --outdir=app/frontend/dist --watch ./app/frontend/app.ts",
         "generate": "deno task generate:db",
         "generate:db": "deno run -A --env-file ./app/backend/database/generate.ts",
         "check": "deno check app"
@@ -26,6 +26,7 @@
     "imports": {
         "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
         "@kysely/kysely": "jsr:@kysely/kysely@^0.28.16",
+        "@purifyjs/core": "jsr:@purifyjs/core@^0.4.0",
         "kysely": "jsr:@kysely/kysely@^0.28.16",
         "@maheshbansod/kysely-codegen": "jsr:@maheshbansod/kysely-codegen@^0.1.1",
         "@marshift/kysely-deno-sqlite3": "jsr:@marshift/kysely-deno-sqlite3@^1.0.0",
