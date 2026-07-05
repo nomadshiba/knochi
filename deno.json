@@ -29,7 +29,7 @@
         "kysely": "jsr:@kysely/kysely@^0.28.16",
         "@maheshbansod/kysely-codegen": "jsr:@maheshbansod/kysely-codegen@^0.1.1",
         "@marshift/kysely-deno-sqlite3": "jsr:@marshift/kysely-deno-sqlite3@^1.0.0",
-        "@nomadshiba/codec": "jsr:@nomadshiba/codec@^0.2.4",
+        "@nomadshiba/codec": "jsr:@nomadshiba/codec@0.5.0-preview.6",
         "@std/cli": "jsr:@std/cli@^1.0.31",
         "@std/http": "jsr:@std/http@^1.1.0",
         "@std/path": "jsr:@std/path@^1.1.4",

@@ -7,8 +7,7 @@
     "jsr:@kysely/kysely@~0.28.16": "0.28.16",
     "jsr:@maheshbansod/kysely-codegen@~0.1.1": "0.1.1",
     "jsr:@marshift/kysely-deno-sqlite3@1": "1.0.0",
-    "jsr:@nomadshiba/codec@0.2.4": "0.2.4",
-    "jsr:@nomadshiba/codec@~0.2.4": "0.2.4",
+    "jsr:@nomadshiba/codec@0.5.0-preview.6": "0.5.0-preview.6",
     "jsr:@nostrify/nostrify@0.39": "0.39.1",
     "jsr:@nostrify/nostrify@~0.39.1": "0.39.1",
     "jsr:@nostrify/types@0.36": "0.36.0",
@@ -38,15 +37,15 @@
     "jsr:@std/uuid@^1.1.1": "1.1.1",
     "npm:@libsql/kysely-libsql@~0.4.1": "0.4.1_kysely@0.27.6",
     "npm:@noble/curves@*": "2.0.1",
-    "npm:@noble/hashes@*": "1.6.0",
+    "npm:@noble/hashes@*": "2.0.1",
     "npm:@noble/hashes@1.6.0": "1.6.0",
-    "npm:@scure/base@*": "1.2.0",
+    "npm:@scure/base@*": "2.0.0",
     "npm:@scure/base@1": "1.2.6",
     "npm:@scure/base@1.2.0": "1.2.0",
-    "npm:@scure/bip32@*": "1.5.0",
+    "npm:@scure/bip32@*": "2.0.1",
     "npm:@scure/bip32@1.5.0": "1.5.0",
     "npm:@scure/bip32@^1.4.0": "1.7.0",
-    "npm:@scure/bip39@*": "1.5.0",
+    "npm:@scure/bip39@*": "2.0.1",
     "npm:@scure/bip39@1.5.0": "1.5.0",
     "npm:@scure/bip39@^1.3.0": "1.6.0",
     "npm:@scure/btc-signer@*": "1.4.0",
@@ -117,8 +116,11 @@
         "jsr:@kysely/kysely@0.28"
       ]
     },
-    "@nomadshiba/codec@0.2.4": {
-      "integrity": "6beb71654b7a15e475b3c75bbde5132ecdf9fe78785782504936174b7e369f1d"
+    "@nomadshiba/codec@0.5.0-preview.6": {
+      "integrity": "bef68b0a2bd9c0853175aa2410b0eaaec83e81db4167d72b877409dfcc6c2eb7",
+      "dependencies": [
+        "jsr:@std/bytes"
+      ]
     },
     "@nostrify/nostrify@0.39.1": {
       "integrity": "84f98c815a07f4151bd02188a3525e438c416e9de632c79c9da9edbfca580d7f",
@@ -407,16 +409,10 @@
     "@types/node@10.12.18": {
       "integrity": "sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ=="
     },
-    "@types/node@25.6.0": {
-      "integrity": "sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==",
-      "dependencies": [
-        "undici-types"
-      ]
-    },
     "@types/ws@8.18.1": {
       "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",
       "dependencies": [
-        "@types/node@25.6.0"
+        "@types/node"
       ]
     },
     "ansi-styles@3.2.1": {
@@ -482,7 +478,7 @@
     "bip32@2.0.6": {
       "integrity": "sha512-HpV5OMLLGTjSVblmrtYRfFFKuQB+GArM0+XP8HGWfJ5vxYBqo+DesvJwOdC2WJ3bCkZShGf0QIfoIpeomVzVdA==",
       "dependencies": [
-        "@types/node@10.12.18",
+        "@types/node",
         "bs58check@2.1.2",
         "create-hash",
         "create-hmac",
@@ -1027,7 +1023,6 @@
     "mysql2@3.22.2_@types+node@25.6.0": {
       "integrity": "sha512-snC/L6YoCJPFpozZo3p3hiOlt9ItQ7sCnLSziFLlIttEzsPhrdcPT8g21BiQ7Oqif25W4Xq1IFuBzBvoFYDf0Q==",
       "dependencies": [
-        "@types/node@25.6.0",
         "aws-ssl-profiles",
         "denque",
         "generate-function",
@@ -1216,7 +1211,7 @@
         "isarray@1.0.0",
         "process-nextick-args",
         "safe-buffer@5.1.2",
-        "string_decoder@1.1.1",
+        "string_decoder",
         "util-deprecate"
       ]
     },
@@ -1224,7 +1219,7 @@
       "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==",
       "dependencies": [
         "inherits",
-        "string_decoder@1.3.0",
+        "string_decoder",
         "util-deprecate"
       ]
     },
@@ -1319,12 +1314,6 @@
         "safe-buffer@5.1.2"
       ]
     },
-    "string_decoder@1.3.0": {
-      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==",
-      "dependencies": [
-        "safe-buffer@5.2.1"
-      ]
-    },
     "strip-json-comments@2.0.1": {
       "integrity": "sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ=="
     },
@@ -1409,9 +1398,6 @@
     },
     "uint8array-tools@0.0.9": {
       "integrity": "sha512-9vqDWmoSXOoi+K14zNaf6LBV51Q8MayF0/IiQs3GlygIKUYtog603e6virExkjjFosfJUBI4LhbQK1iq8IG11A=="
-    },
-    "undici-types@7.19.2": {
-      "integrity": "sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg=="
     },
     "util-deprecate@1.0.2": {
       "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
@@ -1800,7 +1786,7 @@
       "jsr:@kysely/kysely@~0.28.16",
       "jsr:@maheshbansod/kysely-codegen@~0.1.1",
       "jsr:@marshift/kysely-deno-sqlite3@1",
-      "jsr:@nomadshiba/codec@~0.2.4",
+      "jsr:@nomadshiba/codec@0.5.0-preview.6",
       "jsr:@std/cli@^1.0.31",
       "jsr:@std/http@^1.1.0",
       "jsr:@std/path@^1.1.4",

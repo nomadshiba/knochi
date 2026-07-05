@@ -1,18 +1,19 @@
-import { Codec, Str } from "@nomadshiba/codec";
+import { Codec, Str, type Stride } from "@nomadshiba/codec";
 
 export class UrlCodec extends Codec<URL, string | URL> {
-    public override readonly stride = -1;
+    public override readonly stride: Stride<"variable"> = { kind: "variable" };
 
-    public override encode(value: string | URL, target?: Uint8Array<ArrayBuffer>): Uint8Array<ArrayBuffer> {
-        if (value instanceof URL) {
-            return Str.encode(value.href, target);
-        }
-        return Str.encode(new URL(value).href, target);
+    public override encoder(value: string | URL, target: undefined, offset: undefined): Uint8Array<ArrayBuffer>;
+    public override encoder(value: string | URL, target: Uint8Array, offset: number): number;
+    public override encoder(value: string | URL, target?: Uint8Array, offset?: number): Uint8Array<ArrayBuffer> | number {
+        const href = value instanceof URL ? value.href : new URL(value).href;
+        if (target === undefined) return Str.encode(href);
+        return Str.encodeInto(href, target, offset!);
     }
 
-    public override decode(data: Uint8Array): [URL, number] {
-        const [href, offset] = Str.decode(data);
-        return [new URL(href), offset];
+    public override decoder(data: Uint8Array, offset: number): [URL, number] {
+        const [href, size] = Str.decode(data, offset);
+        return [new URL(href), size];
     }
 }
 
