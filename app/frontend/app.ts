@@ -24,20 +24,20 @@ type StreamEvent =
             content?: string | null;
             refusal?: string | null;
             tool_calls?: { id: string; type: "function"; function: { name: string; arguments: string } }[];
-        } | { role: "tool"; content: string; tool_call_id: string };
+        } | { role: "tool"; content: string; tool_call_id: string; display: string };
     }
     | { type: "stream"; data: StreamDelta };
 
 type StreamDelta =
     | { kind: "text"; value: string }
     | { kind: "refusal"; value: string }
-    | { kind: "tool_call"; value: { index: number; id?: string; name?: string; arguments?: string } }
+    | { kind: "tool_call"; value: { index: number; id?: string; name?: string; arguments?: string; display?: string } }
     | { kind: "done"; value: { finish_reason: string | null } };
 
 type LiveEntry =
     | { kind: "user"; text: string }
     | { kind: "assistant"; text: string; refusal?: string }
-    | { kind: "tool_call"; name: string; arguments: string }
+    | { kind: "tool_call"; name: string; arguments: string; display: string }
     | { kind: "tool_result"; text: string };
 
 const state = {
@@ -175,16 +175,19 @@ function handleEvent(event: StreamEvent) {
             (msg.tool_calls ?? []).forEach((tc, index) => {
                 let entry = currentToolCalls[index];
                 if (!entry) {
-                    entry = { kind: "tool_call", name: "", arguments: "" };
+                    entry = { kind: "tool_call", name: "", arguments: "", display: "" };
                     currentToolCalls[index] = entry;
                     state.liveEntries.push(entry);
                 }
                 entry.name = tc.function.name;
                 entry.arguments = tc.function.arguments;
+                // display is only carried by "tool_call" stream deltas; keep whatever was last
+                // computed during streaming, falling back to raw arguments if none arrived.
+                if (!entry.display) entry.display = tc.function.arguments;
             });
             state.liveAssistant = null;
         } else if (msg.role === "tool") {
-            state.liveEntries.push({ kind: "tool_result", text: msg.content });
+            state.liveEntries.push({ kind: "tool_result", text: msg.display });
         }
         renderLive();
         return;
@@ -203,12 +206,13 @@ function handleEvent(event: StreamEvent) {
         const index = delta.value.index;
         let entry = currentToolCalls[index];
         if (!entry) {
-            entry = { kind: "tool_call", name: "", arguments: "" };
+            entry = { kind: "tool_call", name: "", arguments: "", display: "" };
             currentToolCalls[index] = entry;
             state.liveEntries.push(entry);
         }
         if (delta.value.name) entry.name = delta.value.name;
         if (delta.value.arguments) entry.arguments += delta.value.arguments;
+        if (delta.value.display !== undefined) entry.display = delta.value.display;
         renderLive();
     } else if (delta.kind === "done") {
         state.liveAssistant = null;
@@ -355,7 +359,7 @@ function renderLive() {
             if (entry.refusal) appendBubble("assistant", "assistant", `**refused:** ${entry.refusal}`, true);
             if (!entry.text && !entry.refusal && state.liveAssistant === entry) appendBubble("assistant", "assistant", "...", true);
         } else if (entry.kind === "tool_call") {
-            appendBubble("tool_call", entry.name || "tool_call", entry.arguments, true);
+            appendBubble("tool_call", entry.name || "tool_call", entry.display || entry.arguments, true);
         } else if (entry.kind === "tool_result") {
             appendBubble("tool", "result", entry.text, true);
         }

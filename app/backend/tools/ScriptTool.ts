@@ -2,63 +2,70 @@ import { ProviderToolCall, ProviderToolDefinition, ProviderToolMessage } from "~
 import { Tool } from "~/backend/tools/Tool.ts";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
 
+const DEFAULT_PERMISSIONS = {
+    net: false,
+    read: false,
+    write: false,
+    env: false,
+    run: false,
+    ffi: false,
+    sys: false,
+    import: false,
+} as const;
+
 export type ScriptToolPermissions = {
-    net?: boolean | string[];
-    read?: boolean | string[];
-    write?: boolean | string[];
-    env?: boolean | string[];
-    run?: boolean | string[];
-    ffi?: boolean | string[];
-    sys?: boolean | string[];
-    import?: boolean | string[];
+    [K in keyof typeof DEFAULT_PERMISSIONS]?: string[] | boolean;
 };
 
 const PRELOAD_TIMEOUT_MS = 60_000;
 const CODE_BLOCK = "```";
 
 export class ScriptTool extends Tool {
-    constructor(private readonly permissions: ScriptToolPermissions = {}) {
+    public readonly definition: ProviderToolDefinition;
+    private readonly permissions: ScriptToolPermissions;
+
+    constructor(permissions: ScriptToolPermissions = {}) {
         super();
-    }
+        this.permissions = Object.assign({}, DEFAULT_PERMISSIONS, permissions);
 
-    definition(): ProviderToolDefinition {
-        const granted = (Object.keys(this.permissions) as (keyof ScriptToolPermissions)[])
-            .filter((k) => this.permissions[k]);
-        const permsText = granted.length ? `Granted permissions: ${granted.join(", ")}.` : "No extra permissions granted.";
-        const importsText = this.permissions.import ? " Remote imports are allowed." : "";
-
-        return {
+        this.definition = {
             type: "function",
             function: {
                 name: "script",
-                description:
-                    `Run TypeScript code in a sandboxed Deno Worker. ${permsText}${importsText} Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return a value.\n\n` +
-                    `Prefer \`use\` to reuse previous tool results instead of recomputing or re-fetching them — it's cheaper and avoids duplicated work.\n\n` +
+                description: [
+                    `Run TypeScript code in a sandboxed Deno Worker.`,
+                    `Permissions: ${JSON.stringify(this.permissions, null, " ")}.`,
+                    `Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return a value.`,
+                    `Prefer \`use\` to reuse previous tool results instead of recomputing or re-fetching them — it's cheaper and avoids duplicated work.`,
+
                     `IMPORTANT: each requested result is keyed by its exact tool_call_id, NOT merged/flattened into e.data directly. ` +
                     `Example: if you pass \`use: ["call_abc123"]\` and that earlier tool call's raw result was the JSON \`{"notes": [...]}\`, ` +
                     `then inside the worker you must access it as \`e.data["call_abc123"].notes\` — \`e.data.notes\` will be undefined. ` +
-                    `If \`use\` is empty/omitted, \`e.data\` is just \`{}\`.\n\n` +
-                    (this.permissions.import
-                        ? `If your code imports remote modules, list those exact specifiers in \`preload\` — they'll be fetched/cached first and that time does NOT count against \`timeout\`, only the worker's own startup+execution does.\n\n` +
-                            `IMPORT SOURCE GUIDANCE (try in this order, don't jump to esm.sh out of habit):\n` +
-                            `1. \`jsr:@scope/name\` — check jsr.io first, it's the Deno-native registry.\n` +
-                            `2. \`npm:package-name\` — most npm packages work directly via Deno's npm compat, try this next for anything not on jsr.\n` +
-                            `3. \`https://esm.sh/...\` — use this if the package isn't on jsr/npm, OR if \`npm:\` fails/errors due to Node-compat issues (native bindings, CJS/ESM interop, missing Node builtins, etc). esm.sh serves a pre-converted browser-ESM build which often works when Deno's npm compat layer chokes on a package — it's a legitimate fallback, not just a last resort to avoid. It's just slower to resolve, so prefer jsr/npm when they actually work.\n\n`
-                        : "") +
+                    `If \`use\` is empty/omitted, \`e.data\` is just \`{}\`.`,
+
+                    this.permissions.import && [
+                        `If your code imports remote modules, list those exact specifiers in \`preload\` — they'll be fetched/cached first and that time does NOT count against \`timeout\`, only the worker's own startup+execution does.`,
+                        ``,
+                        `IMPORT SOURCE GUIDANCE (try in this order, don't jump to esm.sh out of habit):`,
+                        `1. \`jsr:@scope/name\` — check jsr.io first, it's the Deno-native registry.`,
+                        `2. \`npm:package-name\` — most npm packages work directly via Deno's npm compat, try this next for anything not on jsr.`,
+                        `3. \`https://esm.sh/...\` — use this if the package isn't on jsr/npm, OR if \`npm:\` fails/errors due to Node-compat issues (native bindings, CJS/ESM interop, missing Node builtins, etc). esm.sh serves a pre-converted browser-ESM build which often works when Deno's npm compat layer chokes on a package — it's a legitimate fallback, not just a last resort to avoid. It's just slower to resolve, so prefer jsr/npm when they actually work.`,
+                    ].join("\n"),
+
                     `Returns the posted value as a string.`,
+                ].filter(Boolean).join("\n\n"),
                 parameters: {
                     type: "object",
                     properties: {
                         code: {
                             type: "string",
-                            description:
-                                `TypeScript code to run in the worker. Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return. ` +
-                                `\`e.data\` is an object mapping each requested tool_call_id (from \`use\`) to its result (pre-parsed if JSON) — access as \`e.data["<tool_call_id>"]\`, never assume fields are merged into \`e.data\` directly. ` +
-                                `Inline any other values directly in the code.${
-                                    this.permissions.import
-                                        ? " You may `import` remote modules — try `jsr:` first, then `npm:`; fall back to `https://esm.sh/...` if the package isn't on jsr/npm or if `npm:` errors with Node-compat issues. List the exact specifiers in `preload` too."
-                                        : ""
-                                }`,
+                            description: [
+                                `TypeScript code to run in the worker. Use \`self.onmessage = (e) => {...}\` and call \`self.postMessage(result)\` to return.`,
+                                `\`e.data\` is an object mapping each requested tool_call_id (from \`use\`) to its result (pre-parsed if JSON) — access as \`e.data["<tool_call_id>"]\`, never assume fields are merged into \`e.data\` directly.`,
+                                `Inline any other values directly in the code.`,
+                                this.permissions.import &&
+                                `You may \`import\` remote modules — try \`jsr:\` first, then \`npm:\`; fall back to \`https://esm.sh/...\` if the package isn't on jsr/npm or if \`npm:\` errors with Node-compat issues. List the exact specifiers in \`preload\` too.`,
+                            ].filter(Boolean).join(" "),
                         },
                         use: {
                             type: "array",
@@ -209,7 +216,8 @@ export class ScriptTool extends Tool {
         }
     }
 
-    override renderCall(_name: string, args: string): string {
+    override transformCall(call: ProviderToolCall): string {
+        const args = call.function.arguments;
         let parsed: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
             parsed = JSON.parse(args);
@@ -223,7 +231,7 @@ export class ScriptTool extends Tool {
         return `### script\n\n${CODE_BLOCK}typescript\n${parsed.code}\n${CODE_BLOCK}${usePart}${preloadPart}${timeoutPart}`;
     }
 
-    override renderResult(_name: string, _args: string, result: string): string {
-        return `${CODE_BLOCK}json\n${result}\n${CODE_BLOCK}`;
+    override transformResult(result: ProviderToolMessage): string {
+        return `${CODE_BLOCK}json\n${result.content}\n${CODE_BLOCK}`;
     }
 }

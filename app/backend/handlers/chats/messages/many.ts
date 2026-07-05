@@ -1,10 +1,10 @@
 import { jsonArrayFrom, jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
 import { Codec } from "@nomadshiba/codec";
 import { db } from "~/backend/database/client.ts";
-import { router } from "~/router.ts";
 import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { RouteResponse } from "~/libs/routing/RouterResponse.ts";
-import { renderToolCall, renderToolResult } from "~/backend/tools/registry.ts";
+import { router } from "~/router.ts";
+import { renderToolCall, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 
 router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
     const chatId = params.pathname.chatId;
@@ -72,18 +72,9 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
         ])
         .execute();
 
-    const toolCallNameById = new Map<string, string>();
-    for (const row of rows) {
-        if (row.RoleAssistant?.ToolCalls) {
-            for (const tc of row.RoleAssistant.ToolCalls) {
-                if (tc.TypeFunction) toolCallNameById.set(tc.id, tc.TypeFunction.name);
-            }
-        }
-    }
-
     return {
         status: "OK",
-        data: rows.map((row) => {
+        data: await Promise.all(rows.map(async (row) => {
             let content: Codec.InferOutput<typeof MessageContent>;
             if (row.role === "system" && row.RoleSystem) {
                 content = {
@@ -109,7 +100,11 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                                         id: call.id,
                                         name: call.TypeFunction.name,
                                         arguments: call.TypeFunction.arguments,
-                                        display: renderToolCall(call.TypeFunction.name, call.TypeFunction.arguments),
+                                        display: renderToolCall({
+                                            id: call.id,
+                                            type: "function",
+                                            function: { name: call.TypeFunction.name, arguments: call.TypeFunction.arguments },
+                                        }),
                                     },
                                 };
                             }
@@ -118,11 +113,14 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                     },
                 };
             } else if (row.role === "tool" && row.RoleTool) {
-                const toolName = toolCallNameById.get(row.RoleTool.tool_call_id) ?? "tool";
                 content = {
                     kind: "tool",
                     value: {
-                        content: renderToolResult(toolName, "", row.RoleTool.content),
+                        content: await renderToolResult({
+                            role: "tool",
+                            content: row.RoleTool.content,
+                            tool_call_id: row.RoleTool.tool_call_id,
+                        }),
                         tool_call_id: row.RoleTool.tool_call_id,
                     },
                 };
@@ -131,6 +129,6 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
             }
 
             return { id: row.id, chat_id: row.chat_id, content, created: row.created };
-        }),
+        })),
     };
 });

@@ -1,24 +1,25 @@
+import { v7 } from "@std/uuid";
+import { Agent } from "~/backend/agents/Agent.ts";
+import { agents, agentsByName } from "~/backend/agents/mod.ts";
+import { runAgent } from "~/backend/chats/run.ts";
+import { db } from "~/backend/database/client.ts";
 import {
     ProviderAssistantMessageStream,
     ProviderChatMessage,
     ProviderClient,
     ProviderToolCall,
 } from "~/backend/providers/ProviderClient.ts";
-import { db } from "~/backend/database/client.ts";
-import { agents, agentsByName } from "~/backend/agents/mod.ts";
-import { v7 } from "@std/uuid";
-import { Emitter } from "~/libs/events/Emitter.ts";
-import { Agent } from "~/backend/agents/Agent.ts";
-import { runAgent } from "~/backend/chats/run.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
+import { Emitter } from "~/libs/events/Emitter.ts";
+
+export type ChatEvent =
+    | { type: "messsage"; data: ProviderChatMessage }
+    | { type: "stream"; data: ProviderAssistantMessageStream };
 
 export class ChatClient {
     private constructor(
         public readonly id: string,
-        public readonly emitter: Emitter<
-            | { type: "messsage"; data: ProviderChatMessage }
-            | { type: "stream"; data: ProviderAssistantMessageStream }
-        >,
+        public readonly emitter: Emitter<ChatEvent>,
         public readonly agent: Agent,
         public readonly model: { name: string; provider: ProviderClient } | undefined,
         private readonly prefixMessages: ProviderChatMessage[],
@@ -157,6 +158,16 @@ export class ChatClient {
                 });
             });
         }
+    }
+
+    private findToolNameByCallId(toolCallId: string): string | undefined {
+        for (const message of this.messages()) {
+            if (message.role === "assistant") {
+                const call = message.tool_calls?.find((c) => c.id === toolCallId);
+                if (call) return call.function.name;
+            }
+        }
+        return undefined;
     }
 }
 

@@ -1,4 +1,4 @@
-import { ChatClient } from "~/backend/chats/ChatClient.ts";
+import { handleChatStream } from "~/backend/handlers/chats/messages/stream.ts";
 import { router } from "~/router.ts";
 
 await import("~/backend/database/migrate.ts");
@@ -20,7 +20,7 @@ await import("~/backend/handlers/chats/messages/delete.ts");
 const PORT = Number(Deno.env.get("PORT") ?? 8000);
 const FE_ROOT = new URL("./frontend/", import.meta.url);
 
-const CHAT_STREAM_RE = /^\/v1\/chats\/([0-9a-f-]+)\/stream$/;
+const CHAT_WEBSOCKET_REGEX = /^\/v1\/chats\/([0-9a-f-]+)\/stream$/;
 
 Deno.serve({
     port: PORT,
@@ -31,23 +31,17 @@ Deno.serve({
 }, (request) => {
     const url = new URL(request.url);
 
-    const wsMatch = url.pathname.match(CHAT_STREAM_RE);
-    if (wsMatch && request.headers.get("upgrade") === "websocket") {
-        return handleChatStream(request, wsMatch[1]);
-    }
-
     if (url.pathname.startsWith("/v1/")) {
+        const webSocketMatch = url.pathname.match(CHAT_WEBSOCKET_REGEX);
+        if (webSocketMatch && request.headers.get("upgrade") === "websocket") {
+            const chatId = webSocketMatch[1];
+            return handleChatStream(request, chatId);
+        }
+
         return router.resolveRequest(request);
     }
     return serveStatic(url, FE_ROOT);
 });
-
-async function handleChatStream(request: Request, chatId: string): Promise<Response> {
-    const { socket, response } = Deno.upgradeWebSocket(request, { idleTimeout: 0 });
-    const chat = await ChatClient.getOrLoad(chatId);
-    socket.onopen = () => socket.onclose = chat.emitter.subscribe((event) => socket.send(JSON.stringify(event)));
-    return response;
-}
 
 async function serveStatic(url: URL, root: URL): Promise<Response> {
     let pathname = url.pathname;

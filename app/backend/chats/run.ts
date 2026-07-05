@@ -25,8 +25,8 @@ export async function runAgent(chat: ChatClient): Promise<void> {
     if (!model) return;
 
     const tools = chat.agent.tools;
-    const toolDefinitions = tools.length ? tools.map((t): ProviderToolDefinition => t.definition()) : undefined;
-    const toolMap = new Map(tools.map((t) => [t.definition().function.name, t] as const));
+    const toolDefinitions = tools.length ? tools.map((t): ProviderToolDefinition => t.definition) : undefined;
+    const toolsByName = new Map(tools.map((t) => [t.definition.function.name, t] as const));
 
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
         chat.emitter.emit({ type: "stream", data: { kind: "text", value: "" } });
@@ -56,9 +56,6 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                     if (delta.value.name) existing.name = delta.value.name;
                     if (delta.value.arguments) existing.arguments += delta.value.arguments;
                     toolCallBuffers.set(delta.value.index, existing);
-                    const tool = toolMap.get(existing.name);
-                    // TODO: handle custom render stuff
-                    const display = tool ? tool.renderCall(existing.name, existing.arguments) : `${existing.name}(${existing.arguments})`;
                     chat.emitter.emit({
                         type: "stream",
                         data: {
@@ -99,7 +96,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
         if (!toolCalls.length) break;
 
         for (const call of toolCalls) {
-            const tool = toolMap.get(call.function.name);
+            const tool = toolsByName.get(call.function.name);
 
             let result: ProviderToolMessage;
             if (tool) {
