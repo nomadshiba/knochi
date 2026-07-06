@@ -5,12 +5,12 @@ import { ProviderManager } from "~/frontend/components/ProviderManager.ts";
 
 export async function ChatNavigation() {
     const { nav, ul } = tags;
-    const self = nav().id("chats").ariaLabel("Chat Rooms");
+    const self = nav().id("primary-nav").ariaLabel("Primary Navigation");
     self.$bind(ChatNavigationSheet.useScope());
 
     const chats = await api.fetch("GET /v1/chats", { params: { pathname: {}, search: {} } });
 
-    self.append$(NewChatLink(), ul().append$(chats.map(ChatNavigationItem)), ProviderManager());
+    self.append$(NewChatLink(), ul().id("chats").ariaLabel("Chat Rooms").append$(chats.map(ChatNavigationItem)), ProviderManager());
 
     return self;
 }

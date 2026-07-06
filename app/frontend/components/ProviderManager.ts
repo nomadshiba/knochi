@@ -138,7 +138,7 @@ export function ProviderManager() {
         );
 
     const trigger = button({ class: "trigger" }).type("button")
-        .textContent("⚙ Providers")
+        .textContent("Providers")
         .onclick(() => {
             modal.showModal();
             if (!providers.get()) refresh();

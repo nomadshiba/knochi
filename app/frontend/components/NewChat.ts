@@ -64,7 +64,7 @@ export async function NewChat() {
                 try {
                     const name = value.split("\n", 1)[0]!.slice(0, 60) || "New chat";
                     const chat = await api.fetch("POST /v1/chats", { params: { pathname: {}, search: {} }, data: { name } });
-                    document.querySelector("#chats ul")?.after(toChild(ChatNavigationItem({ id: chat.id, name })));
+                    document.querySelector("#chats")!.append(toChild(ChatNavigationItem({ id: chat.id, name })));
 
                     // Only patch what actually changed from what the chat was created with,
                     // so we don't fire pointless requests when the user kept the defaults.
