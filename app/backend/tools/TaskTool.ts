@@ -1,6 +1,5 @@
 import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
-import { runAgent } from "~/backend/chats/run.ts";
 import { ProviderToolCall, ProviderToolDefinition, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
 import { Tool } from "~/backend/tools/Tool.ts";
 
@@ -103,10 +102,7 @@ export class TaskTool extends Tool {
         }
 
         try {
-            // autorun: false — we drive/await the run ourselves below instead of letting it fire in the background,
-            // since we need its final answer back before we can resolve this tool call.
-            await subChat.pushMessage({ role: "user", content: args.prompt }, { autorun: false });
-            await runAgent(subChat);
+            await subChat.pushMessage({ role: "user", content: args.prompt }, { wait: true });
         } catch (reason) {
             return {
                 role: "tool",

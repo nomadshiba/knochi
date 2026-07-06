@@ -153,12 +153,7 @@ export class ChatClient {
         for (const message of this.suffixMessages) yield message;
     }
 
-    /**
-     * @param options.autorun When `message` is a `user` message, whether to kick off `runAgent(this)` in the
-     * background (fire-and-forget, same as before). Defaults to `true`. Pass `false` when you need to drive/await
-     * the run yourself (e.g. a subagent tool that awaits `runAgent(subChat)` directly to get its final answer).
-     */
-    public async pushMessage(message: ProviderChatMessage, options?: { autorun?: boolean }) {
+    public async pushMessage(message: ProviderChatMessage, options?: { wait?: boolean }) {
         const { role } = message;
         const now = Date.now();
         const id = v7.generate(now);
@@ -223,14 +218,15 @@ export class ChatClient {
 
         await tx.commit().execute();
 
-        if (message.role === "user" && options?.autorun !== false) {
-            runAgent(this).catch((reason) => {
+        if (message.role === "user") {
+            const promise = runAgent(this).catch((reason) => {
                 console.error("agent run failed:", reason);
                 this.emitter.emit({
                     kind: "stream",
                     value: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } },
                 });
             });
+            if (options?.wait) await promise;
         }
     }
 }
