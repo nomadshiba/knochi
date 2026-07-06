@@ -21,11 +21,11 @@ export function Markdown(md: string) {
 
 const MarkdownGlobalStyle = css`
     x-markdown {
+        all: unset;
         display: block flow-root;
-        overflow-wrap: break-word;
         line-height: 1.6;
+        overflow-wrap: break-word;
         overflow-x: hidden;
-        text-box-trim: none;
         contain: paint;
     }
 `;
