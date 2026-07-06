@@ -54,6 +54,7 @@ const ChatBoxSheet = css`
         border: none;
         font: inherit;
         color: inherit;
+        min-block-size: 2em;
 
         &:focus-visible {
             outline: none;

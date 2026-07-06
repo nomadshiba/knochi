@@ -2,21 +2,20 @@ import { tags } from "@purifyjs/core";
 import { ToolCallOutput } from "~/frontend/api.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
-import { Dialog } from "~/frontend/components/Dialog.ts";
 
 export function ToolCalls(calls: ToolCallOutput[]) {
-    const { ol, li, button } = tags;
+    const { ol, li, button, dialog } = tags;
     const self = ol().ariaLabel("Tool calls");
     self.$bind(ToolCallsSheet.useScope());
 
     self.append$(calls.map((call) => {
-        const dialog = Dialog().append$(
+        const modal = dialog().append$(
             Markdown(call.value.display).id(`tool-call-${call.value.id}`),
         );
 
         return li().append$(
-            button().type("button").textContent(call.value.name).onclick(() => dialog.showModal()),
-            dialog,
+            button().type("button").textContent(call.value.name).onclick(() => modal.showModal()),
+            modal,
         );
     }));
 
@@ -27,6 +26,10 @@ const ToolCallsSheet = css`
     :scope {
         display: block grid;
         list-style: none;
+    }
+
+    dialog {
+        padding: 1em;
     }
 
     button {

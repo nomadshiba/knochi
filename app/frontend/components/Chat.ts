@@ -1,9 +1,11 @@
 import { Builder, ref, sync, tags, toChild } from "@purifyjs/core";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
 import { api, MessageOutput } from "~/frontend/api.ts";
+import { AgentPicker } from "~/frontend/components/AgentPicker.ts";
 import { ChatBox } from "~/frontend/components/ChatBox.ts";
 import { ChatNavigationItem } from "~/frontend/components/ChatNavigation.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
+import { ModelPicker } from "~/frontend/components/ModelPicker.ts";
 import { ToolCalls } from "~/frontend/components/ToolCalls.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { relativeDate } from "~/frontend/utils/date.ts";
@@ -12,7 +14,7 @@ import { PersistentSocket } from "~/frontend/utils/websocket.ts";
 const scroller = document.scrollingElement ?? document.body;
 
 export async function Chat(chatId: string) {
-    const { section, ol, li, article, header, strong, time, p, form, button, div } = tags;
+    const { section, ol, li, article, header, strong, time, p, form, button, menu } = tags;
     const chat = await api.fetch("GET /v1/chats/:chatId", { params: { pathname: { chatId }, search: {} } });
     const self = section().id("chat").ariaLabel(`Chat Conversation: ${chat.name}`);
     self.$bind(ChatStyle.useScope());
@@ -153,11 +155,10 @@ export async function Chat(chatId: string) {
         form()
             .append$(
                 ChatBox(content),
-                div({ class: "actions" }).append$(
-                    agent,
-                    " ",
-                    model.derive((model) => `${model?.name}`),
-                    button().type("submit").ariaLabel("Send"),
+                menu().append$(
+                    li().append$(AgentPicker(agent)),
+                    li().append$(ModelPicker(model)),
+                    li().append$(button().type("submit").ariaLabel("Send")),
                 ),
             )
             .onsubmit((event) => {
@@ -209,14 +210,12 @@ const ChatStyle = css`
                 display: block flow;
                 font-size: 0.6em;
                 opacity: 0.5;
-                text-box-trim: trim-both;
             }
 
             strong {
                 display: block flow;
                 font-size: 0.85em;
                 opacity: 0.85;
-                text-box-edge: cap alphabetic;
             }
         }
 
@@ -243,17 +242,21 @@ const ChatStyle = css`
         padding-block: 1em;
         box-shadow: 0 0 10px 5px var(--layout-base);
 
-        gap: 0.5em;
+        gap: 1em;
         align-items: center;
     }
 
-    form .actions {
+    form menu {
         display: block grid;
-        grid-auto-flow: column;
-        justify-content: end;
+        gap: 0.5em;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+
+        grid-template-columns: auto 1fr auto;
     }
 
-    form .actions button {
+    form menu button[type="submit"] {
         all: unset;
         cursor: pointer;
         display: block grid;
@@ -262,7 +265,7 @@ const ChatStyle = css`
         background-color: var(--accent-base);
         border-radius: 50%;
         padding: 0.25em;
-        inline-size: 1.25em;
+        inline-size: 1.75em;
 
         &::before {
             content: "";

@@ -5,7 +5,7 @@ import { renderMarkdown } from "~/frontend/utils/markdown.ts";
 export function Markdown(md: string) {
     const { div } = tags;
     const self = div();
-    const shadow = self.$node.attachShadow({ mode: "closed" });
+    const shadow = self.$node.attachShadow({ mode: "open" });
     shadow.adoptedStyleSheets.push(MarkdownStyle.sheet());
     shadow.innerHTML = renderMarkdown(md);
     return self;

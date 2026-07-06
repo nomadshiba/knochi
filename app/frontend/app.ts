@@ -73,13 +73,31 @@ const GlobalStyle = css`
         line-height: 1.25;
     }
 
+    /* layout default not article/document, put articles/documents in shadow dom */
     *, *::before, *::after {
-        box-sizing: border-box;
+        box-sizing: border-box !important;
         margin: 0;
+        text-box-trim: trim-both;
     }
 
     ol, ul {
         padding: 0;
+    }
+
+    dialog[open] {
+        all: unset;
+        display: block grid;
+        align-content: start;
+        position: fixed;
+        inset-block: 0;
+        inset-inline-end: 0;
+        inline-size: min(100%, 30em);
+        background-color: var(--base);
+
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
     }
 `;
 

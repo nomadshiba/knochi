@@ -54,7 +54,9 @@ export class CssTemplate {
     public useScope(): Lifecycle.OnConnected {
         if (!this.scopeId) {
             const scopeId = Math.random().toString(36).slice(2);
-            const scopeRaw = `@scope ([data-scope="${scopeId}"]) to ([data-scope]) {${this.raw}}`;
+            // `~=` (not `=`) so an element can carry more than one scope id at once (space separated),
+            // allowing multiple `useScope()`s (e.g. this one and another component's) to stack on the same element.
+            const scopeRaw = `@scope ([data-scope~="${scopeId}"]) to ([data-scope]) {${this.raw}}`;
             const scopeStyle = new CSSStyleSheet();
             scopeStyle.replaceSync(scopeRaw);
             document.adoptedStyleSheets.push(scopeStyle);
@@ -62,8 +64,10 @@ export class CssTemplate {
         }
 
         return (element) => {
-            if (element.dataset.scope === this.scopeId) return;
-            element.dataset.scope = this.scopeId;
+            const scopeId = this.scopeId!;
+            const scopes = element.dataset.scope?.split(" ") ?? [];
+            if (scopes.includes(scopeId)) return;
+            element.dataset.scope = [...scopes, scopeId].join(" ");
         };
     }
 }

@@ -11,7 +11,7 @@
     "jsr:@nostrify/nostrify@0.39": "0.39.1",
     "jsr:@nostrify/nostrify@~0.39.1": "0.39.1",
     "jsr:@nostrify/types@0.36": "0.36.0",
-    "jsr:@purifyjs/core@0.4": "0.4.0",
+    "jsr:@purifyjs/core@0.5.0-preview.5": "0.5.0-preview.5",
     "jsr:@scure/base@1.2.1": "1.2.1",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/cli@^1.0.29": "1.0.31",
@@ -140,8 +140,8 @@
     "@nostrify/types@0.36.0": {
       "integrity": "b3413467debcbd298d217483df4e2aae6c335a34765c90ac7811cf7c637600e7"
     },
-    "@purifyjs/core@0.4.0": {
-      "integrity": "b5495df887c85e0f7c17ebf37e021c79972ace33f8bd6f30cb76a88324814847"
+    "@purifyjs/core@0.5.0-preview.5": {
+      "integrity": "69330dd4ec8ac81ce4b85e6ca851f9e9d0e62f36bc7e6b3a000a135d82f12574"
     },
     "@scure/base@1.2.1": {
       "integrity": "679e2d2e1e5b2e3739e99a48ef2cd67d5eb5dc6c58220984f2a5088e2d6f6e29"
@@ -1791,7 +1791,7 @@
       "jsr:@maheshbansod/kysely-codegen@~0.1.1",
       "jsr:@marshift/kysely-deno-sqlite3@1",
       "jsr:@nomadshiba/codec@0.5.0-preview.6",
-      "jsr:@purifyjs/core@0.4",
+      "jsr:@purifyjs/core@0.5.0-preview.5",
       "jsr:@std/cli@^1.0.31",
       "jsr:@std/http@^1.1.0",
       "jsr:@std/path@^1.1.4",
