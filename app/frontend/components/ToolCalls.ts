@@ -10,7 +10,7 @@ export function ToolCalls(calls: ToolCallOutput[]) {
 
     self.append$(calls.map((call) => {
         const modal = dialog().append$(
-            Markdown(call.value.display).id(`tool-call-${call.value.id.slice(-6)}`),
+            Markdown(call.value.display).id(`tool-call-${call.value.id.slice(-8)}`),
         );
 
         return li().append$(
