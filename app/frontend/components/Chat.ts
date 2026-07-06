@@ -56,12 +56,12 @@ export async function Chat(chatId: string) {
 
         const shouldScroll = message.content.kind === "user" || scroller.scrollHeight - scroller.scrollTop - innerHeight < 100;
 
-        const exist = log.$node.querySelector<HTMLLIElement>(`li#chat-message-${message.id}`);
+        const exist = log.$node.querySelector<HTMLLIElement>(`li#chat-message-${message.id.slice(-8)}`);
         let item: Builder<HTMLLIElement>;
         if (exist) {
             item = new Builder(exist);
         } else {
-            item = li().id(`chat-message-${message.id}`);
+            item = li().id(`chat-message-${message.id.slice(-8)}`);
             log.append$(item);
         }
 
