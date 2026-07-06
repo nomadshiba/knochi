@@ -6,7 +6,8 @@ export abstract class Tool {
     public abstract execute(chat: ChatClient, call: ProviderToolCall): Promise<ProviderToolMessage> | ProviderToolMessage;
 
     /** Render tool call as message content (markdown) **/
-    public abstract transformCall(call: ProviderToolCall): string;
+    public abstract renderCallContent(call: ProviderToolCall): string;
+    public abstract renderCallSummary(call: ProviderToolCall): string;
     /** Render tool result as message content (markdown) **/
-    public abstract transformResult(result: ProviderToolMessage): string;
+    public abstract renderResult(result: ProviderToolMessage): string;
 }

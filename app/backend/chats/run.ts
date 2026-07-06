@@ -30,7 +30,12 @@ export async function runAgent(chat: ChatClient): Promise<void> {
     const toolsByName = new Map(tools.map((t) => [t.definition.function.name, t] as const));
 
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-        chat.emitter.emit({ kind: "stream", value: { kind: "text", value: "" } });
+        // Minted up-front so every "stream" delta for this in-progress assistant message can be
+        // correlated with each other, and with the final "message" event once it's persisted —
+        // the frontend keys its placeholder bubble on this id and swaps it out the same way it
+        // already replaces-or-appends any other message by id.
+        const messageId = v7.generate();
+        chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "text", value: "" } } });
 
         let textBuffer = "";
         let refusalBuffer = "";
@@ -46,10 +51,10 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             ) {
                 if (delta.kind === "text") {
                     textBuffer += delta.value;
-                    chat.emitter.emit({ kind: "stream", value: { kind: "text", value: delta.value } });
+                    chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "text", value: delta.value } } });
                 } else if (delta.kind === "refusal") {
                     refusalBuffer += delta.value;
-                    chat.emitter.emit({ kind: "stream", value: { kind: "refusal", value: delta.value } });
+                    chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "refusal", value: delta.value } } });
                 } else if (delta.kind === "tool_call") {
                     // We mint our own id instead of trusting the provider's `delta.value.id` — it's used as
                     // `chat_message_role_assistant_toolcall.id` (our primary key), and some providers just
@@ -62,12 +67,15 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                     chat.emitter.emit({
                         kind: "stream",
                         value: {
-                            kind: "tool_call",
-                            value: {
-                                index: delta.value.index,
-                                id: existing.id,
-                                name: existing.name,
-                                arguments: existing.arguments,
+                            id: messageId,
+                            delta: {
+                                kind: "tool_call",
+                                value: {
+                                    index: delta.value.index,
+                                    id: existing.id,
+                                    name: existing.name,
+                                    arguments: existing.arguments,
+                                },
                             },
                         },
                     });
@@ -77,7 +85,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             console.error(reason);
             chat.emitter.emit({
                 kind: "stream",
-                value: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } },
+                value: { id: messageId, delta: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } } },
             });
             return;
         }
@@ -93,8 +101,8 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             tool_calls: toolCalls.length ? toolCalls : undefined,
         };
 
-        chat.emitter.emit({ kind: "stream", value: { kind: "done", value: { finish_reason: null } } });
-        await chat.pushMessage(reply);
+        chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "done", value: { finish_reason: null } } } });
+        await chat.pushMessage(reply, { id: messageId });
         if (!toolCalls.length) break;
 
         for (const call of toolCalls) {

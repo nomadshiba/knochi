@@ -4,7 +4,7 @@
 - [ ] subagent task tool
 - [ ] remote tools (browser fs api, and remote terminal)
 - [ ] chat history query tool
-- [ ] frontend stream stuff.
+- [x] frontend stream stuff.
 - [ ] script tool, permissions change request (user dialog)
 - [ ] q&a tool
 - [ ] include datetime into user prompts, and also will be used for async ongoing tool calls, let it be custom.

@@ -1,7 +1,7 @@
 import { Codec } from "@nomadshiba/codec";
 import { messagesFromDatabase } from "~/backend/chats/ChatClient.ts";
 import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
-import { renderToolCall, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
+import { renderToolCallContent, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { RouteResponse } from "~/libs/routing/RouterResponse.ts";
 import { router } from "~/router.ts";
 import { db } from "~/backend/database/client.ts";
@@ -40,7 +40,7 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                                 id: call.id,
                                 name: call.TypeFunction.name,
                                 arguments: call.TypeFunction.arguments,
-                                display: renderToolCall({
+                                display: renderToolCallContent({
                                     id: call.id,
                                     type: "function",
                                     function: { name: call.TypeFunction.name, arguments: call.TypeFunction.arguments },

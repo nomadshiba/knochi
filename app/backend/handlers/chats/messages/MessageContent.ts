@@ -9,7 +9,15 @@ export const MessageContentSystem = new StructCodec({
 });
 
 export const ToolCall = new EnumCodec({
-    function: new StructCodec({ id: Str, name: Str, arguments: Str, display: Str }),
+    function: new StructCodec({
+        id: Str,
+        name: Str,
+        arguments: Str,
+        display: new StructCodec({
+            summary: Str,
+            content: Str,
+        }),
+    }),
 });
 
 export const MessageContentAssistant = new ModelCodec({

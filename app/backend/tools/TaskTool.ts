@@ -123,7 +123,7 @@ export class TaskTool extends Tool {
         };
     }
 
-    override transformCall(call: ProviderToolCall): string {
+    override renderCallContent(call: ProviderToolCall): string {
         const args = call.function.arguments;
         let parsed: { description?: string; prompt?: string; subagent_type?: string };
         try {
@@ -135,7 +135,7 @@ export class TaskTool extends Tool {
         return `**${parsed.description ?? "task"}** (\`${parsed.subagent_type}\`)\n\n${CODE_BLOCK}\n${parsed.prompt}\n${CODE_BLOCK}`;
     }
 
-    override transformResult(result: ProviderToolMessage): string {
+    override renderResult(result: ProviderToolMessage): string {
         return result.content;
     }
 }

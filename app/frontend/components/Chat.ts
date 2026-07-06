@@ -126,6 +126,14 @@ export async function Chat(chatId: string) {
         }
     };
 
+    // In-progress assistant messages keyed by (not-yet-persisted) message id, accumulated from
+    // "stream" delta events until the real "message" event supersedes them.
+    const streamBuffers = new Map<string, {
+        content: string;
+        refusal: string;
+        toolCalls: Map<number, { id: string; name: string; arguments: string }>;
+    }>();
+
     self.$bind(() => {
         const aborter = new AbortController();
         const socket = new PersistentSocket(`/v1/chats/${chatId}/stream`);
@@ -140,7 +148,64 @@ export async function Chat(chatId: string) {
             const [event] = ChatStreamOutput.decode(await blob.bytes());
             switch (event.kind) {
                 case "message": {
+                    // Real message arrived — drop any in-progress buffer for it, `addMessage` will
+                    // replace the placeholder bubble in place (same DOM id, keyed off message id).
+                    streamBuffers.delete(event.value.id);
                     addMessage(event.value);
+                    break;
+                }
+                case "stream": {
+                    const { id, delta } = event.value;
+                    let buffer = streamBuffers.get(id);
+                    if (!buffer) {
+                        buffer = { content: "", refusal: "", toolCalls: new Map() };
+                        streamBuffers.set(id, buffer);
+                    }
+
+                    switch (delta.kind) {
+                        case "text": {
+                            buffer.content += delta.value;
+                            break;
+                        }
+                        case "refusal": {
+                            buffer.refusal += delta.value;
+                            break;
+                        }
+                        case "tool_call": {
+                            const existing = buffer.toolCalls.get(delta.value.index) ??
+                                { id: delta.value.id ?? "", name: "", arguments: "" };
+                            if (delta.value.id) existing.id = delta.value.id;
+                            if (delta.value.name) existing.name = delta.value.name;
+                            if (delta.value.arguments) existing.arguments += delta.value.arguments;
+                            buffer.toolCalls.set(delta.value.index, existing);
+                            break;
+                        }
+                        case "done": {
+                            // The real "message" event follows shortly after — no need to keep the buffer around.
+                            streamBuffers.delete(id);
+                            break;
+                        }
+                    }
+
+                    // Render (or update) a placeholder bubble for the in-progress assistant message,
+                    // reusing the exact same replace-or-append-by-id path as a real message.
+                    addMessage({
+                        id,
+                        created: new Date(),
+                        content: {
+                            kind: "assistant",
+                            value: {
+                                content: buffer.content || undefined,
+                                refusal: buffer.refusal || undefined,
+                                tool_calls: [...buffer.toolCalls.entries()]
+                                    .sort(([a], [b]) => a - b)
+                                    .map(([, call]) => ({
+                                        kind: "function" as const,
+                                        value: { id: call.id, name: call.name, arguments: call.arguments, display: call.arguments },
+                                    })),
+                            },
+                        },
+                    });
                     break;
                 }
             }

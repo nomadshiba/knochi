@@ -310,7 +310,7 @@ export class ScriptTool extends Tool {
         }
     }
 
-    override transformCall(call: ProviderToolCall): string {
+    override renderCallContent(call: ProviderToolCall): string {
         const args = call.function.arguments;
         let parsed: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
@@ -325,7 +325,7 @@ export class ScriptTool extends Tool {
         return `**code:**\n${CODE_BLOCK}typescript\n${parsed.code}\n${CODE_BLOCK}${usePart}${preloadPart}${timeoutPart}`;
     }
 
-    override transformResult(result: ProviderToolMessage): string {
+    override renderResult(result: ProviderToolMessage): string {
         return `${CODE_BLOCK}json\n${result.content}\n${CODE_BLOCK}`;
     }
 }

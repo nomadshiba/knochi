@@ -6,7 +6,7 @@ import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { runAgent } from "~/backend/chats/run.ts";
 import { db } from "~/backend/database/client.ts";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
-import { renderToolCall, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
+import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { ProviderChatMessage, ProviderClient, ProviderToolCall } from "~/backend/providers/ProviderClient.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
 import { Emitter } from "~/libs/events/Emitter.ts";
@@ -153,10 +153,10 @@ export class ChatClient {
         for (const message of this.suffixMessages) yield message;
     }
 
-    public async pushMessage(message: ProviderChatMessage, options?: { wait?: boolean }) {
+    public async pushMessage(message: ProviderChatMessage, options?: { wait?: boolean; id?: string }) {
         const { role } = message;
         const now = Date.now();
-        const id = v7.generate(now);
+        const id = options?.id ?? v7.generate(now);
 
         const tx = await db.startTransaction().execute();
 
@@ -190,7 +190,10 @@ export class ChatClient {
                             id: call.id,
                             name: call.function.name,
                             arguments: call.function.arguments,
-                            display: renderToolCall(call),
+                            display: {
+                                summary: renderToolCallSummary(call),
+                                content: renderToolCallContent(call),
+                            },
                         },
                     })) ?? [],
                 },
@@ -223,7 +226,7 @@ export class ChatClient {
                 console.error("agent run failed:", reason);
                 this.emitter.emit({
                     kind: "stream",
-                    value: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } },
+                    value: { id: v7.generate(), delta: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } } },
                 });
             });
             if (options?.wait) await promise;
