@@ -1,6 +1,7 @@
 import { tags } from "@purifyjs/core";
 import { api } from "~/frontend/api.ts";
 import { css } from "~/frontend/kit/css.ts";
+import { ProviderManager } from "~/frontend/components/ProviderManager.ts";
 
 export async function ChatNavigation() {
     const { nav } = tags;
@@ -9,7 +10,7 @@ export async function ChatNavigation() {
 
     const chats = await api.fetch("GET /v1/chats", { params: { pathname: {}, search: {} } });
 
-    self.append$(NewChatLink(), chats.map(ChatNavigationItem));
+    self.append$(NewChatLink(), chats.map(ChatNavigationItem), ProviderManager());
 
     return self;
 }
@@ -27,9 +28,9 @@ export function ChatNavigationItem(chat: { id: string; name: string }) {
 
 const ChatNavigationSheet = css`
     :scope {
-        display: block grid;
+        display: flex;
+        flex-direction: column;
         gap: 0.3em;
-        align-content: start;
 
         padding-inline: 0.6em;
         padding-block: 1em;

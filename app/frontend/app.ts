@@ -65,18 +65,19 @@ const GlobalStyle = css`
 
         /* Foreground scale, derived from --pop so contrast stays predictable
         against --base (16:1). Use these instead of ad-hoc opacity. */
-        --muted: color-mix(in srgb, var(--pop), transparent 35%); /* ~7.4:1 on base, secondary text */
-        --subtle: color-mix(in srgb, var(--pop), transparent 45%); /* ~5.7:1 on base, meta/timestamps */
-        --faint: color-mix(in srgb, var(--pop), transparent 88%); /* decorative only, not text */
+        --muted: color-mix(in srgb, currentcolor, transparent 35%); /* ~7.4:1 on base, secondary text */
+        --subtle: color-mix(in srgb, currentcolor, transparent 45%); /* ~5.7:1 on base, meta/timestamps */
+        --faint: color-mix(in srgb, currentcolor, transparent 88%); /* decorative only, not text */
 
         /* Surfaces & structure */
         --layout-base: hsl(240, 12%, 12%);
         --layout-gap: 0.625em;
         --layout-radius: 0.75em;
+
         --surface-hover: color-mix(in srgb, var(--base), var(--pop) 8%);
         --surface-hover-strong: color-mix(in srgb, var(--base), var(--pop) 14%);
-        --border: color-mix(in srgb, var(--pop), transparent 88%);
 
+        --border: color-mix(in srgb, currentcolor, transparent 88%);
         --radius: 0.35em;
 
         /* Type scale (em-relative so it composes with component font-size) */

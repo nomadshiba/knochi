@@ -19,7 +19,7 @@ export class PersistentSocket extends EventTarget implements Disposable {
     private url: string | URL;
     private opts: Required<Pick<PersistentSocketOptions, "minDelayMs" | "maxDelayMs">> & PersistentSocketOptions;
     private ws: WebSocket | null = null;
-    private timer: ReturnType<typeof setTimeout> | undefined;
+    private timer: number | undefined;
     private attempt = 0;
     private disposed = false;
 
