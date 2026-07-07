@@ -1,5 +1,6 @@
 import { v7 } from "@std/uuid";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
+import { renderToolCallSummary } from "~/backend/handlers/chats/messages/utils.ts";
 import {
     ProviderAssistantMessage,
     ProviderChatMessage,
@@ -64,6 +65,16 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                     if (delta.value.name) existing.name = delta.value.name;
                     if (delta.value.arguments) existing.arguments += delta.value.arguments;
                     toolCallBuffers.set(delta.value.index, existing);
+
+                    // No real way to "delta" a rendered summary as arguments stream in (partial JSON) —
+                    // just re-render it off the accumulated buffer each time, same as `name`/`arguments`
+                    // above (also resent in full every delta). The full `content` is NOT rendered here
+                    // (see ChatStreamOutput.ts) — the frontend shows the raw `arguments` itself instead.
+                    const partialCall: ProviderToolCall = {
+                        id: existing.id,
+                        type: "function",
+                        function: { name: existing.name, arguments: existing.arguments },
+                    };
                     chat.emitter.emit({
                         kind: "stream",
                         value: {
@@ -75,6 +86,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                                     id: existing.id,
                                     name: existing.name,
                                     arguments: existing.arguments,
+                                    display: { summary: renderToolCallSummary(partialCall) },
                                 },
                             },
                         },

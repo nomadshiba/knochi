@@ -5,7 +5,7 @@ import { css } from "~/frontend/kit/css.ts";
 export function ChatBox(content: Sync.Ref<string>) {
     const { textarea, label, strong } = tags;
 
-    return label().$bind(ChatBoxSheet.useScope()).append$(
+    return label().$bind(ChatBoxStyle.useScope()).append$(
         strong().textContent("Compose Message"),
         textarea().placeholder("Say something...").onkeydown((event) => {
             if (event.key !== "Enter") return;
@@ -33,7 +33,7 @@ export function ChatBox(content: Sync.Ref<string>) {
     );
 }
 
-const ChatBoxSheet = css`
+const ChatBoxStyle = css`
     :scope {
         display: block grid;
     }

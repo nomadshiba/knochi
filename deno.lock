@@ -3,79 +3,47 @@
   "specifiers": {
     "jsr:@db/sqlite@0.13": "0.13.0",
     "jsr:@denosaurs/plug@1": "1.1.0",
-    "jsr:@kysely/kysely@0.28": "0.28.16",
-    "jsr:@kysely/kysely@~0.28.16": "0.28.16",
+    "jsr:@kysely/kysely@0.28": "0.28.17",
+    "jsr:@kysely/kysely@~0.28.16": "0.28.17",
     "jsr:@maheshbansod/kysely-codegen@~0.1.1": "0.1.1",
     "jsr:@marshift/kysely-deno-sqlite3@1": "1.0.0",
     "jsr:@noble/hashes@^2.2.0": "2.2.0",
     "jsr:@nomadshiba/codec@0.5.0-preview.6": "0.5.0-preview.6",
-    "jsr:@nostrify/nostrify@0.39": "0.39.1",
-    "jsr:@nostrify/nostrify@~0.39.1": "0.39.1",
-    "jsr:@nostrify/types@0.36": "0.36.0",
     "jsr:@purifyjs/core@0.5.0-preview.5": "0.5.0-preview.5",
-    "jsr:@scure/base@1.2.1": "1.2.1",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
-    "jsr:@std/cli@^1.0.29": "1.0.31",
-    "jsr:@std/cli@^1.0.31": "1.0.31",
+    "jsr:@std/cli@^1.0.31": "1.0.32",
     "jsr:@std/crypto@^1.1.0": "1.1.0",
-    "jsr:@std/encoding@*": "1.0.11",
     "jsr:@std/encoding@1": "1.0.11",
-    "jsr:@std/encoding@^1.0.10": "1.0.11",
     "jsr:@std/encoding@^1.0.11": "1.0.11",
-    "jsr:@std/encoding@~0.224.1": "0.224.3",
     "jsr:@std/fmt@1": "1.0.10",
     "jsr:@std/fmt@^1.0.10": "1.0.10",
-    "jsr:@std/fs@1": "1.0.23",
-    "jsr:@std/fs@^1.0.23": "1.0.23",
-    "jsr:@std/html@^1.0.6": "1.0.6",
-    "jsr:@std/http@^1.1.0": "1.1.0",
-    "jsr:@std/internal@^1.0.12": "1.0.14",
+    "jsr:@std/fs@1": "1.0.24",
+    "jsr:@std/fs@^1.0.24": "1.0.24",
+    "jsr:@std/html@^1.0.7": "1.0.7",
+    "jsr:@std/http@^1.1.0": "1.1.2",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.6": "1.0.6",
-    "jsr:@std/path@1": "1.1.4",
+    "jsr:@std/path@1": "1.1.6",
     "jsr:@std/path@1.0": "1.0.9",
-    "jsr:@std/path@^1.0.8": "1.1.4",
-    "jsr:@std/path@^1.1.4": "1.1.4",
-    "jsr:@std/streams@^1.1.0": "1.1.0",
+    "jsr:@std/path@^1.0.8": "1.1.6",
+    "jsr:@std/path@^1.1.4": "1.1.6",
+    "jsr:@std/path@^1.1.5": "1.1.6",
+    "jsr:@std/path@^1.1.6": "1.1.6",
+    "jsr:@std/streams@^1.1.1": "1.1.1",
     "jsr:@std/uuid@^1.1.1": "1.1.1",
     "npm:@libsql/kysely-libsql@~0.4.1": "0.4.1_kysely@0.27.6",
-    "npm:@noble/curves@*": "2.0.1",
-    "npm:@noble/hashes@*": "2.0.1",
-    "npm:@noble/hashes@1.6.0": "1.6.0",
-    "npm:@scure/base@*": "2.0.0",
-    "npm:@scure/base@1": "1.2.6",
-    "npm:@scure/base@1.2.0": "1.2.0",
-    "npm:@scure/bip32@*": "2.0.1",
-    "npm:@scure/bip32@1.5.0": "1.5.0",
-    "npm:@scure/bip32@^1.4.0": "1.7.0",
-    "npm:@scure/bip39@*": "2.0.1",
-    "npm:@scure/bip39@1.5.0": "1.5.0",
-    "npm:@scure/bip39@^1.3.0": "1.6.0",
-    "npm:@scure/btc-signer@*": "1.4.0",
-    "npm:@scure/btc-signer@1.4.0": "1.4.0",
     "npm:better-sqlite3@^11.4.0": "11.10.0",
-    "npm:bip32@*": "2.0.6",
-    "npm:bip32@2.0.6": "2.0.6",
-    "npm:bip39@*": "3.1.0",
-    "npm:bip39@3.1.0": "3.1.0",
-    "npm:bitcoinjs-lib@*": "7.0.1",
     "npm:chalk@4.1.2": "4.1.2",
     "npm:dotenv-expand@^11.0.6": "11.0.7",
     "npm:dotenv@^16.4.5": "16.6.1",
-    "npm:git-diff@^2.0.6": "2.0.6",
-    "npm:hash-wasm@*": "4.12.0",
+    "npm:git-diff@^2.0.6": "2.0.7",
     "npm:kysely@~0.27.4": "0.27.6",
-    "npm:lru-cache@^10.2.0": "10.4.3",
     "npm:micromatch@^4.0.8": "4.0.8",
     "npm:minimist@^1.2.8": "1.2.8",
-    "npm:mysql2@^3.11.3": "3.22.2_@types+node@25.6.0",
-    "npm:nostr-tools@^2.10.4": "2.23.9",
-    "npm:pg@^8.13.0": "8.20.0",
-    "npm:pluralize@8": "8.0.0",
-    "npm:uuid@*": "14.0.1",
-    "npm:websocket-ts@^2.2.1": "2.3.0",
-    "npm:zod@^3.23.8": "3.25.76"
+    "npm:mysql2@^3.11.3": "3.22.5_@types+node@26.1.0",
+    "npm:pg@^8.13.0": "8.22.0",
+    "npm:pluralize@8": "8.0.0"
   },
   "jsr": {
     "@db/sqlite@0.13.0": {
@@ -94,8 +62,8 @@
         "jsr:@std/path@1"
       ]
     },
-    "@kysely/kysely@0.28.16": {
-      "integrity": "b620bf5d8dc892cb30419aaaef62f0f1ba1846a30eaa45f882ec20183b88a18b"
+    "@kysely/kysely@0.28.17": {
+      "integrity": "19230f46728035602a455f3ee69f284150104a1b6e336dceb1d7c3751e4e1b03"
     },
     "@maheshbansod/kysely-codegen@0.1.1": {
       "integrity": "7e86b1fa8b5d1388ec29fcaf10b467c958f83070319d59760ecf2046b673a598",
@@ -131,50 +99,21 @@
         "jsr:@std/bytes"
       ]
     },
-    "@nostrify/nostrify@0.39.1": {
-      "integrity": "84f98c815a07f4151bd02188a3525e438c416e9de632c79c9da9edbfca580d7f",
-      "dependencies": [
-        "jsr:@nostrify/nostrify@~0.39.1",
-        "jsr:@nostrify/types",
-        "jsr:@std/encoding@~0.224.1",
-        "npm:@scure/bip32@^1.4.0",
-        "npm:@scure/bip39@^1.3.0",
-        "npm:lru-cache",
-        "npm:nostr-tools",
-        "npm:websocket-ts",
-        "npm:zod"
-      ]
-    },
-    "@nostrify/types@0.36.0": {
-      "integrity": "b3413467debcbd298d217483df4e2aae6c335a34765c90ac7811cf7c637600e7"
-    },
     "@purifyjs/core@0.5.0-preview.5": {
       "integrity": "69330dd4ec8ac81ce4b85e6ca851f9e9d0e62f36bc7e6b3a000a135d82f12574"
-    },
-    "@scure/base@1.2.1": {
-      "integrity": "679e2d2e1e5b2e3739e99a48ef2cd67d5eb5dc6c58220984f2a5088e2d6f6e29"
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
     },
-    "@std/cli@1.0.29": {
-      "integrity": "fa4ef29130baa834d8a13b7d138240c3a2fcfba740bfb7afa646a360a15ec84f"
-    },
-    "@std/cli@1.0.31": {
-      "integrity": "190bb61f809378267c06be3bcd689fcc540f0cfaa5892171144cae787d02e2fd",
+    "@std/cli@1.0.32": {
+      "integrity": "188b3a100d6202d64e3f5bd3d799c7fa4f6d77f92cc65eb7f641c1fa0aa92a66",
       "dependencies": [
         "jsr:@std/fmt@^1.0.10",
-        "jsr:@std/internal@^1.0.14"
+        "jsr:@std/internal"
       ]
     },
     "@std/crypto@1.1.0": {
       "integrity": "b8d6d0a6377a32b213af2661ed7bf1062d94feac0c57def5526a8e74a95c3ec8"
-    },
-    "@std/encoding@0.224.3": {
-      "integrity": "5e861b6d81be5359fad4155e591acf17c0207b595112d1840998bb9f476dbdaf"
-    },
-    "@std/encoding@1.0.10": {
-      "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
     },
     "@std/encoding@1.0.11": {
       "integrity": "e7cef2f0b3153bccc17431e7c864a1de03a4b6d9647389c43e08aaa775d37385"
@@ -182,32 +121,29 @@
     "@std/fmt@1.0.10": {
       "integrity": "90dfba288802ac6de82fb31d0917eb9e4450b9925b954d5e51fc29ac07419db5"
     },
-    "@std/fs@1.0.23": {
-      "integrity": "3ecbae4ce4fee03b180fa710caff36bb5adb66631c46a6460aaad49515565a37",
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
       "dependencies": [
-        "jsr:@std/internal@^1.0.12",
-        "jsr:@std/path@^1.1.4"
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.5"
       ]
     },
-    "@std/html@1.0.6": {
-      "integrity": "eaf759c8141e0733ca30eb49e4c08d8e6ca442b85c4d51f9894a56f502993e08"
+    "@std/html@1.0.7": {
+      "integrity": "175c818905a6e75743c69c251395e273d82698e58cfe7dd76268d70e28b8d8fe"
     },
-    "@std/http@1.1.0": {
-      "integrity": "265cd9a589fea924c5bb0bbed8bebb4bb2fa19129f760bd014e78dbd7a365a51",
+    "@std/http@1.1.2": {
+      "integrity": "1c0473590d5e5b75b30b2be4833c08047dd799aeea35624fd34ec58d67fc9240",
       "dependencies": [
-        "jsr:@std/cli@^1.0.29",
-        "jsr:@std/encoding@^1.0.10",
+        "jsr:@std/cli",
+        "jsr:@std/encoding@^1.0.11",
         "jsr:@std/fmt@^1.0.10",
-        "jsr:@std/fs@^1.0.23",
+        "jsr:@std/fs@^1.0.24",
         "jsr:@std/html",
         "jsr:@std/media-types",
         "jsr:@std/net",
-        "jsr:@std/path@^1.1.4",
+        "jsr:@std/path@^1.1.6",
         "jsr:@std/streams"
       ]
-    },
-    "@std/internal@1.0.13": {
-      "integrity": "2f9546691d4ac2d32859c82dff284aaeac980ddeca38430d07941e7e288725c0"
     },
     "@std/internal@1.0.14": {
       "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
@@ -221,14 +157,14 @@
     "@std/path@1.0.9": {
       "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
     },
-    "@std/path@1.1.4": {
-      "integrity": "1d2d43f39efb1b42f0b1882a25486647cb851481862dc7313390b2bb044314b5",
+    "@std/path@1.1.6": {
+      "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
       "dependencies": [
-        "jsr:@std/internal@^1.0.12"
+        "jsr:@std/internal"
       ]
     },
-    "@std/streams@1.1.0": {
-      "integrity": "2f7024d841f343fd478afe0c958a3f0f068ef2a0d2bcc954f550f97ac1fa22e3"
+    "@std/streams@1.1.1": {
+      "integrity": "92556d350e537e9dce527a6d08f6f15be3ff65e656079dea69d15252187c7613"
     },
     "@std/uuid@1.1.1": {
       "integrity": "7b49060282d90f72fec64952f8c7a2914cbe6fdba3eca665f8cedc90830154a7",
@@ -319,110 +255,11 @@
     "@neon-rs/load@0.0.4": {
       "integrity": "sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw=="
     },
-    "@noble/ciphers@2.1.1": {
-      "integrity": "sha512-bysYuiVfhxNJuldNXlFEitTVdNnYUc+XNJZd7Qm2a5j1vZHgY+fazadNFWFaMK/2vye0JVlxV3gHmC0WDfAOQw=="
-    },
-    "@noble/curves@1.6.0": {
-      "integrity": "sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==",
+    "@types/node@26.1.0": {
+      "integrity": "sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw==",
       "dependencies": [
-        "@noble/hashes@1.5.0"
+        "undici-types"
       ]
-    },
-    "@noble/curves@1.9.7": {
-      "integrity": "sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==",
-      "dependencies": [
-        "@noble/hashes@1.8.0"
-      ]
-    },
-    "@noble/curves@2.0.1": {
-      "integrity": "sha512-vs1Az2OOTBiP4q0pwjW5aF0xp9n4MxVrmkFBxc6EKZc6ddYx5gaZiAsZoq0uRRXWbi3AT/sBqn05eRPtn1JCPw==",
-      "dependencies": [
-        "@noble/hashes@2.0.1"
-      ]
-    },
-    "@noble/hashes@1.5.0": {
-      "integrity": "sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA=="
-    },
-    "@noble/hashes@1.6.0": {
-      "integrity": "sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ=="
-    },
-    "@noble/hashes@1.6.1": {
-      "integrity": "sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w=="
-    },
-    "@noble/hashes@1.8.0": {
-      "integrity": "sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A=="
-    },
-    "@noble/hashes@2.0.1": {
-      "integrity": "sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw=="
-    },
-    "@scure/base@1.1.9": {
-      "integrity": "sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg=="
-    },
-    "@scure/base@1.2.0": {
-      "integrity": "sha512-iGiGgAXDvDwiaBKbXbDL7hDGhKg9Shhd67GMalE/hkj9Vhf44+LoBNptn25vvw26+gO90rfsjHOuc7f/kGcMfg=="
-    },
-    "@scure/base@1.2.6": {
-      "integrity": "sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg=="
-    },
-    "@scure/base@2.0.0": {
-      "integrity": "sha512-3E1kpuZginKkek01ovG8krQ0Z44E3DHPjc5S2rjJw9lZn3KSQOs8S7wqikF/AH7iRanHypj85uGyxk0XAyC37w=="
-    },
-    "@scure/bip32@1.5.0": {
-      "integrity": "sha512-8EnFYkqEQdnkuGBVpCzKxyIwDCBLDVj3oiX0EKUFre/tOjL/Hqba1D6n/8RcmaQy4f95qQFrO2A8Sr6ybh4NRw==",
-      "dependencies": [
-        "@noble/curves@1.6.0",
-        "@noble/hashes@1.5.0",
-        "@scure/base@1.1.9"
-      ]
-    },
-    "@scure/bip32@1.7.0": {
-      "integrity": "sha512-E4FFX/N3f4B80AKWp5dP6ow+flD1LQZo/w8UnLGYZO674jS6YnYeepycOOksv+vLPSpgN35wgKgy+ybfTb2SMw==",
-      "dependencies": [
-        "@noble/curves@1.9.7",
-        "@noble/hashes@1.8.0",
-        "@scure/base@1.2.6"
-      ]
-    },
-    "@scure/bip32@2.0.1": {
-      "integrity": "sha512-4Md1NI5BzoVP+bhyJaY3K6yMesEFzNS1sE/cP+9nuvE7p/b0kx9XbpDHHFl8dHtufcbdHRUUQdRqLIPHN/s7yA==",
-      "dependencies": [
-        "@noble/curves@2.0.1",
-        "@noble/hashes@2.0.1",
-        "@scure/base@2.0.0"
-      ]
-    },
-    "@scure/bip39@1.5.0": {
-      "integrity": "sha512-Dop+ASYhnrwm9+HA/HwXg7j2ZqM6yk2fyLWb5znexjctFY3+E+eU8cIWI0Pql0Qx4hPZCijlGq4OL71g+Uz30A==",
-      "dependencies": [
-        "@noble/hashes@1.6.1",
-        "@scure/base@1.2.6"
-      ]
-    },
-    "@scure/bip39@1.6.0": {
-      "integrity": "sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==",
-      "dependencies": [
-        "@noble/hashes@1.8.0",
-        "@scure/base@1.2.6"
-      ]
-    },
-    "@scure/bip39@2.0.1": {
-      "integrity": "sha512-PsxdFj/d2AcJcZDX1FXN3dDgitDDTmwf78rKZq1a6c1P1Nan1X/Sxc7667zU3U+AN60g7SxxP0YCVw2H/hBycg==",
-      "dependencies": [
-        "@noble/hashes@2.0.1",
-        "@scure/base@2.0.0"
-      ]
-    },
-    "@scure/btc-signer@1.4.0": {
-      "integrity": "sha512-uSZqmiWWm1+wflQbiob0CrzQSCwDO9MmAxqsqk+tkiRcUv8GbC3Ptv9/2nUbsoUBuPN/6mBQJ/KOBzHjc5Bgow==",
-      "dependencies": [
-        "@noble/curves@1.6.0",
-        "@noble/hashes@1.5.0",
-        "@scure/base@1.1.9",
-        "micro-packed"
-      ]
-    },
-    "@types/node@10.12.18": {
-      "integrity": "sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ=="
     },
     "@types/ws@8.18.1": {
       "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",
@@ -442,32 +279,14 @@
         "color-convert@2.0.1"
       ]
     },
-    "available-typed-arrays@1.0.7": {
-      "integrity": "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==",
-      "dependencies": [
-        "possible-typed-array-names"
-      ]
-    },
     "aws-ssl-profiles@1.1.2": {
       "integrity": "sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g=="
     },
     "balanced-match@1.0.2": {
       "integrity": "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="
     },
-    "base-x@3.0.11": {
-      "integrity": "sha512-xz7wQ8xDhdyP7tQxwdteLYeFfS68tSMNCZ/Y37WJ4bhGfKPpqEIlmIyueQHqOyoPhE6xNUqjzRr8ra0eF9VRvA==",
-      "dependencies": [
-        "safe-buffer@5.2.1"
-      ]
-    },
-    "base-x@5.0.1": {
-      "integrity": "sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg=="
-    },
     "base64-js@1.5.1": {
       "integrity": "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="
-    },
-    "bech32@2.0.0": {
-      "integrity": "sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg=="
     },
     "better-sqlite3@11.10.0": {
       "integrity": "sha512-EwhOpyXiOEL/lKzHz9AW1msWFNzGc/z+LzeB3/jnFJpxu+th2yqvzsSWas1v9jgs9+xiXJcD5A8CJxAG2TaghQ==",
@@ -483,56 +302,16 @@
         "file-uri-to-path"
       ]
     },
-    "bip174@3.0.0": {
-      "integrity": "sha512-N3vz3rqikLEu0d6yQL8GTrSkpYb35NQKWMR7Hlza0lOj6ZOlvQ3Xr7N9Y+JPebaCVoEUHdBeBSuLxcHr71r+Lw==",
-      "dependencies": [
-        "uint8array-tools@0.0.9",
-        "varuint-bitcoin"
-      ]
-    },
-    "bip32@2.0.6": {
-      "integrity": "sha512-HpV5OMLLGTjSVblmrtYRfFFKuQB+GArM0+XP8HGWfJ5vxYBqo+DesvJwOdC2WJ3bCkZShGf0QIfoIpeomVzVdA==",
-      "dependencies": [
-        "@types/node",
-        "bs58check@2.1.2",
-        "create-hash",
-        "create-hmac",
-        "tiny-secp256k1",
-        "typeforce",
-        "wif"
-      ]
-    },
-    "bip39@3.1.0": {
-      "integrity": "sha512-c9kiwdk45Do5GL0vJMe7tS95VjCii65mYAH7DfWl3uW8AVzXKQVUm64i3hzVybBDMp9r7j9iNxR85+ul8MdN/A==",
-      "dependencies": [
-        "@noble/hashes@1.8.0"
-      ]
-    },
-    "bitcoinjs-lib@7.0.1": {
-      "integrity": "sha512-vwEmpL5Tpj0I0RBdNkcDMXePoaYSTeKY6mL6/l5esbnTs+jGdPDuLp4NY1hSh6Zk5wSgePygZ4Wx5JJao30Pww==",
-      "dependencies": [
-        "@noble/hashes@1.8.0",
-        "bech32",
-        "bip174",
-        "bs58check@4.0.0",
-        "uint8array-tools@0.0.9",
-        "valibot",
-        "varuint-bitcoin"
-      ]
-    },
     "bl@4.1.0": {
       "integrity": "sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==",
       "dependencies": [
         "buffer",
         "inherits",
-        "readable-stream@3.6.2"
+        "readable-stream"
       ]
     },
-    "bn.js@4.12.4": {
-      "integrity": "sha512-njR1b+ixG2ufvL9Zn9JGneW+b5GV6jqpYyPPpg4QVt723b5kJPGUczkUyWEH9BwEA74UakJZ43I4FDLBF7ci0g=="
-    },
-    "brace-expansion@1.1.14": {
-      "integrity": "sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==",
+    "brace-expansion@1.1.15": {
+      "integrity": "sha512-EwOCDEex4quD37XhqM3omwtMoJjr//isUZz1JopUNWms+4Z2ViyM/k1YIRePpoVNnQhENnxtFjLaxNHrT7xIUg==",
       "dependencies": [
         "balanced-match",
         "concat-map"
@@ -544,64 +323,11 @@
         "fill-range"
       ]
     },
-    "brorand@1.1.0": {
-      "integrity": "sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w=="
-    },
-    "bs58@4.0.1": {
-      "integrity": "sha512-Ok3Wdf5vOIlBrgCvTq96gBkJw+JUEzdBgyaza5HLtPm7yTHkjRy8+JzNyHF7BHa0bNWOQIp3m5YF0nnFcOIKLw==",
-      "dependencies": [
-        "base-x@3.0.11"
-      ]
-    },
-    "bs58@6.0.0": {
-      "integrity": "sha512-PD0wEnEYg6ijszw/u8s+iI3H17cTymlrwkKhDhPZq+Sokl3AU4htyBFTjAeNAlCCmg0f53g6ih3jATyCKftTfw==",
-      "dependencies": [
-        "base-x@5.0.1"
-      ]
-    },
-    "bs58check@2.1.2": {
-      "integrity": "sha512-0TS1jicxdU09dwJMNZtVAfzPi6Q6QeN0pM1Fkzrjn+XYHvzMKPU3pHVpva+769iNVSfIYWf7LJ6WR+BuuMf8cA==",
-      "dependencies": [
-        "bs58@4.0.1",
-        "create-hash",
-        "safe-buffer@5.2.1"
-      ]
-    },
-    "bs58check@4.0.0": {
-      "integrity": "sha512-FsGDOnFg9aVI9erdriULkd/JjEWONV/lQE5aYziB5PoBsXRind56lh8doIZIc9X4HoxT5x4bLjMWN1/NB8Zp5g==",
-      "dependencies": [
-        "@noble/hashes@1.8.0",
-        "bs58@6.0.0"
-      ]
-    },
     "buffer@5.7.1": {
       "integrity": "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==",
       "dependencies": [
         "base64-js",
         "ieee754"
-      ]
-    },
-    "call-bind-apply-helpers@1.0.2": {
-      "integrity": "sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==",
-      "dependencies": [
-        "es-errors",
-        "function-bind"
-      ]
-    },
-    "call-bind@1.0.9": {
-      "integrity": "sha512-a/hy+pNsFUTR+Iz8TCJvXudKVLAnz/DyeSUo10I5yvFDQJBFU2s9uqQpoSrJlroHUKoKqzg+epxyP9lqFdzfBQ==",
-      "dependencies": [
-        "call-bind-apply-helpers",
-        "es-define-property",
-        "get-intrinsic",
-        "set-function-length"
-      ]
-    },
-    "call-bound@1.0.4": {
-      "integrity": "sha512-+ys997U96po4Kx/ABpBCqhA9EuxJaQWDQg7295H4hBphv3IZg0boBKuwYpt4YXp6MZ5AmZQnU/tyMTlRpaSejg==",
-      "dependencies": [
-        "call-bind-apply-helpers",
-        "get-intrinsic"
       ]
     },
     "chalk@2.4.2": {
@@ -621,14 +347,6 @@
     },
     "chownr@1.1.4": {
       "integrity": "sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg=="
-    },
-    "cipher-base@1.0.7": {
-      "integrity": "sha512-Mz9QMT5fJe7bKI7MH31UilT5cEK5EHHRCccw/YRFsRY47AuNgaV6HY3rscp0/I4Q+tTW/5zoqpSeRRI54TkDWA==",
-      "dependencies": [
-        "inherits",
-        "safe-buffer@5.2.1",
-        "to-buffer"
-      ]
     },
     "color-convert@1.9.3": {
       "integrity": "sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==",
@@ -651,30 +369,6 @@
     "concat-map@0.0.1": {
       "integrity": "sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg=="
     },
-    "core-util-is@1.0.3": {
-      "integrity": "sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ=="
-    },
-    "create-hash@1.2.0": {
-      "integrity": "sha512-z00bCGNHDG8mHAkP7CtT1qVu+bFQUPjYq/4Iv3C3kWjTFV10zIjfSoeqXo9Asws8gwSHDGj/hl2u4OGIjapeCg==",
-      "dependencies": [
-        "cipher-base",
-        "inherits",
-        "md5.js",
-        "ripemd160",
-        "sha.js"
-      ]
-    },
-    "create-hmac@1.1.7": {
-      "integrity": "sha512-MJG9liiZ+ogc4TzUwuvbER1JRdgvUFSB5+VR/g5h82fGaIRWMWddtKBHi7/sVhfjQZ6SehlyhvQYrcYkaUIpLg==",
-      "dependencies": [
-        "cipher-base",
-        "create-hash",
-        "inherits",
-        "ripemd160",
-        "safe-buffer@5.2.1",
-        "sha.js"
-      ]
-    },
     "data-uri-to-buffer@4.0.1": {
       "integrity": "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A=="
     },
@@ -686,14 +380,6 @@
     },
     "deep-extend@0.6.0": {
       "integrity": "sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA=="
-    },
-    "define-data-property@1.1.4": {
-      "integrity": "sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==",
-      "dependencies": [
-        "es-define-property",
-        "es-errors",
-        "gopd"
-      ]
     },
     "denque@2.1.0": {
       "integrity": "sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw=="
@@ -713,43 +399,14 @@
     "dotenv@16.6.1": {
       "integrity": "sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow=="
     },
-    "dunder-proto@1.0.1": {
-      "integrity": "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==",
-      "dependencies": [
-        "call-bind-apply-helpers",
-        "es-errors",
-        "gopd"
-      ]
-    },
-    "elliptic@6.6.1": {
-      "integrity": "sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g==",
-      "dependencies": [
-        "bn.js",
-        "brorand",
-        "hash.js",
-        "hmac-drbg",
-        "inherits",
-        "minimalistic-assert",
-        "minimalistic-crypto-utils"
-      ]
-    },
     "end-of-stream@1.4.5": {
       "integrity": "sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==",
       "dependencies": [
         "once"
       ]
     },
-    "es-define-property@1.0.1": {
-      "integrity": "sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g=="
-    },
     "es-errors@1.3.0": {
       "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw=="
-    },
-    "es-object-atoms@1.1.2": {
-      "integrity": "sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==",
-      "dependencies": [
-        "es-errors"
-      ]
     },
     "escape-string-regexp@1.0.5": {
       "integrity": "sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg=="
@@ -773,12 +430,6 @@
         "to-regex-range"
       ]
     },
-    "for-each@0.3.5": {
-      "integrity": "sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==",
-      "dependencies": [
-        "is-callable"
-      ]
-    },
     "formdata-polyfill@4.0.10": {
       "integrity": "sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==",
       "dependencies": [
@@ -800,30 +451,8 @@
         "is-property"
       ]
     },
-    "get-intrinsic@1.3.0": {
-      "integrity": "sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==",
-      "dependencies": [
-        "call-bind-apply-helpers",
-        "es-define-property",
-        "es-errors",
-        "es-object-atoms",
-        "function-bind",
-        "get-proto",
-        "gopd",
-        "has-symbols",
-        "hasown",
-        "math-intrinsics"
-      ]
-    },
-    "get-proto@1.0.1": {
-      "integrity": "sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==",
-      "dependencies": [
-        "dunder-proto",
-        "es-object-atoms"
-      ]
-    },
-    "git-diff@2.0.6": {
-      "integrity": "sha512-/Iu4prUrydE3Pb3lCBMbcSNIf81tgGt0W1ZwknnyF62t3tHmtiJTRj0f+1ZIhp3+Rh0ktz1pJVoa7ZXUCskivA==",
+    "git-diff@2.0.7": {
+      "integrity": "sha512-/+vyWaKNUJLcVT+tm5Hsly2xDcIs49EkZstxqW7ap1ZiZ0BECviLK1iv9/f4cGhlKBokeAf61QkTDnL88H+Uhg==",
       "dependencies": [
         "chalk@2.4.2",
         "diff",
@@ -847,65 +476,20 @@
       ],
       "deprecated": true
     },
-    "gopd@1.2.0": {
-      "integrity": "sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg=="
-    },
     "has-flag@3.0.0": {
       "integrity": "sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw=="
     },
     "has-flag@4.0.0": {
       "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="
     },
-    "has-property-descriptors@1.0.2": {
-      "integrity": "sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==",
-      "dependencies": [
-        "es-define-property"
-      ]
-    },
-    "has-symbols@1.1.0": {
-      "integrity": "sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ=="
-    },
-    "has-tostringtag@1.0.2": {
-      "integrity": "sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==",
-      "dependencies": [
-        "has-symbols"
-      ]
-    },
-    "hash-base@3.1.2": {
-      "integrity": "sha512-Bb33KbowVTIj5s7Ked1OsqHUeCpz//tPwR+E2zJgJKo9Z5XolZ9b6bdUgjmYlwnWhoOQKoTd1TYToZGn5mAYOg==",
-      "dependencies": [
-        "inherits",
-        "readable-stream@2.3.8",
-        "safe-buffer@5.2.1",
-        "to-buffer"
-      ]
-    },
-    "hash-wasm@4.12.0": {
-      "integrity": "sha512-+/2B2rYLb48I/evdOIhP+K/DD2ca2fgBjp6O+GBEnCDk2e4rpeXIK8GvIyRPjTezgmWn9gmKwkQjjx6BtqDHVQ=="
-    },
-    "hash.js@1.1.7": {
-      "integrity": "sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==",
-      "dependencies": [
-        "inherits",
-        "minimalistic-assert"
-      ]
-    },
-    "hasown@2.0.3": {
-      "integrity": "sha512-ej4AhfhfL2Q2zpMmLo7U1Uv9+PyhIZpgQLGT1F9miIGmiCJIoCgSmczFdrc97mWT4kVY72KA+WnnhJ5pghSvSg==",
+    "hasown@2.0.4": {
+      "integrity": "sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==",
       "dependencies": [
         "function-bind"
       ]
     },
-    "hmac-drbg@1.0.1": {
-      "integrity": "sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==",
-      "dependencies": [
-        "hash.js",
-        "minimalistic-assert",
-        "minimalistic-crypto-utils"
-      ]
-    },
-    "iconv-lite@0.7.2": {
-      "integrity": "sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==",
+    "iconv-lite@0.7.3": {
+      "integrity": "sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==",
       "dependencies": [
         "safer-buffer"
       ]
@@ -930,11 +514,8 @@
     "interpret@1.4.0": {
       "integrity": "sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA=="
     },
-    "is-callable@1.2.7": {
-      "integrity": "sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA=="
-    },
-    "is-core-module@2.16.1": {
-      "integrity": "sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w==",
+    "is-core-module@2.16.2": {
+      "integrity": "sha512-evOr8xfXKxE6qSR0hSXL2r3sd7ALj8+7jQEUvPYcm5sgZFdJ+AYzT6yNmJenvIYQBgIGwfwz08sL8zoL7yq2BA==",
       "dependencies": [
         "hasown"
       ]
@@ -945,20 +526,8 @@
     "is-property@1.0.2": {
       "integrity": "sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g=="
     },
-    "is-typed-array@1.1.15": {
-      "integrity": "sha512-p3EcsicXjit7SaskXHs1hA91QxgTw46Fv6EFKKGS5DRFLD8yKnohjF3hxoju94b/OcMZoQukzpPpBE9uLVKzgQ==",
-      "dependencies": [
-        "which-typed-array"
-      ]
-    },
-    "isarray@1.0.0": {
-      "integrity": "sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ=="
-    },
-    "isarray@2.0.5": {
-      "integrity": "sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw=="
-    },
-    "js-base64@3.7.8": {
-      "integrity": "sha512-hNngCeKxIUQiEUN3GPJOkz4wF/YvdUdbNL9hsBcMQTkKzboD7T/q3OYOuuPZLUE6dBxSGpwhk5mwuDud7JVAow=="
+    "js-base64@3.8.0": {
+      "integrity": "sha512-65kvbemyZhj+ExQt1PEFyBEjL5vAHysu1lJdW1AwhhChkO8ZBPizYk/m9GVrpbS2Je1hF+UYZ+6KywqtZV8mHw=="
     },
     "kysely@0.27.6": {
       "integrity": "sha512-FIyV/64EkKhJmjgC0g2hygpBv5RNWVPyNCqSAD7eTCv6eFWNIi4PN1UvdSJGicN/o35bnevgis4Y0UDC0qi8jQ=="
@@ -987,28 +556,8 @@
     "long@5.3.2": {
       "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA=="
     },
-    "lru-cache@10.4.3": {
-      "integrity": "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="
-    },
     "lru.min@1.1.4": {
       "integrity": "sha512-DqC6n3QQ77zdFpCMASA1a3Jlb64Hv2N2DciFGkO/4L9+q/IpIAuRlKOvCXabtRW6cQf8usbmM6BE/TOPysCdIA=="
-    },
-    "math-intrinsics@1.1.0": {
-      "integrity": "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="
-    },
-    "md5.js@1.3.5": {
-      "integrity": "sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==",
-      "dependencies": [
-        "hash-base",
-        "inherits",
-        "safe-buffer@5.2.1"
-      ]
-    },
-    "micro-packed@0.6.3": {
-      "integrity": "sha512-VmVkyc7lIzAq/XCPFuLc/CwQ7Ehs5XDK3IwqsZHiBIDttAI9Gs7go6Lv4lNRuAIKrGKcRTtthFKUNyHS0S4wJQ==",
-      "dependencies": [
-        "@scure/base@1.1.9"
-      ]
     },
     "micromatch@4.0.8": {
       "integrity": "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==",
@@ -1019,12 +568,6 @@
     },
     "mimic-response@3.1.0": {
       "integrity": "sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ=="
-    },
-    "minimalistic-assert@1.0.1": {
-      "integrity": "sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A=="
-    },
-    "minimalistic-crypto-utils@1.0.1": {
-      "integrity": "sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg=="
     },
     "minimatch@3.1.5": {
       "integrity": "sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==",
@@ -1038,9 +581,10 @@
     "mkdirp-classic@0.5.3": {
       "integrity": "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A=="
     },
-    "mysql2@3.22.2_@types+node@25.6.0": {
-      "integrity": "sha512-snC/L6YoCJPFpozZo3p3hiOlt9ItQ7sCnLSziFLlIttEzsPhrdcPT8g21BiQ7Oqif25W4Xq1IFuBzBvoFYDf0Q==",
+    "mysql2@3.22.5_@types+node@26.1.0": {
+      "integrity": "sha512-95uZ2TrPWAZdwpB3vvvDbmEMcNG8yIeNCyu6GUcr/QnWEE/wXm7+mhOCsdQfWQDTV7qYT/PDUZ4U4UPP4AsXqQ==",
       "dependencies": [
+        "@types/node",
         "aws-ssl-profiles",
         "denque",
         "generate-function",
@@ -1057,14 +601,11 @@
         "lru.min"
       ]
     },
-    "nan@2.28.0": {
-      "integrity": "sha512-fTsDz99OTq2sVePhGdp4qQhggZFtKr64ZNVyVajRKtMOkJxYekplBh577PiJB12v/D3s2E5cGtOI45LWp6rnLQ=="
-    },
     "napi-build-utils@2.0.0": {
       "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA=="
     },
-    "node-abi@3.89.0": {
-      "integrity": "sha512-6u9UwL0HlAl21+agMN3YAMXcKByMqwGx+pq+P76vii5f7hTPtKDp08/H9py6DY+cfDw7kQNTGEj/rly3IgbNQA==",
+    "node-abi@3.94.0": {
+      "integrity": "sha512-W5ZNO5KRPB5TkYmGVD9F6YqhsglXJzE6etpbmT+f6EQElhiX/UTG551cnsRGvLG3fyZEg9HwaDmNmj5nwJ4z9g==",
       "dependencies": [
         "semver"
       ]
@@ -1081,21 +622,6 @@
         "formdata-polyfill"
       ]
     },
-    "nostr-tools@2.23.9": {
-      "integrity": "sha512-PBN3TpGh+EszlTZWpQdvcqEMqhcKcY1vTw0Xkkccg+TyP7y/icu9/iXJw72aFZ/ETm35ehU0hneGTXLaTSkImw==",
-      "dependencies": [
-        "@noble/ciphers",
-        "@noble/curves@2.0.1",
-        "@noble/hashes@2.0.1",
-        "@scure/base@2.0.0",
-        "@scure/bip32@2.0.1",
-        "@scure/bip39@2.0.1",
-        "nostr-wasm"
-      ]
-    },
-    "nostr-wasm@0.1.0": {
-      "integrity": "sha512-78BTryCLcLYv96ONU8Ws3Q1JzjlAt+43pWQhIl86xZmWeegYCNLPml7yQ+gG3vR6V5h4XGj+TxO+SS5dsThQIA=="
-    },
     "once@1.4.0": {
       "integrity": "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==",
       "dependencies": [
@@ -1108,23 +634,23 @@
     "path-parse@1.0.7": {
       "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw=="
     },
-    "pg-cloudflare@1.3.0": {
-      "integrity": "sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ=="
+    "pg-cloudflare@1.4.0": {
+      "integrity": "sha512-Vo7z/6rrQYxpNRylp4Tlob2elzbh+N/MOQbxFVWCxS7oEx6jF53GTJFxK2WWpKuBRkmiin4Mt+xofFDjx09R0A=="
     },
-    "pg-connection-string@2.12.0": {
-      "integrity": "sha512-U7qg+bpswf3Cs5xLzRqbXbQl85ng0mfSV/J0nnA31MCLgvEaAo7CIhmeyrmJpOr7o+zm0rXK+hNnT5l9RHkCkQ=="
+    "pg-connection-string@2.14.0": {
+      "integrity": "sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg=="
     },
     "pg-int8@1.0.1": {
       "integrity": "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw=="
     },
-    "pg-pool@3.13.0_pg@8.20.0": {
-      "integrity": "sha512-gB+R+Xud1gLFuRD/QgOIgGOBE2KCQPaPwkzBBGC9oG69pHTkhQeIuejVIk3/cnDyX39av2AxomQiyPT13WKHQA==",
+    "pg-pool@3.14.0_pg@8.22.0": {
+      "integrity": "sha512-gKtPkFdQPU3DksooVLi9LsjZxrsBUZIpa+7aVx+LV5pNh0KzP4Zleud2po+ConrxbuXGBJ6Hfer6hdgpIBpBaw==",
       "dependencies": [
         "pg"
       ]
     },
-    "pg-protocol@1.13.0": {
-      "integrity": "sha512-zzdvXfS6v89r6v7OcFCHfHlyG/wvry1ALxZo4LqgUoy7W9xhBDMaqOuMiF3qEV45VqsN6rdlcehHrfDtlCPc8w=="
+    "pg-protocol@1.15.0": {
+      "integrity": "sha512-cq9sECI5s0+uPUXjbz8ioyPJni6RzsRib0US67i5IoTZKw8fNeYlVE7u8F4dG7vEJJtc5wdD1K189lCCUwqWTQ=="
     },
     "pg-types@2.2.0": {
       "integrity": "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==",
@@ -1136,8 +662,8 @@
         "postgres-interval"
       ]
     },
-    "pg@8.20.0": {
-      "integrity": "sha512-ldhMxz2r8fl/6QkXnBD3CR9/xg694oT6DZQ2s6c/RI28OjtSOpxnPrUCGOBJ46RCUxcWdx3p6kw/xnDHjKvaRA==",
+    "pg@8.22.0": {
+      "integrity": "sha512-8wih1vVIBMxoUM2oB4soJsD9tDnDpLv4OXBJ+EJzFsvycD+lfyIreC2gGHq78f8jbLLt+bvlPTFdFZfJkOuzAA==",
       "dependencies": [
         "pg-connection-string",
         "pg-pool",
@@ -1160,9 +686,6 @@
     },
     "pluralize@8.0.0": {
       "integrity": "sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA=="
-    },
-    "possible-typed-array-names@1.1.0": {
-      "integrity": "sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg=="
     },
     "postgres-array@2.0.0": {
       "integrity": "sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA=="
@@ -1198,9 +721,6 @@
       "deprecated": true,
       "bin": true
     },
-    "process-nextick-args@2.0.1": {
-      "integrity": "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag=="
-    },
     "promise-limit@2.7.0": {
       "integrity": "sha512-7nJ6v5lnJsXwGprnGXga4wx6d1POjvi5Qmf1ivTRxTjH4Z/9Czja/UCMLVmB9N93GeWOU93XaFaEt6jbuoagNw=="
     },
@@ -1220,18 +740,6 @@
         "strip-json-comments"
       ],
       "bin": true
-    },
-    "readable-stream@2.3.8": {
-      "integrity": "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==",
-      "dependencies": [
-        "core-util-is",
-        "inherits",
-        "isarray@1.0.0",
-        "process-nextick-args",
-        "safe-buffer@5.1.2",
-        "string_decoder",
-        "util-deprecate"
-      ]
     },
     "readable-stream@3.6.2": {
       "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==",
@@ -1257,44 +765,14 @@
       ],
       "bin": true
     },
-    "ripemd160@2.0.3": {
-      "integrity": "sha512-5Di9UC0+8h1L6ZD2d7awM7E/T4uA1fJRlx6zk/NvdCCVEoAnFqvHmCuNeIKoCeIixBX/q8uM+6ycDvF8woqosA==",
-      "dependencies": [
-        "hash-base",
-        "inherits"
-      ]
-    },
-    "safe-buffer@5.1.2": {
-      "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g=="
-    },
     "safe-buffer@5.2.1": {
       "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
     },
     "safer-buffer@2.1.2": {
       "integrity": "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg=="
     },
-    "semver@7.7.4": {
-      "integrity": "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==",
-      "bin": true
-    },
-    "set-function-length@1.2.2": {
-      "integrity": "sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==",
-      "dependencies": [
-        "define-data-property",
-        "es-errors",
-        "function-bind",
-        "get-intrinsic",
-        "gopd",
-        "has-property-descriptors"
-      ]
-    },
-    "sha.js@2.4.12": {
-      "integrity": "sha512-8LzC5+bvI45BjpfXU8V5fdU2mfeKiQe1D1gIMn7XUlF3OTUrpdJpPPH4EMAnF0DsHHdSZqCdSss5qCmJKuiO3w==",
-      "dependencies": [
-        "inherits",
-        "safe-buffer@5.2.1",
-        "to-buffer"
-      ],
+    "semver@7.8.5": {
+      "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==",
       "bin": true
     },
     "shelljs.exec@1.1.8": {
@@ -1326,10 +804,10 @@
     "sql-escaper@1.3.3": {
       "integrity": "sha512-BsTCV265VpTp8tm1wyIm1xqQCS+Q9NHx2Sr+WcnUrgLrQ6yiDIvHYJV5gHxsj1lMBy2zm5twLaZao8Jd+S8JJw=="
     },
-    "string_decoder@1.1.1": {
-      "integrity": "sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==",
+    "string_decoder@1.3.0": {
+      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==",
       "dependencies": [
-        "safe-buffer@5.1.2"
+        "safe-buffer"
       ]
     },
     "strip-json-comments@2.0.1": {
@@ -1350,8 +828,8 @@
     "supports-preserve-symlinks-flag@1.0.0": {
       "integrity": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w=="
     },
-    "tar-fs@2.1.4": {
-      "integrity": "sha512-mDAjwmZdh7LTT6pNleZ05Yt65HC3E+NiQzl672vQG38jIrehtJk/J3mNwIg+vShQPcLF/LV7CMnDW6vjj6sfYQ==",
+    "tar-fs@2.1.5": {
+      "integrity": "sha512-OboTd8mmMhZDNPV+UjQcK9yKAatXu2aJ+r1w4im1Otd4M4fl2hwvdoXUxIYHFTHWK/3y3FarBP70v3vwmGlOxw==",
       "dependencies": [
         "chownr",
         "mkdirp-classic",
@@ -1366,26 +844,7 @@
         "end-of-stream",
         "fs-constants",
         "inherits",
-        "readable-stream@3.6.2"
-      ]
-    },
-    "tiny-secp256k1@1.1.7": {
-      "integrity": "sha512-eb+F6NabSnjbLwNoC+2o5ItbmP1kg7HliWue71JgLegQt6A5mTN8YbvTLCazdlg6e5SV6A+r8OGvZYskdlmhqQ==",
-      "dependencies": [
-        "bindings",
-        "bn.js",
-        "create-hmac",
-        "elliptic",
-        "nan"
-      ],
-      "scripts": true
-    },
-    "to-buffer@1.2.2": {
-      "integrity": "sha512-db0E3UJjcFhpDhAF4tLo03oli3pwl3dbnzXOUIlRKrp+ldk/VUxzpWYZENsw2SZiuBjHAk7DfB0VU7NKdpb6sw==",
-      "dependencies": [
-        "isarray@2.0.5",
-        "safe-buffer@5.2.1",
-        "typed-array-buffer"
+        "readable-stream"
       ]
     },
     "to-regex-range@5.0.1": {
@@ -1397,410 +856,27 @@
     "tunnel-agent@0.6.0": {
       "integrity": "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==",
       "dependencies": [
-        "safe-buffer@5.2.1"
+        "safe-buffer"
       ]
     },
-    "typed-array-buffer@1.0.3": {
-      "integrity": "sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==",
-      "dependencies": [
-        "call-bound",
-        "es-errors",
-        "is-typed-array"
-      ]
-    },
-    "typeforce@1.18.0": {
-      "integrity": "sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g=="
-    },
-    "uint8array-tools@0.0.8": {
-      "integrity": "sha512-xS6+s8e0Xbx++5/0L+yyexukU7pz//Yg6IHg3BKhXotg1JcYtgxVcUctQ0HxLByiJzpAkNFawz1Nz5Xadzo82g=="
-    },
-    "uint8array-tools@0.0.9": {
-      "integrity": "sha512-9vqDWmoSXOoi+K14zNaf6LBV51Q8MayF0/IiQs3GlygIKUYtog603e6virExkjjFosfJUBI4LhbQK1iq8IG11A=="
+    "undici-types@8.3.0": {
+      "integrity": "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="
     },
     "util-deprecate@1.0.2": {
       "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
     },
-    "uuid@14.0.1": {
-      "integrity": "sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==",
-      "bin": true
-    },
-    "valibot@1.4.2": {
-      "integrity": "sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg=="
-    },
-    "varuint-bitcoin@2.0.0": {
-      "integrity": "sha512-6QZbU/rHO2ZQYpWFDALCDSRsXbAs1VOEmXAxtbtjLtKuMJ/FQ8YbhfxlaiKv5nklci0M6lZtlZyxo9Q+qNnyog==",
-      "dependencies": [
-        "uint8array-tools@0.0.8"
-      ]
-    },
     "web-streams-polyfill@3.3.3": {
       "integrity": "sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw=="
-    },
-    "websocket-ts@2.3.0": {
-      "integrity": "sha512-DocKMdXx7i8TCBMU+XUKZeUaKwQ7O2NPlxUcgb0poG4RwDrIqBo19mRdW00a1Sm7MSijhIEsgv9UJ0kB/qNy+Q=="
-    },
-    "which-typed-array@1.1.22": {
-      "integrity": "sha512-fvO4ExWMFsqyhG3AiPAObMuY1lxaqgYcxbc49CNdWDDECOJNgQyvsOWVwbZc+qf3rzRtxojBK+CMEv0Ld5CYpw==",
-      "dependencies": [
-        "available-typed-arrays",
-        "call-bind",
-        "call-bound",
-        "for-each",
-        "get-proto",
-        "gopd",
-        "has-tostringtag"
-      ]
-    },
-    "wif@2.0.6": {
-      "integrity": "sha512-HIanZn1zmduSF+BQhkE+YXIbEiH0xPr1012QbFEGB0xsKqJii0/SqJjyn8dFv6y36kOznMgMB+LGcbZTJ1xACQ==",
-      "dependencies": [
-        "bs58check@2.1.2"
-      ]
     },
     "wrappy@1.0.2": {
       "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="
     },
-    "ws@8.20.0": {
-      "integrity": "sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA=="
+    "ws@8.21.0": {
+      "integrity": "sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g=="
     },
     "xtend@4.0.2": {
       "integrity": "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ=="
-    },
-    "zod@3.25.76": {
-      "integrity": "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="
     }
-  },
-  "redirects": {
-    "https://esm.sh/@noble/curves@~1.1.0/abstract/modular?target=denonext": "https://esm.sh/@noble/curves@1.1.0/abstract/modular?target=denonext",
-    "https://esm.sh/@noble/curves@~1.1.0/secp256k1?target=denonext": "https://esm.sh/@noble/curves@1.1.0/secp256k1?target=denonext",
-    "https://esm.sh/@noble/curves@~1.8.1/secp256k1?target=denonext": "https://esm.sh/@noble/curves@1.8.2/secp256k1?target=denonext",
-    "https://esm.sh/@noble/hashes@^1.2.0/pbkdf2?target=denonext": "https://esm.sh/@noble/hashes@1.8.0/pbkdf2?target=denonext",
-    "https://esm.sh/@noble/hashes@^1.2.0/sha256?target=denonext": "https://esm.sh/@noble/hashes@1.8.0/sha256?target=denonext",
-    "https://esm.sh/@noble/hashes@^1.2.0/sha512?target=denonext": "https://esm.sh/@noble/hashes@1.8.0/sha512?target=denonext",
-    "https://esm.sh/@noble/hashes@^1.2.0/utils?target=denonext": "https://esm.sh/@noble/hashes@1.8.0/utils?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.0/_assert?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/_assert?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.0/pbkdf2?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/pbkdf2?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.0/sha256?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/sha256?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.0/sha512?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/sha512?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.0/utils?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/utils?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/_assert?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/_assert?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/hmac?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/hmac?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/ripemd160?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/ripemd160?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/sha256?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/sha256?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/sha512?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/sha512?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.3.1/utils?target=denonext": "https://esm.sh/@noble/hashes@1.3.3/utils?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.7.1/ripemd160?target=denonext": "https://esm.sh/@noble/hashes@1.7.2/ripemd160?target=denonext",
-    "https://esm.sh/@noble/hashes@~1.7.1/sha256?target=denonext": "https://esm.sh/@noble/hashes@1.7.2/sha256?target=denonext",
-    "https://esm.sh/@scure/base@~1.1.0?target=denonext": "https://esm.sh/@scure/base@1.1.9?target=denonext",
-    "https://esm.sh/@scure/base@~1.2.2?target=denonext": "https://esm.sh/@scure/base@1.2.6?target=denonext",
-    "https://esm.sh/@scure/base@~1.2.5?target=denonext": "https://esm.sh/@scure/base@1.2.6?target=denonext",
-    "https://esm.sh/asn1.js@^4.10.1?target=denonext": "https://esm.sh/asn1.js@4.10.1?target=denonext",
-    "https://esm.sh/base-x@^3.0.2?target=denonext": "https://esm.sh/base-x@3.0.11?target=denonext",
-    "https://esm.sh/bech32@^2.0.0?target=denonext": "https://esm.sh/bech32@2.0.0?target=denonext",
-    "https://esm.sh/bindings@^1.3.0?target=denonext": "https://esm.sh/bindings@1.5.0?target=denonext",
-    "https://esm.sh/bip174@^2.1.0/src/lib/converter/varint?target=denonext": "https://esm.sh/bip174@2.1.1/src/lib/converter/varint?target=denonext",
-    "https://esm.sh/bip174@^2.1.0/src/lib/utils?target=denonext": "https://esm.sh/bip174@2.1.1/src/lib/utils?target=denonext",
-    "https://esm.sh/bip174@^2.1.0?target=denonext": "https://esm.sh/bip174@2.1.1?target=denonext",
-    "https://esm.sh/bn.js@^4.0.0?target=denonext": "https://esm.sh/bn.js@4.12.4?target=denonext",
-    "https://esm.sh/bn.js@^4.1.0?target=denonext": "https://esm.sh/bn.js@4.12.4?target=denonext",
-    "https://esm.sh/bn.js@^4.11.8?target=denonext": "https://esm.sh/bn.js@4.12.4?target=denonext",
-    "https://esm.sh/bn.js@^4.11.9?target=denonext": "https://esm.sh/bn.js@4.12.4?target=denonext",
-    "https://esm.sh/bn.js@^5.2.1?target=denonext": "https://esm.sh/bn.js@5.2.4?target=denonext",
-    "https://esm.sh/brorand@^1.1.0?target=denonext": "https://esm.sh/brorand@1.1.0?target=denonext",
-    "https://esm.sh/browserify-aes@^1.2.0?target=denonext": "https://esm.sh/browserify-aes@1.2.0?target=denonext",
-    "https://esm.sh/browserify-cipher@^1.0.0?target=denonext": "https://esm.sh/browserify-cipher@1.0.1?target=denonext",
-    "https://esm.sh/browserify-rsa@^4.0.0?target=denonext": "https://esm.sh/browserify-rsa@4.1.1?target=denonext",
-    "https://esm.sh/browserify-sign@^4.0.0/algos?target=denonext": "https://esm.sh/browserify-sign@4.2.6/algos?target=denonext",
-    "https://esm.sh/browserify-sign@^4.0.0?target=denonext": "https://esm.sh/browserify-sign@4.2.6?target=denonext",
-    "https://esm.sh/bs58@^4.0.0?target=denonext": "https://esm.sh/bs58@4.0.1?target=denonext",
-    "https://esm.sh/bs58check@%3C3.0.0?target=denonext": "https://esm.sh/bs58check@2.1.2?target=denonext",
-    "https://esm.sh/bs58check@^2.1.1?target=denonext": "https://esm.sh/bs58check@2.1.2?target=denonext",
-    "https://esm.sh/bs58check@^2.1.2?target=denonext": "https://esm.sh/bs58check@2.1.2?target=denonext",
-    "https://esm.sh/core-util-is@~1.0.0?target=denonext": "https://esm.sh/core-util-is@1.0.3?target=denonext",
-    "https://esm.sh/create-ecdh@^4.0.0?target=denonext": "https://esm.sh/create-ecdh@4.0.4?target=denonext",
-    "https://esm.sh/create-hash@^1.1.0?target=denonext": "https://esm.sh/create-hash@1.2.0?target=denonext",
-    "https://esm.sh/create-hash@^1.2.0?target=denonext": "https://esm.sh/create-hash@1.2.0?target=denonext",
-    "https://esm.sh/create-hmac@^1.1.0?target=denonext": "https://esm.sh/create-hmac@1.1.7?target=denonext",
-    "https://esm.sh/create-hmac@^1.1.7?target=denonext": "https://esm.sh/create-hmac@1.1.7?target=denonext",
-    "https://esm.sh/diffie-hellman@^5.0.0?target=denonext": "https://esm.sh/diffie-hellman@5.0.3?target=denonext",
-    "https://esm.sh/elliptic@^6.4.0?target=denonext": "https://esm.sh/elliptic@6.6.1?target=denonext",
-    "https://esm.sh/elliptic@^6.5.3?target=denonext": "https://esm.sh/elliptic@6.6.1?target=denonext",
-    "https://esm.sh/evp_bytestokey@^1.0.3?target=denonext": "https://esm.sh/evp_bytestokey@1.0.3?target=denonext",
-    "https://esm.sh/hash-base@^3.0.0?target=denonext": "https://esm.sh/hash-base@3.1.2?target=denonext",
-    "https://esm.sh/hash-base@^3.1.2?target=denonext": "https://esm.sh/hash-base@3.1.2?target=denonext",
-    "https://esm.sh/hash.js@^1.0.0?target=denonext": "https://esm.sh/hash.js@1.1.7?target=denonext",
-    "https://esm.sh/hash.js@^1.0.3?target=denonext": "https://esm.sh/hash.js@1.1.7?target=denonext",
-    "https://esm.sh/hmac-drbg@^1.0.1?target=denonext": "https://esm.sh/hmac-drbg@1.0.1?target=denonext",
-    "https://esm.sh/isarray@^2.0.5?target=denonext": "https://esm.sh/isarray@2.0.5?target=denonext",
-    "https://esm.sh/isarray@~1.0.0?target=denonext": "https://esm.sh/isarray@1.0.0?target=denonext",
-    "https://esm.sh/md5.js@^1.3.4?target=denonext": "https://esm.sh/md5.js@1.3.5?target=denonext",
-    "https://esm.sh/micro-packed@~0.7.2?target=denonext": "https://esm.sh/micro-packed@0.7.3?target=denonext",
-    "https://esm.sh/minimalistic-assert@^1.0.0?target=denonext": "https://esm.sh/minimalistic-assert@1.0.1?target=denonext",
-    "https://esm.sh/minimalistic-assert@^1.0.1?target=denonext": "https://esm.sh/minimalistic-assert@1.0.1?target=denonext",
-    "https://esm.sh/minimalistic-crypto-utils@^1.0.1?target=denonext": "https://esm.sh/minimalistic-crypto-utils@1.0.1?target=denonext",
-    "https://esm.sh/parse-asn1@^5.0.0?target=denonext": "https://esm.sh/parse-asn1@5.1.9?target=denonext",
-    "https://esm.sh/pbkdf2@^3.0.3?target=denonext": "https://esm.sh/pbkdf2@3.1.6?target=denonext",
-    "https://esm.sh/pbkdf2@^3.1.5?target=denonext": "https://esm.sh/pbkdf2@3.1.6?target=denonext",
-    "https://esm.sh/process-nextick-args@~2.0.0?target=denonext": "https://esm.sh/process-nextick-args@2.0.1?target=denonext",
-    "https://esm.sh/public-encrypt@^4.0.0?target=denonext": "https://esm.sh/public-encrypt@4.0.3?target=denonext",
-    "https://esm.sh/randombytes@^2.0.0?target=denonext": "https://esm.sh/randombytes@2.1.0?target=denonext",
-    "https://esm.sh/randombytes@^2.0.1?target=denonext": "https://esm.sh/randombytes@2.1.0?target=denonext",
-    "https://esm.sh/randombytes@^2.0.5?target=denonext": "https://esm.sh/randombytes@2.1.0?target=denonext",
-    "https://esm.sh/randombytes@^2.1.0?target=denonext": "https://esm.sh/randombytes@2.1.0?target=denonext",
-    "https://esm.sh/randomfill@^1.0.3?target=denonext": "https://esm.sh/randomfill@1.0.4?target=denonext",
-    "https://esm.sh/readable-stream@^2.3.8?target=denonext": "https://esm.sh/readable-stream@2.3.8?target=denonext",
-    "https://esm.sh/ripemd160@^2.0.2?target=denonext": "https://esm.sh/ripemd160@2.0.3?target=denonext",
-    "https://esm.sh/safe-buffer@^5.0.1?target=denonext": "https://esm.sh/safe-buffer@5.2.1?target=denonext",
-    "https://esm.sh/safe-buffer@^5.1.0?target=denonext": "https://esm.sh/safe-buffer@5.2.1?target=denonext",
-    "https://esm.sh/safe-buffer@^5.1.1?target=denonext": "https://esm.sh/safe-buffer@5.2.1?target=denonext",
-    "https://esm.sh/safe-buffer@^5.1.2?target=denonext": "https://esm.sh/safe-buffer@5.2.1?target=denonext",
-    "https://esm.sh/safe-buffer@^5.2.1?target=denonext": "https://esm.sh/safe-buffer@5.2.1?target=denonext",
-    "https://esm.sh/safe-buffer@~5.1.0?target=denonext": "https://esm.sh/safe-buffer@5.1.2?target=denonext",
-    "https://esm.sh/safe-buffer@~5.1.1?target=denonext": "https://esm.sh/safe-buffer@5.1.2?target=denonext",
-    "https://esm.sh/string_decoder@~1.1.1?target=denonext": "https://esm.sh/string_decoder@1.1.1?target=denonext",
-    "https://esm.sh/tiny-secp256k1@^1.1.3?target=denonext": "https://esm.sh/tiny-secp256k1@1.1.7?target=denonext",
-    "https://esm.sh/to-buffer@^1.2.1?target=denonext": "https://esm.sh/to-buffer@1.2.2?target=denonext",
-    "https://esm.sh/to-buffer@^1.2.2?target=denonext": "https://esm.sh/to-buffer@1.2.2?target=denonext",
-    "https://esm.sh/typeforce@^1.11.3?target=denonext": "https://esm.sh/typeforce@1.18.0?target=denonext",
-    "https://esm.sh/typeforce@^1.11.5?target=denonext": "https://esm.sh/typeforce@1.18.0?target=denonext",
-    "https://esm.sh/util-deprecate@~1.0.1?target=denonext": "https://esm.sh/util-deprecate@1.0.2?target=denonext",
-    "https://esm.sh/varuint-bitcoin@^1.1.2?target=denonext": "https://esm.sh/varuint-bitcoin@1.1.2?target=denonext",
-    "https://esm.sh/wif@^2.0.6?target=denonext": "https://esm.sh/wif@2.0.6?target=denonext"
-  },
-  "remote": {
-    "https://esm.sh/@noble/ciphers@0.2.0/denonext/_poly1305.mjs": "6c8d0af1481617e38d1226e84f8878d501a7a4e1b47aab7375a16717da5e2f19",
-    "https://esm.sh/@noble/ciphers@0.2.0/denonext/chacha.mjs": "6fa74bcb9e7f450298938d74b628e473ec5906d9a719031525733428bdf78562",
-    "https://esm.sh/@noble/ciphers@0.2.0/denonext/esm/_assert.mjs": "7671625c464f084f4ae8d787a905334d7329db25c9eebe01c9aa3260806834ea",
-    "https://esm.sh/@noble/ciphers@0.2.0/denonext/esm/_salsa.mjs": "117cf8cbfdf25adedda574d8c9f3e50c76a97186012a54c765f766863864830a",
-    "https://esm.sh/@noble/ciphers@0.2.0/denonext/utils.mjs": "a4263b235c78b4d009d833be698a91af297b04bc15b79d1493a8d12c7fb9edce",
-    "https://esm.sh/@noble/curves@1.1.0/abstract/modular?target=denonext": "ff75d456ec4e2478beb9cf648832f637ed545f630b1014e41c25d6e542cc49e3",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/_shortw_utils.mjs": "959ead07aba5f2991ce82d4722cae3ba80c2ef8a257a2c8ad1f99a2cfeebde5b",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/abstract/curve.mjs": "f1bc040dcd97c6f15f029828bd2bf4c4bb2de9965b9575dfd1c3cb9a4051064c",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/abstract/hash-to-curve.mjs": "0a5eb81c34d2dd298ab23c540c48c25b669a140190bc212685f8762584f94080",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/abstract/modular.mjs": "8e2af213cd02bd63b442345277440483696c3b43e6d16b42b6b04415caa61c8b",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/abstract/utils.mjs": "cd1d9847e973f6399a7da582a0ebd934810efbf24871cd1b39e196e25ed4dd08",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/abstract/weierstrass.mjs": "4415edd69489efb1afddf9ab813d3e92e1cecf4c65703365a90f967ceba998e3",
-    "https://esm.sh/@noble/curves@1.1.0/denonext/secp256k1.mjs": "32ef8fa9e866ef8c0b5ce7e82238d147690fab80f43c70a8c882ee10fc26f3d5",
-    "https://esm.sh/@noble/curves@1.1.0/secp256k1?target=denonext": "0435fc9582ff489eb3dd66e77981d277076f38fb868da735c05e3539b07bb6d4",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/_shortw_utils.mjs": "ebbe2ab624a0d2f51806843dfeec61888b9531ff6211c33aeb2369bc47683a02",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/abstract/curve.mjs": "513d92c3eec21b0ec56957c934f57a5b079477990325f1cd2aa487b646ad1e9a",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/abstract/hash-to-curve.mjs": "eb88d53c63de2574ea69e4b1ce3091b4f084c2228aecb01cf06a386889af4efc",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/abstract/modular.mjs": "9f962d2a6bafa73c807f03c30e650da60ceac8fb40898baa5210506006710aac",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/abstract/utils.mjs": "21cc2066a44f747386256c337b9170fcc086fd6d0b3677a3e0ce164e94f7add3",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/abstract/weierstrass.mjs": "5e4bf4fcdc20bae09d9619c03a1cf81011352d7a1986cb68aaa0631715d6d2ef",
-    "https://esm.sh/@noble/curves@1.6.0/denonext/secp256k1.mjs": "9b3e88a6c0ebbce6e6a9625c82873db31592bda073498e69d1bc62c3bd484cd5",
-    "https://esm.sh/@noble/curves@1.6.0/secp256k1": "27511e1277c556fa63c480e94aa7e36cda03fc718e58056d5dee7340a65e2b49",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/_shortw_utils.mjs": "7a0c2a95efe4bfaa08d8f432e911b6a4b2be1d5da8691c8e7ca787940e9884bf",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/abstract/curve.mjs": "84d6fed77170c88a47ef05ab1581b41b843abb4166a2907e27d2259f40b9d079",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/abstract/hash-to-curve.mjs": "bd7d25c63a344d82e153bd723e06e5441f102d628df65db6c8cc26009332d058",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/abstract/modular.mjs": "b299f32c0e84fd418f9c35836cbc4f9cee703843fd3bf823c49e617b3a92ac5f",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/abstract/utils.mjs": "3b4c90d1ca3c6d581f71fe3ecec438ccbaddee63c3617e484bbddc0eb6913396",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/abstract/weierstrass.mjs": "8cdc132cad361f03547e213f52f4d9b5926f4b68885af5ddd1dce5e9d3f56315",
-    "https://esm.sh/@noble/curves@1.8.2/denonext/secp256k1.mjs": "fbfef9ac6bd5cbb14efd106290a47373e535b065a14863dce80b226dbad77ddc",
-    "https://esm.sh/@noble/curves@1.8.2/secp256k1?target=denonext": "32ad9162fa076f3c5408e02bd97f178e941b1d59c1133a59371f2cecb1c9ed98",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/_assert.mjs": "06fd517f5ef1276606429a2cf23640da0954b45809b18cecfd452c0473f86195",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/_sha2.mjs": "fdf1776b79fb507afa103e31d43c6ce03ef20827fa106c72fce05497bd3a0bf6",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/crypto.mjs": "fb2c01d38eb50d007e9e99b85cbc4df219522e4b6f1d2866b2130479b3ea6a9b",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/hkdf.mjs": "d3d353dec7d20d405bf9551fbe14c0ed370d27c0ee96e6362369f2635368313d",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/hmac.mjs": "d338cf8684075cc225830373190f0f1625b8abacaab62db52493755f1dc208a1",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/sha256.mjs": "507fe3630c3d20f731c4912b2593bf9354f6157211c0956e9c306658816336aa",
-    "https://esm.sh/@noble/hashes@1.3.1/denonext/utils.mjs": "e69b2607f1801f1b9c824132c53566e59715ea5196672c1f0847ed8d6c6e81da",
-    "https://esm.sh/@noble/hashes@1.3.3/_assert?target=denonext": "8760bdf3265ac53e405e2b18897a0b276c5a3d495d2af753e82e295d51b13baf",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/_assert.mjs": "49706e1633a538c1d89c38e2b46d08e1ec047374906321f76d7e9f3d836fb3bb",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/_sha2.mjs": "6fc661f17b7713c56464e79534ca594832d238b292f16b144cccb790852226a5",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/crypto.mjs": "95e269fef913b5cf9bebf3c6648ad11883423d5a65269e1f15464115f212c33b",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/esm/_u64.mjs": "59d17d5b2fce4825a9b6778138cd8dbb830b0cc07a57a997f4b9304589e963ea",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/hmac.mjs": "3c99e3018fa5bbfc6684cd63e79c819ec60dd9d2139777bf683333ca0eba0504",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/pbkdf2.mjs": "1faedc1944520c47339a9cd2771a502b72644feb0a5e3f082345099de7c99162",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/ripemd160.mjs": "809a89f2d70148d75a6eccae2a9685a9f319624c6642776ec339249ee009b349",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/sha256.mjs": "7e540005bfe6da5ca43347d4e61f70b89adf89e839c0a6f0fad1adcc54314a07",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/sha512.mjs": "4af66d4b211586b71de052527f6446caa3d03c50944a22527f7efd8f2fa6e69f",
-    "https://esm.sh/@noble/hashes@1.3.3/denonext/utils.mjs": "f8a6599c038cbdca9bd1228c7580329f011d6eb4baeaa826ffa11979d9512983",
-    "https://esm.sh/@noble/hashes@1.3.3/hmac?target=denonext": "87c7ea499fd61afd7dc7f00f51a676808fc38bf888d8695f526e4305fa5896bd",
-    "https://esm.sh/@noble/hashes@1.3.3/pbkdf2?target=denonext": "35c58440650dfe00782dd006cfec3a22c943dc47a92fb8a2f7edc80e3758e74b",
-    "https://esm.sh/@noble/hashes@1.3.3/ripemd160?target=denonext": "054baecf029c61c87383df383fd87ff9c164aad94964b28d1995e9320e9e5a82",
-    "https://esm.sh/@noble/hashes@1.3.3/sha256?target=denonext": "c7a5b88a05714943ea0069d68219348db583db711343494d49c959373fbbe151",
-    "https://esm.sh/@noble/hashes@1.3.3/sha512?target=denonext": "a00eaea89b9b853d8d009dcc3f1292a32260b6b8776f3101c0de05ed0128bffc",
-    "https://esm.sh/@noble/hashes@1.3.3/utils?target=denonext": "7708223fc228e26b3092d02131aebe9acd4c39dde47323ab85371450f774f172",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/_assert.mjs": "2240aa2ff17a8c52299d68d2b3cbf579c73c47fee83364e2cd6857bbe60e5df3",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/_md.mjs": "26c80f188fe9f18fbc9b7dd9cb93b61c5986b672e32c2ca8d6945828e75e710b",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/crypto.mjs": "856f1145c4dcb69fb39c635ab6abb22911006e00f3784d62ce41fc42bda8ebae",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/hmac.mjs": "7082406c62463122c8cdb6e6ec668219ebf5279b176d87906940f204f0a4168f",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/sha256.mjs": "fae9e0d0ae230cc6f928c39911001338253bc2c1adac1558343c4b2e048d17e4",
-    "https://esm.sh/@noble/hashes@1.5.0/denonext/utils.mjs": "8ff0c662b50092d7f82ddc1db79918fb1d318a03141079325d341ee3fe7b44ca",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/_assert.mjs": "398003f997719deaed3917ab7fa720cbb14ecbfccd8130fe7bd79c5c41f2fdc4",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/_md.mjs": "e6c1a504379fcbddf2b727458f653d8eaa73efa92699fee60a5778ab1b919628",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/crypto.mjs": "ac2484db6af39c8302576bdfd601c7aa5aae60554ec914f946770981fbaf1a82",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/esm/_u64.mjs": "80c211105a9fceb7614c01a43d6fb87e29f5f1834877c5516d651ad48923e503",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/hmac.mjs": "b2d2cd3e24b69dc0a08ef8172ff474c13d82261019638cc525abde87945f7600",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/ripemd160.mjs": "ba971421498c2bff4db5510f40c56f9ebe5573ec06a97104deefc29206a2b4af",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/sha256.mjs": "2e8ce8dac102d2b5ab466e7e395e8cb59e084bbd161add6fad0751864bb201d2",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/sha512.mjs": "81292816e677d1ac041d6b2d23176f845d940c8664590fb1f0e4b70e8f695337",
-    "https://esm.sh/@noble/hashes@1.6.0/denonext/utils.mjs": "04688b5794a41999e80c841faba2ad04e61f9976cd6958e37fc5d3ab0e827240",
-    "https://esm.sh/@noble/hashes@1.6.0/hmac": "00b80ad5699e364cd5afab50e42c64ed0615cf3f1300f1ded0f8f04db6b1af43",
-    "https://esm.sh/@noble/hashes@1.6.0/ripemd160": "0bf7670bef7d85bb56d6753cf764fd16dad6d0d655a468eb0740f78360fb40f6",
-    "https://esm.sh/@noble/hashes@1.6.0/sha256": "7d04dfebac7782193373d2308ba7c37b5de5204301a9d9db8531f7d0c7ad5df4",
-    "https://esm.sh/@noble/hashes@1.6.0/sha512": "832e826dadb94f06cdf9dd957cdac053db1d9e536ec604946aef868ca49b7716",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/_assert.mjs": "9a857827f2328c454566e1eee5910cfec9fd3ecaf4502b09f1c6db5fdbf6c9bf",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/_md.mjs": "cb4d4b059eb19f8218d09dae7fac987fc94318a0e9a2bb52c32a8b549f6aedb5",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/crypto.mjs": "69338b4cc9efad48dfac1b164cec7b48e28ec886592a3ec32b726ccfe0ca9a14",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/hmac.mjs": "a0563ef853ce487e4bab3308d78c080d127ba2959abcafb4e86ab053070feb3f",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/ripemd160.mjs": "be1f04d9be0fa31aed221dc797a6ce26e0c7d3749ea7b487fc00d59163e126b7",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/sha2.mjs": "62ac00779c8f1480e22e231a14661dcb6f105487d4dc9702f9e5f79745d5dcac",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/sha256.mjs": "dcf0e0bd1c74226bc3d6d0496475ee16d8e393299649df8f2522ab3b0e600eee",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/sha512.mjs": "2afc2118590b29fd273db13ad59388625a40ef5bfebf50ebea7e11fd4c6be170",
-    "https://esm.sh/@noble/hashes@1.7.2/denonext/utils.mjs": "980f4253af9cd2a7500eb8780d38dca396225d86eb40ce2c32a13313a43f3b66",
-    "https://esm.sh/@noble/hashes@1.7.2/ripemd160?target=denonext": "e0ed2590b3838811e9ea1db78009b31728ea4513591c15c63121eff81d99ab5a",
-    "https://esm.sh/@noble/hashes@1.7.2/sha256?target=denonext": "213698a658be2b8d7970bced983af37d6e437f9a6d4d1f88f94c5285cd9f7bea",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/_md.mjs": "e30debbd8e964d8bd4ae9c807c75601e3ef7ec73eaed005f703709f64a4b2257",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/crypto.mjs": "cabc4468470c6f6d15891c4a6037aebed19289e1a12eb9905c5579c26767a721",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/esm/_u64.mjs": "6282b7bcd11b7aad271b5507cca4209ce5cf1de8b5504d21b670e365a0ad04b0",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/hmac.mjs": "f6e5f679509f87084ebfc0e0334a8ce28788cf94868a61807420618dfc392325",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/pbkdf2.mjs": "21395e1e0f9d0a5d00e56d556dd1601b3f6a2530fc836b2f8dac5283a9cf3264",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/sha2.mjs": "c0581dc7c760dc2835f9faa22a5612f0db25bd9a824bb4312c09a7d223799c63",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/sha256.mjs": "43f16ee7a29cabde4a66d24226da441240f587dc34c568661a1b3f392fda177a",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/sha512.mjs": "3251ae54c553f618280e1d9e7bb82b4b16390a9cf09938a389ca0c10f1b1b74e",
-    "https://esm.sh/@noble/hashes@1.8.0/denonext/utils.mjs": "18b15a49e98c9e136e4bfcdce69b9461630b7dc3389ba932f535ad4a47221b08",
-    "https://esm.sh/@noble/hashes@1.8.0/pbkdf2?target=denonext": "cf5ef90ed06aa84db17dab5090ff195df998a125a9d345794de07cb9e215ac10",
-    "https://esm.sh/@noble/hashes@1.8.0/sha256?target=denonext": "1804d21efec0beea92617d60ab84cd45d16d58bc709830df4da1be95a8fc69fc",
-    "https://esm.sh/@noble/hashes@1.8.0/sha512?target=denonext": "3e136c6f8c10ddf5540b668c05d60d65ab2a388153f419ce82755d337216de99",
-    "https://esm.sh/@noble/hashes@1.8.0/utils?target=denonext": "18820d033cf3fe7481337101dd51a7bb50bd4a0d9ee8fe97fe9b9e5af8bfd5ee",
-    "https://esm.sh/@noble/secp256k1@2.0.0": "56165a93a1ded43950a2e365862c4a456fcb46d3de2372a009861191d2998cda",
-    "https://esm.sh/@noble/secp256k1@2.0.0/denonext/secp256k1.mjs": "7fa33781c98919632e28273b5c8bf29c292cd71c3aa52aa6f00f6858bb39909a",
-    "https://esm.sh/@noble/secp256k1@2.2.3": "86db1143ebb43173b4c9b9b2f1118f3cd2d3e0b191749aa3b557c0c31b900c37",
-    "https://esm.sh/@noble/secp256k1@2.2.3/denonext/secp256k1.mjs": "e152dac18067cdd09639757d0616446f0f4e154762d5c016868543038e302e33",
-    "https://esm.sh/@scure/base@1.1.1/denonext/base.mjs": "7f28c080a490b258710f774ae40a9e12634876ab026b1b2d461682da13eb4490",
-    "https://esm.sh/@scure/base@1.1.9/denonext/base.mjs": "61cd3970245f7e8317a3a53cde0c58fb60357f00242d3b6e4f8a6537eec696de",
-    "https://esm.sh/@scure/base@1.1.9?target=denonext": "195e8cb4a6b9c8fc9e406a5fedb227e16e6b3a1e714c6fd0d42b31f85e4f8a7e",
-    "https://esm.sh/@scure/base@1.2.4": "224dee0ed51c2adc07ca6e6103ac3d29db8f5779ac167cdac5361b1853319a98",
-    "https://esm.sh/@scure/base@1.2.4/denonext/base.mjs": "a9642c95f044b2ab535bba80bc2ab00f72c189a7162fc9bf8e1b1cfb2346b462",
-    "https://esm.sh/@scure/base@1.2.6/denonext/base.mjs": "6a30917485f02eb59c7bac5b7cc5fbdb7cbb71e3cf78e24a05674659e9a99e4e",
-    "https://esm.sh/@scure/base@1.2.6?target=denonext": "d127cfd29af32940b7f1baf2aad4ffcda5bfa9cc5f3e509e2f749dfbf65adb4b",
-    "https://esm.sh/@scure/bip32@1.3.1/denonext/bip32.mjs": "cbaf39962ffbc50d337cb8bdaef9a6d48796548f34861ce9f61dca719684422c",
-    "https://esm.sh/@scure/bip39@1.2.1/denonext/bip39.mjs": "cb38f05e02364550637b56ec6665a4296dcc9ba639760fb181b44b5ba246cc3e",
-    "https://esm.sh/@scure/bip39@1.2.1/denonext/wordlists/english.mjs": "ed9088fde7678acb056b8556c5d4307bac04ac4e7059220cf129c29bb81aed29",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/payment.mjs": "021509d409fffd6bdc8f6b05d03b04fd03d8e1f77463bd21ac95bce208bee17f",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/psbt.mjs": "6d113c352100902e3b5a6cdf19d63390d7df76d86ae798cf7c9d6641370ab5b3",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/script.mjs": "8ba601fd9d9be6ee93c08ea2872ea77902ec109bb39902fb5dcc2614fa327b4d",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/transaction.mjs": "871425a54956b1aa1db7f8f05ad9ff6f8278ba2458caa1dd798e5f926cc1f849",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/utils.mjs": "19000ea4894dd83e5c47079a8af3367cc93d3629b0cf7245c2f1ef18741e78be",
-    "https://esm.sh/@scure/btc-signer@1.6.0/denonext/utxo.mjs": "2cccbf1f72ab029545e8685a715399314b47fb3db851abaa103b8a57cf1966bc",
-    "https://esm.sh/@scure/btc-signer@1.6.0/payment": "ee9aacf2f427f4479c1a8a2958d5c636033e97d34a439594dc0a2cd2c0ca19b9",
-    "https://esm.sh/asn1.js@4.10.1/denonext/asn1.mjs": "212860b985b1dd3e3f9cbbb8d3f1428f8c44db7a15419d9de14cc49133f7d59f",
-    "https://esm.sh/asn1.js@4.10.1?target=denonext": "493db7cf966463045be992ac09a8e458f5177771c1ca7739e33fbf0078ca9920",
-    "https://esm.sh/base-x@3.0.11/denonext/base-x.mjs": "02c3f56caa78d7e71f593ecf0b582950da811af6d4c0c1d89df8d368803a852c",
-    "https://esm.sh/base-x@3.0.11?target=denonext": "36b1b75fdccb9b4c7aafc830c2b9b3f3384caaa37e5a5474d396a73d96bf0074",
-    "https://esm.sh/bech32@2.0.0": "1b943d1583f3708812c3cfccc8236cf92d8f9b191881984e26e0b9decaed9a16",
-    "https://esm.sh/bech32@2.0.0/denonext/bech32.mjs": "bd58859b4bb56d272885e0a7f72fcc27c86447485629e12ab99a5c5ec3cb131b",
-    "https://esm.sh/bech32@2.0.0?target=denonext": "1b943d1583f3708812c3cfccc8236cf92d8f9b191881984e26e0b9decaed9a16",
-    "https://esm.sh/bindings@1.5.0/denonext/bindings.mjs": "e4cf60819f9cfbd005ba93a34174320c018173b505a1bcaf5431483b405b5558",
-    "https://esm.sh/bindings@1.5.0?target=denonext": "9cff5cf649c297562fb16520ccdb9bcdb158a744112f187d41cdf5e7a1d92985",
-    "https://esm.sh/bip174@2.1.1/denonext/bip174.mjs": "baea0f59412b59a094105c6de20d510d5546706c3df6ddd24f74faebc7699640",
-    "https://esm.sh/bip174@2.1.1/denonext/src/lib/converter/varint.mjs": "387c4ea97710f72ddab84c86b629afab761b5d6b7d4c09b3fe2b6a82f7a81c61",
-    "https://esm.sh/bip174@2.1.1/denonext/src/lib/utils.mjs": "0171150830e0b680c802c7179034b24d32b1e6d0a1fcf5ab2a627e6ddd1ea8ee",
-    "https://esm.sh/bip174@2.1.1/src/lib/converter/varint?target=denonext": "20e7713d0913a110887d28e67822d403ce224a43bc22f9535ba7431efbf2e23c",
-    "https://esm.sh/bip174@2.1.1/src/lib/utils?target=denonext": "cf5ed4d206939681ac680653633ebcff6105ac3bda3c0e0ca6ec4eb68ce3a5ad",
-    "https://esm.sh/bip174@2.1.1?target=denonext": "62e38998358c82ea148c6a94103a5495951a1ad4de59159c4419d548731a7528",
-    "https://esm.sh/bip32@2.0.6": "2757cd88c6365d3319437908412a0c12b9f1e7b0b35fdcab032f98891d069612",
-    "https://esm.sh/bip32@2.0.6/denonext/bip32.mjs": "c36316fcf7c03b00c95b6e5221273adf38e2a77be53ae5346648509271567e03",
-    "https://esm.sh/bip39@3.1.0": "31033e4c1634ebe4bfca28738550be641391a6009383831c4178d2348e329548",
-    "https://esm.sh/bip39@3.1.0/X-ZEBub2JsZS9zZWNwMjU2azFAMi4yLjM/denonext/bip39.mjs": "c0ba03ef1547c3e925e9c45a919c967a960c32631e54b3734899f91e2d340217",
-    "https://esm.sh/bip39@3.1.0/denonext/bip39.mjs": "c0ba03ef1547c3e925e9c45a919c967a960c32631e54b3734899f91e2d340217",
-    "https://esm.sh/bip39@3.1.0/src/wordlists/english.json": "62f88f0b7469bfddd862ba4e2499af3758384ae6304c5bb48637d2401d22afb2",
-    "https://esm.sh/bip39@3.1.0?deps=@noble/secp256k1@2.2.3": "03fd7218a5402dc2c5d529490b77f861501cdb480634f6979d01e2d72eab2da2",
-    "https://esm.sh/bitcoinjs-lib@6.1.0": "099df1a0a75bf3cbfcd9df3381a35d97fd110dfb6e655957d563958824031b53",
-    "https://esm.sh/bitcoinjs-lib@6.1.0/denonext/bitcoinjs-lib.mjs": "f7a977a071dba3fe3354701f3b156fc49fe4160f87ea361f9882f744a3c2b8fc",
-    "https://esm.sh/bn.js@4.12.4/denonext/bn.mjs": "ed7725abd079ab9764bcb2451a4768064dc93ca05a71e038608e693880b814a3",
-    "https://esm.sh/bn.js@4.12.4?target=denonext": "a377489bef43b6e5e0c991b9b7d6299f595f098b984dd7d359052dfbfcfd3721",
-    "https://esm.sh/bn.js@5.2.4/denonext/bn.mjs": "88d1c719e6503e729dbf43fcee4865f837ad8334be1796f7e23d54e963988a4c",
-    "https://esm.sh/bn.js@5.2.4?target=denonext": "ab954603b0c5bd68ce02da27dab11203881cc3221f4f9f7207ec915c6b183db7",
-    "https://esm.sh/brorand@1.1.0/denonext/brorand.mjs": "ff05df95deec3aa14ae525eb49efa8d9163c12417db9e283d62c70122f461a8e",
-    "https://esm.sh/brorand@1.1.0?target=denonext": "4422b3ad15851242d6501279bdb1634cd8d7537d1f978cae2f18e280608ad6a3",
-    "https://esm.sh/browserify-aes@1.2.0/denonext/browserify-aes.mjs": "3b9868fbbcc9fa89ebb952880a476042616911a2972e5f2ca42bf4f09e6f43a0",
-    "https://esm.sh/browserify-aes@1.2.0?target=denonext": "c57b446677b507221afcaebae0dce8af6116d5059a6d382c8c41ff34c2481dec",
-    "https://esm.sh/browserify-cipher@1.0.1/denonext/browserify-cipher.mjs": "87515808d48ec058f9a54b8d76eaa4ff54b43f33ac18a2fde814f23cb327e672",
-    "https://esm.sh/browserify-cipher@1.0.1?target=denonext": "be0527a550fde3a5bf70721b8939df00b03b4be9ffe30e55915b778fd301aa4c",
-    "https://esm.sh/browserify-rsa@4.1.1/denonext/browserify-rsa.mjs": "f85fe5f7d810d02f2e5d357f3a8559b62a4b7ef345e64874a045f04bf6eee65c",
-    "https://esm.sh/browserify-rsa@4.1.1?target=denonext": "dc48dcc52432d0ec21d248d577dc5e935428a8d0274fc5cf242b4c4cf50511c1",
-    "https://esm.sh/browserify-sign@4.2.6/algos?target=denonext": "93b7551a646754d61b22416f223e5808af8051be40db143cc85f076d2f75d3d4",
-    "https://esm.sh/browserify-sign@4.2.6/denonext/algos.mjs": "37d0524fde24febf32a67ceb6c2ca10846cea16e7c7f764e5c2f53bcc0e2b433",
-    "https://esm.sh/browserify-sign@4.2.6/denonext/browserify-sign.mjs": "1110d8c593b47dd8e191ea3b21742a42489280eb2df844d6bdc7610369bf4d3a",
-    "https://esm.sh/browserify-sign@4.2.6?target=denonext": "1bb0ea4cbc38f026601a6621bf78847c4d25555da3cda9d3d23e479635c40357",
-    "https://esm.sh/bs58@4.0.1/denonext/bs58.mjs": "af340510fb29b2992660e910fec8b7b6fbf99f87bef867978a6734410a2b484e",
-    "https://esm.sh/bs58@4.0.1?target=denonext": "741a1ee4b5b5b1b6db8f5223a290a39bb8130033179165efd19ef9f74b648e85",
-    "https://esm.sh/bs58check@2.1.2/denonext/bs58check.mjs": "fbfa7581ded0b6b0568394bc60b9172840d0b950f82a414979b1b32cf9d7cca9",
-    "https://esm.sh/bs58check@2.1.2?target=denonext": "28e0e0e27893867da3da8cf8bec34176de54d500507e5cd5157a4e0926b3a4aa",
-    "https://esm.sh/core-util-is@1.0.3/denonext/core-util-is.mjs": "cfcf1ae63d56751cbe4b3b90b90b7eea577c5380c4adc272ddea4b7db2bdbbf2",
-    "https://esm.sh/core-util-is@1.0.3?target=denonext": "6c72958f8a1c8f42016b48c984a0f3d799ea1e0cd321f499fec0bf8db916c17f",
-    "https://esm.sh/create-ecdh@4.0.4/denonext/create-ecdh.mjs": "573d00561919406fe8a27d95d21170a793723424e4effa7db8e383135e6d5b36",
-    "https://esm.sh/create-ecdh@4.0.4?target=denonext": "02ca5d9f2ad1798e26acc69bf12307bd4c43678af3bb530ad3981d02f25e30ea",
-    "https://esm.sh/create-hash@1.2.0/denonext/create-hash.mjs": "c25a168665b9f0bd029c2f7ed548e9e216b2c11f4da43a4dd71d96d3af193fa1",
-    "https://esm.sh/create-hash@1.2.0?target=denonext": "9fa4aa38b06b22bd3c68c9c6e6337d1a0ba90e2255002599913e413bac062e23",
-    "https://esm.sh/create-hmac@1.1.7/denonext/create-hmac.mjs": "cf09fea3528c66008f698042f71f2a9d3fbfcd8a3c17c04be9d4ef7137f8edec",
-    "https://esm.sh/create-hmac@1.1.7?target=denonext": "3c7d410ae22ece22f6546f13c978d1bee8a2415f8dc6de00791d9967f986af96",
-    "https://esm.sh/crypto-browserify@3.12.0": "9d459776c96643a1c676fe610214a73b39d6ae8225ba5a7c9eefc3314f48f84d",
-    "https://esm.sh/crypto-browserify@3.12.0/denonext/crypto-browserify.mjs": "ec6ef10011a858de7e01fc6fe02063e42e5856d4feeeab8b728aaa0d4eb3a2e7",
-    "https://esm.sh/diffie-hellman@5.0.3/denonext/diffie-hellman.mjs": "43f9b069833b6bb942e7476bd4228ba101dba5ea162bfc3d3f207dd711996bd2",
-    "https://esm.sh/diffie-hellman@5.0.3?target=denonext": "f3f9246120ebdbe7b58a9884c1515428f213078d26aa57309ff547c0d0079949",
-    "https://esm.sh/elliptic@6.6.1/denonext/elliptic.mjs": "f3493266f46c984ce9a07bde99e112fbcc0a1736c7d9966ed955380cb8a33f10",
-    "https://esm.sh/elliptic@6.6.1?target=denonext": "91023408ad16b8ab3c6dfa95bc914a67fd2e8088f347644d383c79004bf0ffcb",
-    "https://esm.sh/evp_bytestokey@1.0.3/denonext/evp_bytestokey.mjs": "7c99385979453157e48f10300342bb179dcedd442dd30daa73995e24a7ba82a0",
-    "https://esm.sh/evp_bytestokey@1.0.3?target=denonext": "74e4ace7d5b590cf3494371af20fd7d6cbfd403c2bd8f5b9952131add7d4f339",
-    "https://esm.sh/file-uri-to-path@1.0.0/denonext/file-uri-to-path.mjs": "597a05ad6580b13ea58bdbc547ad2a47bd9cc5ba8ae9935dbfd270f84d97f286",
-    "https://esm.sh/hash-base@3.1.2/denonext/hash-base.mjs": "93bfbd5b7201c980e881fca63bcb0681c2c6aa3a40ba7a35ce66993cc9ffa565",
-    "https://esm.sh/hash-base@3.1.2?target=denonext": "d918ad0857e9a32e40478e9b03b60e22adb98a7fa608e0d4e47b5357d02e4681",
-    "https://esm.sh/hash.js@1.1.7/denonext/hash.mjs": "d21c3eae033f031bcb9c5b34d344b75298d1eeed269ef978adc850c861d075ff",
-    "https://esm.sh/hash.js@1.1.7?target=denonext": "c733dc76e7ae71fbf1aae069aee2bfb1d4b3227b78f90bc234a5367af657966b",
-    "https://esm.sh/hmac-drbg@1.0.1/denonext/hmac-drbg.mjs": "0e638374c7bf36568bbb0895c1fbd66bb77c53fcb72fa5154bb858f9f2e7bff2",
-    "https://esm.sh/hmac-drbg@1.0.1?target=denonext": "b25a05fe1b3446c7aff243f48dcac3140b25836d52e05cd249e145684bebd6ff",
-    "https://esm.sh/isarray@1.0.0/denonext/isarray.mjs": "0f26133cd58fc8580f99bbfd81f6290718328dc2a683c313c36f6b1e8c174edc",
-    "https://esm.sh/isarray@1.0.0?target=denonext": "00e227f6d016cb5a5f832f6f2de91dd8ab092c7ac830c551bfcf0f63284d89e6",
-    "https://esm.sh/isarray@2.0.5/denonext/isarray.mjs": "99995394a19b90a4f0679cd6c51f188a78da023371ca0b1fc8468cd46bd7b018",
-    "https://esm.sh/isarray@2.0.5?target=denonext": "db340528d5ca21d1b697849110aad907ef4918ff28c477fb2f82282e392067bc",
-    "https://esm.sh/md5.js@1.3.5/denonext/md5.mjs": "39e7ef6016f1f1ba58abe3657b76ba2c426118ae529136c7ecfe622f8899c6db",
-    "https://esm.sh/md5.js@1.3.5?target=denonext": "df3e74fef67747204a72660794607435936d8106b1b9837bb5a9a5169f280014",
-    "https://esm.sh/micro-packed@0.7.3/denonext/micro-packed.mjs": "5731966b90a9a856c2e3a47d7bcaea9d7203fa3cb12f1b879167fbdec25d9bb4",
-    "https://esm.sh/micro-packed@0.7.3?target=denonext": "520b847d95e7bb87d365fbb024fe7984b30e0d081891be85f653f203d1d171bd",
-    "https://esm.sh/minimalistic-assert@1.0.1/denonext/minimalistic-assert.mjs": "07377d761438c22ed239e538e2b641cce8e0733793f0a98f34594782a6e85829",
-    "https://esm.sh/minimalistic-assert@1.0.1?target=denonext": "4e19506c5a46f3c68b4d7b431e1de059c6c57b663cabf226cdb7ef0906b7aebe",
-    "https://esm.sh/minimalistic-crypto-utils@1.0.1/denonext/minimalistic-crypto-utils.mjs": "27bb0550844afece2a428437650d1211e626c6516b65354a9cca4e3f899b13d9",
-    "https://esm.sh/minimalistic-crypto-utils@1.0.1?target=denonext": "c569b4f15348f8e01b3e868a735017681d38836d3dd3f0c912b7505ee1324a1f",
-    "https://esm.sh/nostr-tools@1.17.0": "0d9023f8b3ee58d8a7681dd474fb75c8b3d2453da49afa088494c1228ea92d7b",
-    "https://esm.sh/nostr-tools@1.17.0/denonext/nostr-tools.mjs": "8a24c295a553280714aaf514f612b44ed8c93fccef94875e992bfd3a4a0a7911",
-    "https://esm.sh/parse-asn1@5.1.9/denonext/parse-asn1.mjs": "fdc654850a32799c13699fb5a6807ac7347e252ad7139599d62d5f0d3c0a2e6e",
-    "https://esm.sh/parse-asn1@5.1.9?target=denonext": "03bdb33889bcf3ededddbd84800f7b35debf8d0d4ec732763eea06f4925468fa",
-    "https://esm.sh/pbkdf2@3.1.6/denonext/pbkdf2.mjs": "90e3b95d98bf10c9bb0529d0be9a29d05319edc7951cdea61dc7e1ad6290f21d",
-    "https://esm.sh/pbkdf2@3.1.6?target=denonext": "5da998aee73936bbc4a3e052051d65731c5b0d288d376ffc6166531aa34d10f6",
-    "https://esm.sh/process-nextick-args@2.0.1/denonext/process-nextick-args.mjs": "adffdd507c6571957aaab9d3f0a2aa54febdda1b4d546a57967fd2299505339e",
-    "https://esm.sh/process-nextick-args@2.0.1?target=denonext": "b80260031d83086964facc0efc6e2cc8fd878d9ce14dfcf6999e508a4d8d13d0",
-    "https://esm.sh/public-encrypt@4.0.3/denonext/public-encrypt.mjs": "e4cafe38e31a9fe58351f5438710f5d5d8c0c850dbb24db251fa65b8e4ca9c5d",
-    "https://esm.sh/public-encrypt@4.0.3?target=denonext": "c3ea57fa2573454f3a6fc719fb9f7810dce58573fd068fce2ce4f99817055ef7",
-    "https://esm.sh/randombytes@2.1.0/denonext/randombytes.mjs": "33ac2d7517522b325929799fc48307977b352a51eb2e3b8cd50d527c544d38a2",
-    "https://esm.sh/randombytes@2.1.0?target=denonext": "44178b0815a694e8c2e26df4cf053ce11f3f6baa0808c7efa82659411b87fd1f",
-    "https://esm.sh/randomfill@1.0.4/denonext/randomfill.mjs": "8c0daf089c79a77ac429ab885cd082fa20c3b5b4336e28f87d8722a74ce04ebf",
-    "https://esm.sh/randomfill@1.0.4?target=denonext": "12726a67e61e1bae6b101ff9f8b4e11d403a0e4fa679c33a1d42cc9a86867730",
-    "https://esm.sh/readable-stream@2.3.8/denonext/readable-stream.mjs": "ce8c7e2e7783c4487c1e9fcaf8824f0af26d48e6f5fe02fa9cbd70c34799ef98",
-    "https://esm.sh/readable-stream@2.3.8?target=denonext": "a8d158c470101e7518fdf293728d4cb8b2ab2cac73140940c8a9ee5542194e13",
-    "https://esm.sh/ripemd160@2.0.3/denonext/ripemd160.mjs": "d5fe43939d6cb608194a2d3268f4a30d53f91f8594e9975e069b1dd7469e6d70",
-    "https://esm.sh/ripemd160@2.0.3?target=denonext": "92f863196c8637d1b32cf99607535b8f6d8d884ee4d6be2caf8743c1bb153327",
-    "https://esm.sh/safe-buffer@5.1.2/denonext/safe-buffer.mjs": "848e2c2dafb98ea738399526e4396607872d1118acf8eb56eecd2a5f3be75568",
-    "https://esm.sh/safe-buffer@5.1.2?target=denonext": "3126988c629e3dc2d6126b26f654aceae10ad989622a21cb2a73ee72603f7df8",
-    "https://esm.sh/safe-buffer@5.2.1/denonext/safe-buffer.mjs": "51b088d69d0bbf6d7ce4179853887e105715df40e432a3bff0e9575cc2285276",
-    "https://esm.sh/safe-buffer@5.2.1?target=denonext": "34028b9647c849fa96dfd3d9f217a3adca8b43b13409820ac3f43fb15eba3e20",
-    "https://esm.sh/string_decoder@1.1.1/denonext/string_decoder.mjs": "494e5a7fae95d5326e8aee93b4adfde75e389eea7a54bc1feea8549e786da032",
-    "https://esm.sh/string_decoder@1.1.1?target=denonext": "092c97b62b99368a40fa044c402188472658bc71529415f73c16f66c05aaf6bf",
-    "https://esm.sh/tiny-secp256k1@1.1.7/denonext/tiny-secp256k1.mjs": "6cfa5ce8d7bc2214fe4a39e351fd5a5f32d39725955bfde772cebd557aaaf469",
-    "https://esm.sh/tiny-secp256k1@1.1.7?target=denonext": "99ec246e6ccf315f347f42b6e55982c6cec1a7df0a0589daba4f8644a7ce0fe9",
-    "https://esm.sh/to-buffer@1.2.2/denonext/to-buffer.mjs": "911d9fd37d1c82b81cd714f7a22696d301487ec6535fb775334aaad16f09da1c",
-    "https://esm.sh/to-buffer@1.2.2?target=denonext": "42a9f7ee4da713c226ac1b57b1c6e5e4834edbf1a3735a676f4534d68f927264",
-    "https://esm.sh/typeforce@1.18.0/denonext/typeforce.mjs": "aeb3f57ad2a7764e371ca280a102a93defa997770c816422d121a32311149632",
-    "https://esm.sh/typeforce@1.18.0?target=denonext": "9cdf9408603d5ed24319fc9b66fd5b27f47de5a1e46482b92599f2b14fa33cf4",
-    "https://esm.sh/util-deprecate@1.0.2/denonext/util-deprecate.mjs": "083639894972cb68837eef26346c43bdd01357977149e0a4493f76192a4008b8",
-    "https://esm.sh/util-deprecate@1.0.2?target=denonext": "859f4df8ba771a4c33143185d3db6a7edb824fab1ed4f9a4b96ac0e6bc3ef1a4",
-    "https://esm.sh/varuint-bitcoin@1.1.2/denonext/varuint-bitcoin.mjs": "3057c9e1680b44e35bff52d02dda256370966eb67a65b7ffea1522785b74cb03",
-    "https://esm.sh/varuint-bitcoin@1.1.2?target=denonext": "75c00b26889b5f8236d0202251df1f5d0e58ecb04ac7ac8024a7e0fac4db9da0",
-    "https://esm.sh/wif@2.0.6/denonext/wif.mjs": "bd39b22ab4d3a42be53e131bce56c71d8be5b751ababcc7d1da75908534f0ee6",
-    "https://esm.sh/wif@2.0.6?target=denonext": "2347b482ee364ac33a12ec1ddd0e1afaf700d0d54a90aab3f728abf3bc941e9c"
   },
   "workspace": {
     "dependencies": [

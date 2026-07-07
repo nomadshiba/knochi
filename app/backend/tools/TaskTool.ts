@@ -123,6 +123,19 @@ export class TaskTool extends Tool {
         };
     }
 
+    override renderCallSummary(call: ProviderToolCall): string {
+        const args = call.function.arguments;
+        let parsed: { description?: string; subagent_type?: string };
+        try {
+            parsed = JSON.parse(args);
+        } catch {
+            return "**task**";
+        }
+        return parsed.subagent_type
+            ? `**${parsed.description ?? "task"}** (\`${parsed.subagent_type}\`)`
+            : `**${parsed.description ?? "task"}**`;
+    }
+
     override renderCallContent(call: ProviderToolCall): string {
         const args = call.function.arguments;
         let parsed: { description?: string; prompt?: string; subagent_type?: string };

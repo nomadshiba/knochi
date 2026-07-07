@@ -120,6 +120,10 @@ const GlobalStyle = css`
         overscroll-behavior: contain;
         scrollbar-gutter: stable;
         scrollbar-width: thin;
+
+        &::backdrop {
+            background-color: color-mix(in srgb, black, transparent 45%);
+        }
     }
 `;
 

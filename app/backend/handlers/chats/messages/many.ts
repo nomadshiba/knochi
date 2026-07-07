@@ -1,7 +1,7 @@
 import { Codec } from "@nomadshiba/codec";
 import { messagesFromDatabase } from "~/backend/chats/ChatClient.ts";
 import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
-import { renderToolCallContent, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
+import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { RouteResponse } from "~/libs/routing/RouterResponse.ts";
 import { router } from "~/router.ts";
 import { db } from "~/backend/database/client.ts";
@@ -34,17 +34,21 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                                 message: `ToolCall type not implemented: ${call.type}`,
                             });
                         }
+                        const providerCall = {
+                            id: call.id,
+                            type: "function" as const,
+                            function: { name: call.TypeFunction.name, arguments: call.TypeFunction.arguments },
+                        };
                         return {
                             kind: "function",
                             value: {
                                 id: call.id,
                                 name: call.TypeFunction.name,
                                 arguments: call.TypeFunction.arguments,
-                                display: renderToolCallContent({
-                                    id: call.id,
-                                    type: "function",
-                                    function: { name: call.TypeFunction.name, arguments: call.TypeFunction.arguments },
-                                }),
+                                display: {
+                                    summary: renderToolCallSummary(providerCall),
+                                    content: renderToolCallContent(providerCall),
+                                },
                             },
                         };
                     }),

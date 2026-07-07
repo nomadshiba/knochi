@@ -6,7 +6,7 @@ import { ProviderManager } from "~/frontend/components/ProviderManager.ts";
 export async function ChatNavigation() {
     const { nav, ul } = tags;
     const self = nav().id("primary-nav").ariaLabel("Primary Navigation");
-    self.$bind(ChatNavigationSheet.useScope());
+    self.$bind(ChatNavigationStyle.useScope());
 
     const chats = await api.fetch("GET /v1/chats", { params: { pathname: {}, search: {} } });
 
@@ -26,7 +26,7 @@ export function ChatNavigationItem(chat: { id: string; name: string }) {
     return li().append$(a().href(`#${chat.id}`).id(`chat-${chat.id}`).textContent(chat.name));
 }
 
-const ChatNavigationSheet = css`
+const ChatNavigationStyle = css`
     :scope {
         display: block grid;
         grid-template-rows: auto 1fr auto;

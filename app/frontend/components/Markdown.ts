@@ -24,7 +24,8 @@ const MarkdownGlobalStyle = css`
         all: unset;
         display: block flow-root;
         line-height: 1.6;
-        overflow-wrap: break-word;
+        font-size: 0.9em;
+        overflow-wrap: anywhere;
         overflow-x: hidden;
         contain: paint;
     }

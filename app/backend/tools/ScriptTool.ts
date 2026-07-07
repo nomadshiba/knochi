@@ -1,6 +1,6 @@
+import { ChatClient } from "~/backend/chats/ChatClient.ts";
 import { ProviderToolCall, ProviderToolDefinition, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
 import { Tool } from "~/backend/tools/Tool.ts";
-import { ChatClient } from "~/backend/chats/ChatClient.ts";
 
 const DEFAULT_PERMISSIONS = {
     net: false,
@@ -61,6 +61,11 @@ export class ScriptTool extends Tool {
                 parameters: {
                     type: "object",
                     properties: {
+                        summary: {
+                            type: "string",
+                            description:
+                                'A short (3-6 word) human-readable summary of what this script call does, e.g. "list open PRs" or "parse CSV and sum totals". Shown as this call\'s label in the UI, so keep it short and descriptive.',
+                        },
                         code: {
                             type: "string",
                             description: [
@@ -91,19 +96,21 @@ export class ScriptTool extends Tool {
                                 "Timeout in seconds for the worker's own startup+execution (after any `preload` warm-up, which doesn't count). You must always pick a value yourself — there is no default. If a run times out, retry with a longer timeout.",
                         },
                     },
-                    required: ["code", "timeout"],
+                    required: ["summary", "code", "timeout"],
                 },
             },
         };
     }
 
     public async execute(chat: ChatClient, call: ProviderToolCall): Promise<ProviderToolMessage> {
-        let args: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
+        let args: { summary?: string; code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
             args = JSON.parse(call.function.arguments);
         } catch {
             return this.toolResult(call, "Error: invalid JSON arguments");
         }
+
+        if (!args.summary) return this.toolResult(call, "Error: missing 'summary' argument");
 
         const code = args.code;
         if (!code) return this.toolResult(call, "Error: missing 'code' argument");
@@ -154,14 +161,14 @@ export class ScriptTool extends Tool {
                 type: "module",
                 deno: {
                     permissions: {
-                        net: this.permissions.net ?? false,
-                        read: this.permissions.read ?? false,
-                        write: this.permissions.write ?? false,
-                        env: this.permissions.env ?? false,
-                        run: this.permissions.run ?? false,
-                        ffi: this.permissions.ffi ?? false,
-                        sys: this.permissions.sys ?? false,
-                        import: this.permissions.import ?? false,
+                        net: this.permissions.net,
+                        read: this.permissions.read,
+                        write: this.permissions.write,
+                        env: this.permissions.env,
+                        run: this.permissions.run,
+                        ffi: this.permissions.ffi,
+                        sys: this.permissions.sys,
+                        import: this.permissions.import,
                     },
                 },
             } as WorkerOptions);
@@ -310,19 +317,33 @@ export class ScriptTool extends Tool {
         }
     }
 
+    override renderCallSummary(call: ProviderToolCall): string {
+        const args = call.function.arguments;
+        let parsed: { summary?: string; timeout?: number };
+        try {
+            parsed = JSON.parse(args);
+        } catch {
+            return "**script**";
+        }
+        const label = parsed.summary ? `**script:** ${parsed.summary}` : "**script**";
+        return parsed.timeout ? `${label} (${parsed.timeout}s)` : label;
+    }
+
     override renderCallContent(call: ProviderToolCall): string {
         const args = call.function.arguments;
-        let parsed: { code?: string; use?: string[]; preload?: string[]; timeout?: number };
+        let parsed: { summary?: string; code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
             parsed = JSON.parse(args);
         } catch {
             return `~~script~~(${args})`;
         }
         if (!parsed.code) return `~~script~~(${args})`;
-        const usePart = parsed.use?.length ? `\n\n**use:** \`${parsed.use.join("`, `")}\`` : "";
-        const preloadPart = parsed.preload?.length ? `\n\n**preload:** \`${parsed.preload.join("`, `")}\`` : "";
-        const timeoutPart = parsed.timeout ? `\n\n**timeout:** ${parsed.timeout}s` : "";
-        return `**code:**\n${CODE_BLOCK}typescript\n${parsed.code}\n${CODE_BLOCK}${usePart}${preloadPart}${timeoutPart}`;
+        const summaryPart = parsed.summary ? `**summary:** ${parsed.summary}\n\n` : "";
+        const usePart = parsed.use?.length ? `**use:** \`${parsed.use.join("`, `")}\`` : "";
+        const preloadPart = parsed.preload?.length ? `**preload:** \`${parsed.preload.join("`, `")}\`` : "";
+        const timeoutPart = parsed.timeout ? `**timeout:** ${parsed.timeout}s` : "";
+        const codePart = `**code:**\n${CODE_BLOCK}typescript\n${parsed.code}\n${CODE_BLOCK}`;
+        return [summaryPart, timeoutPart, usePart, preloadPart, codePart].join("\n\n");
     }
 
     override renderResult(result: ProviderToolMessage): string {
