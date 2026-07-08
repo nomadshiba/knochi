@@ -12,7 +12,7 @@ const RELATIVE_STEPS = [
 ];
 
 export function ChatBubble(message: ChatMessage) {
-    const { article, header, strong, time, p, ul } = tags;
+    const { article, header, strong, time, p, ul, li } = tags;
 
     const relative = sync<string>((set) => {
         const created = message.created.getTime();
@@ -60,10 +60,16 @@ export function ChatBubble(message: ChatMessage) {
             // remove `done` kind from streaming, instead in the end send the message. which would replace the old one.
             // also update the db with deltas, probably with 1 second buffers or something.
             // tool result should be part of the same message's stream basically.
+            // stream display paramters only if they changed, if not they are undefined
+            // also on db and responses assistant message needs to have partial flag.
 
             // dont forget to nice scrolling arguments text next to the Writing...
 
-            const toolCalls = ul().ariaLabel("Tool calls").append$(content.tool_calls.map((call) => ToolCall(call, { kind: "running" })));
+            const toolCalls = ul().ariaLabel("Tool calls").append$(content.tool_calls.map((call) => {
+                const domId = call.value.id.slice(-8);
+                return li().id(`tool-call-${domId}`)
+                    .append$(ToolCall(call, { kind: "running" }));
+            }));
             const toolCallBuffer = content.tool_calls;
 
             const updateMarkdown = () => {
@@ -79,7 +85,11 @@ export function ChatBubble(message: ChatMessage) {
                         contentBuffer = content.content ?? "";
                         refusalBuffer = content.refusal ?? "";
                         updateMarkdown();
-                        toolCalls.replaceChildren$(content.tool_calls.map((call) => ToolCall(call, { kind: "running" })));
+                        toolCalls.replaceChildren$(content.tool_calls.map((call) => {
+                            const domId = call.value.id.slice(-8);
+                            return li().id(`tool-call-${domId}`)
+                                .append$(ToolCall(call, { kind: "running" }));
+                        }));
                         unsubscribe();
                         return;
                     }
@@ -114,7 +124,7 @@ export function ChatBubble(message: ChatMessage) {
                             call.value.display.summary = delta.display.summary;
 
                             const domId = call.value.id.slice(-8);
-                            const item = ToolCall(call, { kind: "streaming" }).id(`tool-call-${domId}`);
+                            const item = li().append$(ToolCall(call, { kind: "streaming" })).id(`tool-call-${domId}`);
                             const exist = toolCalls.$node.querySelector(`#tool-call-${domId}`);
                             if (exist) exist.replaceWith(toChild(item));
                             else toolCalls.append$(item); // Visual order not that important

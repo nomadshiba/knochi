@@ -68,7 +68,7 @@ export async function Chat(chatId: string) {
                 const message = event.value;
                 if (message.content.kind === "assistant") {
                     // TODO: https://github.com/microsoft/TypeScript/issues/42384
-                    ChatAssistantMessageEmittter.emit(event.value.id, message as never);
+                    ChatAssistantMessageEmittter.emit(event.value.id, { kind: "message", value: message as never });
                 }
                 if (message.content.kind === "tool") {
                     // TODO: https://github.com/microsoft/TypeScript/issues/42384

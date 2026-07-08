@@ -10,18 +10,18 @@ export function ToolCall(
         | { kind: "running" }
         | { kind: "result"; message: ChatToolMessage },
 ) {
-    const { ul, li, button, dialog, header, section, span } = tags;
+    const { ul, button, dialog, header, section, span } = tags;
     const self = ul().ariaLabel("Tool calls");
     self.$bind(ToolCallStyle.useScope());
 
     const { summary, content } = call.value.display;
 
-    // TODO: dont fill in the dialog before openning it.
     const modal = dialog()
         .$bind(ToolCallsModalStyle.useScope())
         .onclick((event) => {
-            if (event.target === event.currentTarget) modal.close();
+            if (event.target === event.currentTarget) event.currentTarget.close();
         })
+        .onclose((event) => event.currentTarget.remove())
         .append$(
             header().append$(
                 Markdown(summary),
@@ -39,27 +39,22 @@ export function ToolCall(
             ),
         );
 
-    return li()
+    return button().type("button")
         .$bind(ToolCallStyle.useScope())
         .append$(
-            button().type("button")
-                .append$(
-                    Markdown(summary),
-                    state.kind === "result"
-                        ? null
-                        : span({ class: "status pending" }).textContent(state.kind === "streaming" ? "Writing…" : "Running…"),
-                )
-                .onclick(() => modal.showModal()),
-            modal,
-        );
+            Markdown(summary),
+            state.kind === "result"
+                ? null
+                : span({ class: "status pending" }).textContent(state.kind === "streaming" ? "Writing…" : "Running…"),
+        )
+        .onclick(() => {
+            document.body.append(modal.$node);
+            modal.showModal();
+        });
 }
 
 const ToolCallStyle = css`
     :scope {
-        display: contents;
-    }
-
-    button {
         all: unset;
         display: block grid;
         gap: 0.3em;
@@ -76,10 +71,10 @@ const ToolCallStyle = css`
         &:hover {
             background-color: var(--surface-hover-strong);
         }
+    }
 
-        x-markdown {
-            display: inline;
-        }
+    x-markdown {
+        display: inline;
     }
 
     .status {
