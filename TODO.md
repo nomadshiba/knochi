@@ -5,11 +5,11 @@
 - [ ] when script tool timesout give 3 options the agent has to select, terminate, wait longer, or detach(background). 3 tools agent has to
       select one.
 - [+] script can call other tools
-- [x] subagent task tool
+- [+] subagent task tool
 - [ ] remote tools (browser fs api, and remote terminal)
 - [ ] chat history query tool
-- [x] frontend stream stuff.
+- [+] frontend stream stuff.
 - [ ] script tool, permissions change request (user dialog)
 - [ ] q&a tool
 - [ ] include datetime into context suffix.
-- [x] more tool info within the chat
+- [+] more tool info within the chat
