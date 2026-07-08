@@ -73,13 +73,13 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                         if (delta.value.name) call.value.name += delta.value.name;
                         if (delta.value.arguments) call.value.arguments += delta.value.arguments;
 
-                        const newSummary = renderToolCallSummary({
+                        const summary = renderToolCallSummary({
                             id: call.value.id,
                             type: "function",
                             function: { name: call.value.name, arguments: call.value.arguments },
                         });
-                        const updatedSummary = newSummary !== call.value.display.summary;
-                        if (updatedSummary) call.value.display.summary = newSummary;
+                        const summaryChanged = summary !== call.value.display.summary;
+                        if (summaryChanged) call.value.display.summary = summary;
 
                         chat.pushStream({
                             id: message.id,
@@ -89,7 +89,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                                     index: delta.value.index,
                                     name: delta.value.name ?? "",
                                     arguments: delta.value.arguments ?? "",
-                                    display: updatedSummary ? { summary: newSummary } : null,
+                                    display: summaryChanged ? { summary } : null,
                                 },
                             },
                         });
