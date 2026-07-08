@@ -1,13 +1,22 @@
-import { ArrayCodec, EnumCodec, ModelCodec, Str, StructCodec } from "@nomadshiba/codec";
+import { ArrayCodec, Codec, EnumCodec, ModelCodec, NullableCodec, Str, StructCodec } from "@nomadshiba/codec";
 
+export type MessageContentUser = Codec.InferOutput<typeof MessageContentUser>;
 export const MessageContentUser = new StructCodec({
     content: Str,
 });
 
+export type MessageContentSystem = Codec.InferOutput<typeof MessageContentSystem>;
 export const MessageContentSystem = new StructCodec({
     content: Str,
 });
 
+export type ToolCallResult = Codec.InferOutput<typeof ToolCallResult>;
+export const ToolCallResult = new StructCodec({
+    content: Str,
+    display: Str,
+});
+
+export type ToolCall = Codec.InferOutput<typeof ToolCall>;
 export const ToolCall = new EnumCodec({
     function: new StructCodec({
         id: Str,
@@ -17,24 +26,20 @@ export const ToolCall = new EnumCodec({
             summary: Str,
             content: Str,
         }),
+        result: new NullableCodec(ToolCallResult),
     }),
 });
 
+export type MessageContentAssistant = Codec.InferOutput<typeof MessageContentAssistant>;
 export const MessageContentAssistant = new ModelCodec({
-    "content?": Str,
-    "refusal?": Str,
+    content: Str,
+    refusal: Str,
     tool_calls: new ArrayCodec(ToolCall),
 });
 
-export const MessageContentTool = new StructCodec({
-    content: Str,
-    tool_call_id: Str,
-    display: Str,
-});
-
+export type MessageContent = Codec.InferOutput<typeof MessageContent>;
 export const MessageContent = new EnumCodec({
     user: MessageContentUser,
     system: MessageContentSystem,
     assistant: MessageContentAssistant,
-    tool: MessageContentTool,
 });

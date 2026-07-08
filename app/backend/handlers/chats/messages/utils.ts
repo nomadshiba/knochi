@@ -1,6 +1,4 @@
-import { Kysely, Transaction } from "kysely";
-import { DB } from "~/backend/database/generated/types.ts";
-import { ProviderToolCall, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
+import { ProviderToolCall } from "~/backend/providers/ProviderClient.ts";
 import { toolsByName } from "~/backend/tools/mod.ts";
 
 export function renderToolCallContent(call: ProviderToolCall): string {
@@ -15,21 +13,8 @@ export function renderToolCallSummary(call: ProviderToolCall): string {
     return `**${call.function.name}**`;
 }
 
-export async function renderToolResult(result: ProviderToolMessage, tx: Transaction<DB> | Kysely<DB>): Promise<string> {
-    const name = await toolNameFromCallId(result.tool_call_id, tx);
+export function renderToolResult(name: string, content: string): string {
     const tool = toolsByName.get(name);
-    if (tool) return tool.renderResult(result);
-    return `### ${name} result\n\n\`\`\`\n${result.content}\n\`\`\``;
-}
-
-async function toolNameFromCallId(callId: string, tx: Transaction<DB> | Kysely<DB>): Promise<string> {
-    const tool = await tx.selectFrom("chat_message_role_assistant_toolcall_type_function")
-        .where("id", "=", callId)
-        .select("name")
-        .executeTakeFirst();
-    if (!tool) {
-        throw new Error("tool result without a call?");
-    }
-
-    return tool.name;
+    if (tool) return tool.renderResult(content);
+    return `\`\`\`\n${content}\n\`\`\``;
 }

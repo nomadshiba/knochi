@@ -1,17 +1,20 @@
 import { sync, tags, toChild } from "@purifyjs/core";
-import { ChatMessage } from "~/frontend/api.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
-import { ToolCall } from "~/frontend/components/ToolCall.ts";
+import { ToolCallIndicator } from "~/frontend/components/ToolCallIndicator.ts";
 import { ChatAssistantMessageEmittter } from "~/frontend/events/ChatAssistantMessageEmittter.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { relativeDate } from "~/frontend/utils/date.ts";
+import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 
 const RELATIVE_STEPS = [
     60 * 60 * 1000,
     60 * 1000,
 ];
 
-export function ChatBubble(message: ChatMessage) {
+export function ChatBubble(message: ChatMessageOutput) {
+    const { content } = message;
+    const { kind } = content;
+
     const { article, header, strong, time, p, ul, li } = tags;
 
     const relative = sync<string>((set) => {
@@ -30,47 +33,30 @@ export function ChatBubble(message: ChatMessage) {
         return () => clearTimeout(timeout);
     });
 
-    const self = article({ class: `role-${message.content.kind}` })
+    const self = article({ class: `role-${content.kind}` })
         .$bind(ChatMessageStyle.useScope())
         .append$(
             header().append$(
-                strong().textContent(message.content.kind),
+                strong().textContent(content.kind),
                 time().dateTime(message.created.toISOString()).textContent(relative),
             ),
         );
 
-    switch (message.content.kind) {
+    switch (kind) {
         case "assistant": {
-            const content = message.content.value;
-
-            let contentBuffer = content.content ?? "";
-            let refusalBuffer = content.refusal ?? "";
+            let contentBuffer = content.value.content ?? "";
+            let refusalBuffer = content.value.refusal ?? "";
+            const callBuffer = content.value.tool_calls;
 
             let markdown = Markdown(refusalBuffer || contentBuffer);
 
-            // TODO: better streaming on the backend.
-            // Include tool result in the tool call return value and streaming
-            // Result should be included within the tool call response. both for streaming and normal return.
+            // TODO: dont forget to nice scrolling arguments text next to the Writing...
 
-            // Logic:
-            // Tool Call should include the result, which can be undefined if not done yet. we should treat tool result like a seperate message.
-            // Before sending delta we should backend should first send an empty message for assistant with the id.
-            // assistant message content and refusal shouldnt be optional, at least should be empty string.
-            // then incoming delta would fill in the space without need for a seperate buffer.
-            // remove `done` kind from streaming, instead in the end send the message. which would replace the old one.
-            // also update the db with deltas, probably with 1 second buffers or something.
-            // tool result should be part of the same message's stream basically.
-            // stream display paramters only if they changed, if not they are undefined
-            // also on db and responses assistant message needs to have partial flag.
-
-            // dont forget to nice scrolling arguments text next to the Writing...
-
-            const toolCalls = ul().ariaLabel("Tool calls").append$(content.tool_calls.map((call) => {
+            const list = ul().ariaLabel("Tool calls").append$(content.value.tool_calls.map((call) => {
                 const domId = call.value.id.slice(-8);
                 return li().id(`tool-call-${domId}`)
-                    .append$(ToolCall(call, { kind: "running" }));
+                    .append$(ToolCallIndicator(call, { streaming: false }));
             }));
-            const toolCallBuffer = content.tool_calls;
 
             const updateMarkdown = () => {
                 const newMarkdown = Markdown(refusalBuffer || contentBuffer);
@@ -80,55 +66,51 @@ export function ChatBubble(message: ChatMessage) {
 
             self.$bind(() => {
                 const unsubscribe = ChatAssistantMessageEmittter.subscribe(message.id, (event) => {
-                    if (event.kind === "message") {
-                        const content = event.value.content.value;
-                        contentBuffer = content.content ?? "";
-                        refusalBuffer = content.refusal ?? "";
-                        updateMarkdown();
-                        toolCalls.replaceChildren$(content.tool_calls.map((call) => {
+                    if (event.delta.kind === "done") {
+                        console.log(list);
+                        list.replaceChildren$(callBuffer.map((call) => {
                             const domId = call.value.id.slice(-8);
                             return li().id(`tool-call-${domId}`)
-                                .append$(ToolCall(call, { kind: "running" }));
+                                .append$(ToolCallIndicator(call, { streaming: false }));
                         }));
-                        unsubscribe();
                         return;
                     }
 
-                    if (event.kind === "stream") {
-                        const stream = event.value;
-                        if (stream.delta.kind === "text") {
-                            contentBuffer += stream.delta.value;
-                            return updateMarkdown();
-                        }
+                    if (event.delta.kind === "text") {
+                        contentBuffer += event.delta.value;
+                        return updateMarkdown();
+                    }
 
-                        if (stream.delta.kind === "refusal") {
-                            refusalBuffer += stream.delta.value;
-                            return updateMarkdown();
-                        }
+                    if (event.delta.kind === "refusal") {
+                        refusalBuffer += event.delta.value;
+                        return updateMarkdown();
+                    }
 
-                        if (stream.delta.kind === "tool_call") {
-                            const delta = stream.delta.value;
-                            const call = toolCallBuffer[delta.index] ??= {
-                                kind: "function",
-                                value: {
-                                    name: "",
-                                    arguments: "",
-                                    display: { summary: "", content: "" },
-                                    id: "",
-                                },
-                            };
+                    if (event.delta.kind === "tool_call") {
+                        const delta = event.delta.value;
+                        const call = callBuffer[delta.index] ??= {
+                            kind: "function",
+                            value: {
+                                name: "",
+                                arguments: "",
+                                display: { summary: "", content: "" },
+                                id: "",
+                                result: null,
+                            },
+                        };
 
-                            if (delta.id) call.value.id += delta.id;
-                            if (delta.name) call.value.name += delta.name;
-                            if (delta.arguments) call.value.arguments += delta.arguments;
-                            call.value.display.summary = delta.display.summary;
+                        if (delta.id) call.value.id = delta.id;
+                        if (delta.name) call.value.name += delta.name;
+                        if (delta.arguments) call.value.arguments += delta.arguments;
+                        if (delta.display?.summary) call.value.display.summary = delta.display.summary;
+                        if (delta.display?.content) call.value.display.content = delta.display.content;
+                        if (delta.result) call.value.result = delta.result;
 
-                            const domId = call.value.id.slice(-8);
-                            const item = li().append$(ToolCall(call, { kind: "streaming" })).id(`tool-call-${domId}`);
-                            const exist = toolCalls.$node.querySelector(`#tool-call-${domId}`);
-                            if (exist) exist.replaceWith(toChild(item));
-                            else toolCalls.append$(item); // Visual order not that important
-                        }
+                        const domId = call.value.id.slice(-8);
+                        const item = li().append$(ToolCallIndicator(call, { streaming: !call.value.result })).id(`tool-call-${domId}`);
+                        const exist = list.$node.querySelector(`#tool-call-${domId}`);
+                        if (exist) exist.replaceWith(toChild(item));
+                        else list.append$(item); // Visual order not that important
                     }
                 });
 
@@ -137,21 +119,21 @@ export function ChatBubble(message: ChatMessage) {
                 };
             });
 
-            return self.append$(markdown, toolCalls);
+            return self.append$(markdown, list);
         }
         case "user": {
             return self.append$(
-                p().textContent(message.content.value.content),
+                p().textContent(content.value.content),
             );
         }
         case "system": {
             return self.append$(
-                Markdown(message.content.value.content ?? ""),
+                Markdown(content.value.content ?? ""),
             );
         }
     }
 
-    throw new Error(`Unsupported message type ${message.content.kind}`);
+    throw new Error(`Unsupported message type ${kind}`);
 }
 
 const ChatMessageStyle = css`

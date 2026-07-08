@@ -1,15 +1,15 @@
 import { ref, tags, toChild } from "@purifyjs/core";
+import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
-import { api, ChatMessage } from "~/frontend/api.ts";
+import { api } from "~/frontend/api.ts";
 import { AgentPicker } from "~/frontend/components/AgentPicker.ts";
 import { ChatBox } from "~/frontend/components/ChatBox.ts";
+import { ChatBubble } from "~/frontend/components/ChatBubble.ts";
 import { ChatNavigationItem } from "~/frontend/components/ChatNavigation.ts";
 import { ModelPicker } from "~/frontend/components/ModelPicker.ts";
 import { ChatAssistantMessageEmittter } from "~/frontend/events/ChatAssistantMessageEmittter.ts";
-import { ChatToolMessageEmitter } from "~/frontend/events/ChatToolMessageEmitter.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { PersistentSocket } from "~/frontend/utils/websocket.ts";
-import { ChatBubble } from "~/frontend/components/ChatBubble.ts";
 
 const scroller = document.scrollingElement ?? document.body;
 
@@ -23,8 +23,7 @@ export async function Chat(chatId: string) {
 
     const log = ol().role("log").ariaLabel("Messages");
 
-    const addMessage = (message: ChatMessage) => {
-        if (message.content.kind === "tool") return;
+    const addMessage = (message: ChatMessageOutput) => {
         const domId = message.id.slice(-8);
         const exist = log.$node.querySelector<HTMLLIElement>(`li#chat-message-${domId}`);
         if (exist) return;
@@ -40,16 +39,8 @@ export async function Chat(chatId: string) {
             api.fetch("GET /v1/chats/:chatId/messages", { params: { pathname: { chatId }, search: {} } }).then((messages) => {
                 const shouldScroll = scroller.scrollHeight - scroller.scrollTop - innerHeight < 50;
                 for (const message of messages) {
-                    if (message.content.kind === "assistant") {
-                        // TODO: https://github.com/microsoft/TypeScript/issues/42384
-                        ChatAssistantMessageEmittter.emit(message.id, { kind: "message", value: message as never });
-                    }
-                    if (message.content.kind === "tool") {
-                        // TODO: https://github.com/microsoft/TypeScript/issues/42384
-                        ChatToolMessageEmitter.emit(message.content.value.tool_call_id, message as never);
-                    } else {
-                        addMessage(message);
-                    }
+                    console.log(message);
+                    addMessage(message);
                 }
                 if (shouldScroll) {
                     scroller.scrollTop = scroller.scrollHeight - innerHeight;
@@ -66,24 +57,10 @@ export async function Chat(chatId: string) {
 
             if (event.kind === "message") {
                 const message = event.value;
-                if (message.content.kind === "assistant") {
-                    // TODO: https://github.com/microsoft/TypeScript/issues/42384
-                    ChatAssistantMessageEmittter.emit(event.value.id, { kind: "message", value: message as never });
-                }
-                if (message.content.kind === "tool") {
-                    // TODO: https://github.com/microsoft/TypeScript/issues/42384
-                    ChatToolMessageEmitter.emit(message.content.value.tool_call_id, message as never);
-                } else {
-                    if (message.content.kind === "user") shouldScroll = true;
-                    addMessage(message);
-                }
-            } else if (event.kind === "stream") {
-                ChatAssistantMessageEmittter.emit(event.value.id, event);
-                addMessage({
-                    id: event.value.id,
-                    content: { kind: "assistant", value: { content: "", tool_calls: [] } },
-                    created: new Date(),
-                });
+                if (message.content.kind === "user") shouldScroll = true;
+                addMessage(message);
+            } else if (event.kind === "delta") {
+                ChatAssistantMessageEmittter.emit(event.value.id, event.value);
             }
 
             if (shouldScroll) {

@@ -13,6 +13,7 @@ const database = new Database(DATABASE_PATH, { create: true });
 database.int64 = true;
 database.exec("PRAGMA journal_mode = WAL;");
 database.exec("PRAGMA synchronous = NORMAL;");
+database.exec("PRAGMA busy_timeout = 5000;");
 
 const journalMode = database.prepare("PRAGMA journal_mode;").get();
 if (journalMode?.journal_mode !== "wal") {

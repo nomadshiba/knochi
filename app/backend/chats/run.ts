@@ -1,24 +1,6 @@
 import { v7 } from "@std/uuid";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
-import { renderToolCallSummary } from "~/backend/handlers/chats/messages/utils.ts";
-import {
-    ProviderAssistantMessage,
-    ProviderChatMessage,
-    ProviderToolCall,
-    ProviderToolDefinition,
-    ProviderToolMessage,
-} from "~/backend/providers/ProviderClient.ts";
-
-function transformMessage(message: ProviderChatMessage): ProviderChatMessage {
-    if (message.role === "tool") {
-        return {
-            role: "tool",
-            tool_call_id: message.tool_call_id,
-            content: `[tool_call_id:${JSON.stringify(message.tool_call_id)}]\n${message.content}`,
-        };
-    }
-    return message;
-}
+import { ProviderAssistantMessageDelta, ProviderToolDefinition, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
 
 const MAX_TOOL_ROUNDS = 100;
 
@@ -31,107 +13,85 @@ export async function runAgent(chat: ChatClient): Promise<void> {
     const toolsByName = new Map(tools.map((t) => [t.definition.function.name, t] as const));
 
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-        // Minted up-front so every "stream" delta for this in-progress assistant message can be
-        // correlated with each other, and with the final "message" event once it's persisted —
-        // the frontend keys its placeholder bubble on this id and swaps it out the same way it
-        // already replaces-or-appends any other message by id.
         const messageId = v7.generate();
-        chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "text", value: "" } } });
+        chat.pushProviderMessage(messageId, { role: "assistant" });
 
-        let textBuffer = "";
-        let refusalBuffer = "";
-        const toolCallBuffers = new Map<number, { id: string; name: string; arguments: string }>();
+        let hasToolCalls = false;
+        let providerDone: ProviderAssistantMessageDelta & { kind: "done" } | undefined;
 
         try {
-            for await (
-                const delta of model.provider.chatStream({
-                    model: model.name,
-                    messages: chat.messages(transformMessage).toArray(),
-                    tools: toolDefinitions,
-                })
-            ) {
-                if (delta.kind === "text") {
-                    textBuffer += delta.value;
-                    chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "text", value: delta.value } } });
-                } else if (delta.kind === "refusal") {
-                    refusalBuffer += delta.value;
-                    chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "refusal", value: delta.value } } });
-                } else if (delta.kind === "tool_call") {
-                    // We mint our own id instead of trusting the provider's `delta.value.id` — it's used as
-                    // `chat_message_role_assistant_toolcall.id` (our primary key), and some providers just
-                    // hand back small per-turn indexes (e.g. "0", "1") which would collide across messages.
-                    const existing = toolCallBuffers.get(delta.value.index) ??
-                        { id: v7.generate(), name: delta.value.name ?? "", arguments: "" };
-                    if (delta.value.name) existing.name = delta.value.name;
-                    if (delta.value.arguments) existing.arguments += delta.value.arguments;
-                    toolCallBuffers.set(delta.value.index, existing);
-
-                    // No real way to "delta" a rendered summary as arguments stream in (partial JSON) —
-                    // just re-render it off the accumulated buffer each time, same as `name`/`arguments`
-                    // above (also resent in full every delta). The full `content` is NOT rendered here
-                    // (see ChatStreamOutput.ts) — the frontend shows the raw `arguments` itself instead.
-                    const partialCall: ProviderToolCall = {
-                        id: existing.id,
-                        type: "function",
-                        function: { name: existing.name, arguments: existing.arguments },
-                    };
-                    chat.emitter.emit({
-                        kind: "stream",
-                        value: {
-                            id: messageId,
-                            delta: {
-                                kind: "tool_call",
-                                value: {
-                                    index: delta.value.index,
-                                    id: existing.id,
-                                    name: existing.name,
-                                    arguments: existing.arguments,
-                                    display: { summary: renderToolCallSummary(partialCall) },
-                                },
-                            },
-                        },
-                    });
+            const stream = model.provider.chatStream({
+                model: model.name,
+                messages: chat.messages,
+                tools: toolDefinitions,
+            });
+            for await (const delta of stream) {
+                if (delta.kind === "tool_call") hasToolCalls = true;
+                else if (delta.kind === "done") {
+                    providerDone = delta;
+                    if (hasToolCalls) continue;
                 }
+                await chat.pushProviderMessageDelta(messageId, delta);
             }
         } catch (reason) {
             console.error(reason);
             chat.emitter.emit({
-                kind: "stream",
-                value: { id: messageId, delta: { kind: "done", value: { finish_reason: `Error: ${String(reason)}` } } },
+                kind: "delta",
+                value: {
+                    id: messageId,
+                    delta: {
+                        kind: "done",
+                        value: {
+                            kind: "fail",
+                            value: String(reason),
+                        },
+                    },
+                },
             });
             return;
         }
 
-        const toolCalls: ProviderToolCall[] = [...toolCallBuffers.entries()]
-            .sort(([a], [b]) => a - b)
-            .map(([, v]) => ({ id: v.id, type: "function" as const, function: { name: v.name, arguments: v.arguments } }));
+        const message = chat.messages.getById(messageId);
+        if (message?.content.kind !== "assistant") throw new Error("weird");
+        // TODO: Fix the ordering issue
+        /*
+            Ok so since we have an internally different order of streaming event and we include tool results in the calls and stuff.
+            We need to way when we convert the request from provider format to codec format and back and etc.
 
-        const reply: ProviderAssistantMessage = {
-            role: "assistant",
-            content: textBuffer || null,
-            refusal: refusalBuffer || undefined,
-            tool_calls: toolCalls.length ? toolCalls : undefined,
-        };
+            So ChatClient should accept codec format, not provider format.
+            Tools are used by the provider rn, so it should work with provider format.
+            RN you can see we are delaying the `done` call if there are tool calls,
+            reason for this is so we know when the stream ends and can push the message to the MessageBuffer
+            so another issue is above code doesnt work because MessageBuffer doesnnt have the message until done is called.
+            this is expected.
 
-        chat.emitter.emit({ kind: "stream", value: { id: messageId, delta: { kind: "done", value: { finish_reason: null } } } });
-        await chat.pushMessage(reply, { id: messageId });
-        if (!toolCalls.length) break;
+            so we gotta remove getById from the MessageBuffer
+            since we will build the message in this file, we will only send the converted deltas and messages to the ChatClient
+            and since we build the message here we will have its variables as well.
 
-        for (const call of toolCalls) {
-            const tool = toolsByName.get(call.function.name);
+            so the coversion should be done in this file, final result should reach to the ChatClient
+        */
 
-            let result: ProviderToolMessage;
+        if (!hasToolCalls || !providerDone) break;
+
+        for (const call of message.content.value.tool_calls) {
+            const tool = toolsByName.get(call.value.name);
+
+            let toolMessage: ProviderToolMessage;
             if (tool) {
                 try {
-                    result = await tool.execute(chat, call);
+                    const result = await tool.execute(chat, call);
+                    toolMessage = { role: "tool", content: result, tool_call_id: call.value.id };
                 } catch (reason) {
-                    result = { role: "tool", content: `Error: ${String(reason)}`, tool_call_id: call.id };
+                    toolMessage = { role: "tool", content: `Error: ${String(reason)}`, tool_call_id: call.value.id };
                 }
             } else {
-                result = { role: "tool", content: `Error: unknown tool "${call.function.name}"`, tool_call_id: call.id };
+                toolMessage = { role: "tool", content: `Error: unknown tool "${call.value.name}"`, tool_call_id: call.value.id };
             }
 
-            await chat.pushMessage(result);
+            await chat.pushProviderMessage(v7.generate(), toolMessage);
         }
+
+        await chat.pushProviderMessageDelta(messageId, providerDone);
     }
 }

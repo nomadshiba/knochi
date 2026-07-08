@@ -1,5 +1,6 @@
 import { db } from "~/backend/database/client.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
+import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 
 export class ProviderClient {
     public readonly id: string;
@@ -73,7 +74,7 @@ export class ProviderClient {
         return output.choices[0].message;
     }
 
-    async *chatStream(input: ProviderChatInput): AsyncIterable<ProviderAssistantMessageStream> {
+    async *chatStream(input: ProviderChatInput): AsyncIterable<ProviderAssistantMessageDelta> {
         const body = {
             model: input.model,
             messages: input.messages,
@@ -177,14 +178,14 @@ export type ProviderModel = { name: string; id: string; created: number };
 
 export type ProviderChatInput = {
     model: string;
-    messages: ProviderChatMessage[];
+    messages: ChatMessageBuffer;
     temperature?: number;
     max_tokens?: number;
     tools?: ProviderToolDefinition[];
     tool_choice?: "none" | "auto" | "required" | { type: "function"; function: { name: string } };
 };
 
-export type ProviderAssistantMessageStream =
+export type ProviderAssistantMessageDelta =
     | { kind: "text"; value: string }
     | { kind: "refusal"; value: string }
     | { kind: "tool_call"; value: { index: number; id?: string; name?: string; arguments?: string } }

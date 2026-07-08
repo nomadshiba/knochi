@@ -175,6 +175,7 @@ const ModelModalStyle = css`
 
     header search input {
         all: unset;
+        cursor: auto;
         display: block flow;
         padding-inline: 0.75em;
         padding-block: 0.5em;

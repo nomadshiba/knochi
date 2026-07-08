@@ -1,7 +1,9 @@
+import { v7 } from "@std/uuid";
 import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
-import { ProviderToolCall, ProviderToolDefinition, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
+import { ProviderToolCall, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
 import { Tool } from "~/backend/tools/Tool.ts";
+import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 
 const CODE_BLOCK = "```";
 
@@ -56,33 +58,27 @@ export class TaskTool extends Tool {
         };
     }
 
-    public async execute(chat: ChatClient, call: ProviderToolCall): Promise<ProviderToolMessage> {
+    public async execute(chat: ChatClient, call: ToolCall): Promise<string> {
         let args: { description?: string; prompt?: string; subagent_type?: string };
         try {
-            args = JSON.parse(call.function.arguments);
+            args = JSON.parse(call.value.arguments);
         } catch {
-            return { role: "tool", content: "Error: invalid JSON arguments", tool_call_id: call.id };
+            return "Error: invalid JSON arguments";
         }
 
-        if (!args.prompt) return { role: "tool", content: "Error: missing 'prompt' argument", tool_call_id: call.id };
-        if (!args.subagent_type) return { role: "tool", content: "Error: missing 'subagent_type' argument", tool_call_id: call.id };
+        if (!args.prompt) return "Error: missing 'prompt' argument";
+        if (!args.subagent_type) return "Error: missing 'subagent_type' argument";
 
         const subagent = agentsByName.get(args.subagent_type);
-        if (!subagent) return { role: "tool", content: `Error: unknown subagent_type "${args.subagent_type}"`, tool_call_id: call.id };
+        if (!subagent) {
+            return `Error: unknown subagent_type "${args.subagent_type}"`;
+        }
         if (subagent.kind === "primary") {
-            return {
-                role: "tool",
-                content: `Error: agent "${subagent.name}" has kind "primary" and can't be used as a subagent`,
-                tool_call_id: call.id,
-            };
+            return `Error: agent "${subagent.name}" has kind "primary" and can't be used as a subagent`;
         }
 
         if (!chat.model) {
-            return {
-                role: "tool",
-                content: "Error: this chat has no model configured, can't run a subagent",
-                tool_call_id: call.id,
-            };
+            return "Error: this chat has no model configured, can't run a subagent";
         }
 
         let subChat: ChatClient;
@@ -91,36 +87,27 @@ export class TaskTool extends Tool {
                 agent: subagent,
                 providerId: chat.model.provider.id,
                 model: chat.model.name,
-                callId: call.id,
+                callId: call.value.id,
             });
         } catch (reason) {
-            return {
-                role: "tool",
-                content: `Error creating subagent chat: ${String(reason)}`,
-                tool_call_id: call.id,
-            };
+            return `Error creating subagent chat: ${String(reason)}`;
         }
 
         try {
-            await subChat.pushMessage({ role: "user", content: args.prompt }, { wait: true });
+            await subChat.pushProviderMessage(v7.generate(), { role: "user", content: args.prompt }, { wait: true });
         } catch (reason) {
-            return {
-                role: "tool",
-                content: `Error running subagent: ${String(reason)}`,
-                tool_call_id: call.id,
-            };
+            return `Error running subagent: ${String(reason)}`;
         }
 
         let finalMessage: string | undefined;
-        for (const message of subChat.messages()) {
-            if (message.role === "assistant") finalMessage = message.content ?? message.refusal ?? finalMessage;
+        const iter = subChat.messages.iter();
+        while (true) {
+            const { value: message, done } = iter.next();
+            if (done) break;
+            if (message.content.kind === "assistant") finalMessage = message.content.value.content ?? finalMessage;
         }
 
-        return {
-            role: "tool",
-            content: finalMessage ?? "(subagent finished without a final message)",
-            tool_call_id: call.id,
-        };
+        return finalMessage ?? "(subagent finished without a final message)";
     }
 
     override renderCallSummary(call: ProviderToolCall): string {
@@ -148,7 +135,7 @@ export class TaskTool extends Tool {
         return `**${parsed.description ?? "task"}** (\`${parsed.subagent_type}\`)\n\n${CODE_BLOCK}\n${parsed.prompt}\n${CODE_BLOCK}`;
     }
 
-    override renderResult(result: ProviderToolMessage): string {
-        return result.content;
+    override renderResult(content: string): string {
+        return content;
     }
 }

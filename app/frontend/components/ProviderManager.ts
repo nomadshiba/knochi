@@ -275,6 +275,7 @@ const ProviderModalStyle = css`
 
     input {
         all: unset;
+        cursor: auto;
         padding-inline: 0.75em;
         padding-block: 0.5em;
         border-radius: var(--radius);

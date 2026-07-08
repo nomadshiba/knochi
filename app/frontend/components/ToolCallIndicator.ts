@@ -1,18 +1,13 @@
 import { tags } from "@purifyjs/core";
-import { ChatAssistantMessage, ChatToolMessage } from "~/frontend/api.ts";
+import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
 import { css } from "~/frontend/kit/css.ts";
 
-export function ToolCall(
-    call: ChatAssistantMessage["content"]["value"]["tool_calls"][number],
-    state:
-        | { kind: "streaming" }
-        | { kind: "running" }
-        | { kind: "result"; message: ChatToolMessage },
+export function ToolCallIndicator(
+    call: ToolCall,
+    options: { streaming: boolean },
 ) {
-    const { ul, button, dialog, header, section, span } = tags;
-    const self = ul().ariaLabel("Tool calls");
-    self.$bind(ToolCallStyle.useScope());
+    const { button, dialog, header, section, span } = tags;
 
     const { summary, content } = call.value.display;
 
@@ -33,24 +28,26 @@ export function ToolCall(
             ),
             section().ariaLabel("Result").append$(
                 span({ class: "label" }).textContent("Result"),
-                state.kind === "result"
-                    ? Markdown(state.message.content.value.display)
-                    : span({ class: "status pending" }).textContent(state.kind === "streaming" ? "Writing…" : "Running…"),
+                call.value.result
+                    ? Markdown(call.value.result.display)
+                    : span({ class: "status pending" }).textContent(options.streaming ? "Writing…" : "Running…"),
             ),
         );
 
-    return button().type("button")
+    const self = button().type("button")
         .$bind(ToolCallStyle.useScope())
         .append$(
             Markdown(summary),
-            state.kind === "result"
-                ? null
-                : span({ class: "status pending" }).textContent(state.kind === "streaming" ? "Writing…" : "Running…"),
+            call.value.result ? null : span({ class: "status pending" }).textContent(options.streaming ? "Writing…" : "Running…"),
         )
         .onclick(() => {
             document.body.append(modal.$node);
             modal.showModal();
         });
+
+    console.log(self);
+
+    return self;
 }
 
 const ToolCallStyle = css`

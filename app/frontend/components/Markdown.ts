@@ -23,6 +23,7 @@ const MarkdownGlobalStyle = css`
     x-markdown {
         all: unset;
         user-select: text;
+        cursor: auto;
         display: block flow-root;
         line-height: 1.6;
         font-size: 0.9em;

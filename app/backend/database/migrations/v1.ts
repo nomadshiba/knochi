@@ -12,7 +12,7 @@ await db.schema.createTable("provider").ifNotExists()
 await db.schema.createTable("chat").ifNotExists()
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("name", "text", (col) => col.notNull())
-    .addColumn("root_tool_call_id", "text", (col) => col.references("chat_message_role_assistant_toolcall.id").onDelete("cascade"))
+    .addColumn("root_tool_call_id", "text", (col) => col.references("tool_call.call_id").onDelete("cascade"))
     .addColumn("agent", "text", (col) => col.notNull())
     .addColumn("model", "text")
     .addColumn("provider_id", "text", (col) => col.references("provider.id").onDelete("set null"))
@@ -39,28 +39,17 @@ await db.schema.createTable("chat_message_role_user").ifNotExists()
 
 await db.schema.createTable("chat_message_role_assistant").ifNotExists()
     .addColumn("id", "text", (col) => col.notNull().primaryKey().references("chat_message.id").onDelete("cascade"))
-    .addColumn("content", "text")
-    .addColumn("refusal", "text")
+    .addColumn("partial", "boolean", (col) => col.notNull())
+    .addColumn("content", "text", (col) => col.notNull())
+    .addColumn("refusal", "text", (col) => col.notNull())
     .execute();
 
-await db.schema.createTable("chat_message_role_assistant_toolcall").ifNotExists()
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("chat_message_id", "text", (col) => col.references("chat_message_role_assistant.id"))
-    .addColumn("type", "text", (col) => col.notNull())
-    .execute();
-
-await db.schema.createTable("chat_message_role_assistant_toolcall_type_function").ifNotExists()
-    .addColumn(
-        "id",
-        "text",
-        (col) => col.notNull().primaryKey().references("chat_message_role_assistant_toolcall.id").onDelete("cascade"),
-    )
+await db.schema.createTable("tool_call").ifNotExists()
+    .addColumn("call_id", "text", (col) => col.notNull().unique())
+    .addColumn("chat_message_id", "text", (col) => col.notNull().references("chat_message_role_assistant.id"))
+    .addColumn("index", "integer", (col) => col.notNull())
     .addColumn("name", "text", (col) => col.notNull())
     .addColumn("arguments", "text", (col) => col.notNull())
-    .execute();
-
-await db.schema.createTable("chat_message_role_tool").ifNotExists()
-    .addColumn("id", "text", (col) => col.notNull().primaryKey().references("chat_message.id").onDelete("cascade"))
-    .addColumn("content", "text", (col) => col.notNull())
-    .addColumn("tool_call_id", "text", (col) => col.notNull().references("chat_message_role_assistant_toolcall.id"))
+    .addColumn("result", "text")
+    .addPrimaryKeyConstraint("pk_tool_call", ["chat_message_id", "index"])
     .execute();

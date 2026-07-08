@@ -1,5 +1,6 @@
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
-import { ProviderToolCall, ProviderToolDefinition, ProviderToolMessage } from "~/backend/providers/ProviderClient.ts";
+import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
+import { ProviderToolCall, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
 import { Tool } from "~/backend/tools/Tool.ts";
 
 const DEFAULT_PERMISSIONS = {
@@ -102,10 +103,10 @@ export class ScriptTool extends Tool {
         };
     }
 
-    public async execute(chat: ChatClient, call: ProviderToolCall): Promise<ProviderToolMessage> {
+    public async execute(chat: ChatClient, call: ToolCall): Promise<string> {
         let args: { summary?: string; code?: string; use?: string[]; preload?: string[]; timeout?: number };
         try {
-            args = JSON.parse(call.function.arguments);
+            args = JSON.parse(call.value.arguments);
         } catch {
             return this.toolResult(call, "Error: invalid JSON arguments");
         }
@@ -144,10 +145,15 @@ export class ScriptTool extends Tool {
         const useIds = args.use ?? [];
 
         const results: Record<string, unknown> = {};
-        for (const message of chat.messages()) {
-            if (message.role === "tool") {
-                if (useIds.includes(message.tool_call_id)) {
-                    results[message.tool_call_id] = this.tryParse(message.content);
+        const iter = chat.messages.iter();
+        while (true) {
+            const { value: message, done } = iter.next();
+            if (done) break;
+            if (message.content.kind === "assistant") {
+                for (const toolCall of message.content.value.tool_calls) {
+                    if (useIds.includes(toolCall.value.id) && toolCall.value.result) {
+                        results[toolCall.value.id] = this.tryParse(toolCall.value.result.content);
+                    }
                 }
             }
         }
@@ -178,9 +184,9 @@ export class ScriptTool extends Tool {
 
         const { port1: toolPort, port2: workerToolPort } = new MessageChannel();
 
-        return await new Promise<ProviderToolMessage>((resolve) => {
+        return await new Promise<string>((resolve) => {
             let settled = false;
-            const finish = (msg: ProviderToolMessage) => {
+            const finish = (msg: string) => {
                 if (settled) return;
                 settled = true;
                 clearTimeout(timer);
@@ -223,7 +229,7 @@ export class ScriptTool extends Tool {
     /** Handles a `{ id, name, args }` request posted from the worker's `tools.<name>(args)` bridge, invoking the matching bound tool for real. */
     private async handleBoundToolCall(
         chat: ChatClient,
-        call: ProviderToolCall,
+        call: ToolCall,
         boundTools: Tool[],
         request: unknown,
     ): Promise<{ id: string; ok: boolean; value?: unknown; error?: string }> {
@@ -235,18 +241,20 @@ export class ScriptTool extends Tool {
         const tool = boundTools.find((t) => t.definition.function.name === name);
         if (!tool) return { id, ok: false, error: `Unknown tool "${name}"` };
 
-        // Reuse this real, already-persisted `script` call's id as the synthetic call's id (rather than
-        // fabricating a new one) — some tools (e.g. `task`) key DB rows off `call.id` (`root_tool_call_id`),
-        // which must reference a row that actually exists in `chat_message_role_assistant_toolcall`.
-        const syntheticCall: ProviderToolCall = {
-            id: call.id,
-            type: "function",
-            function: { name, arguments: JSON.stringify(args ?? {}) },
+        const syntheticCall: ToolCall = {
+            kind: "function",
+            value: {
+                id: call.value.id,
+                name,
+                arguments: JSON.stringify(args ?? {}),
+                display: { summary: "", content: "" },
+                result: null,
+            },
         };
 
         try {
             const result = await tool.execute(chat, syntheticCall);
-            return { id, ok: true, value: this.tryParse(result.content) };
+            return { id, ok: true, value: this.tryParse(result) };
         } catch (reason) {
             return { id, ok: false, error: String(reason) };
         }
@@ -304,8 +312,8 @@ export class ScriptTool extends Tool {
         }
     }
 
-    private toolResult(call: ProviderToolCall, content: string): ProviderToolMessage {
-        return { role: "tool", content, tool_call_id: call.id };
+    private toolResult(_call: ToolCall, content: string): string {
+        return content;
     }
 
     private stringify(value: unknown): string {
@@ -346,7 +354,7 @@ export class ScriptTool extends Tool {
         return [summaryPart, timeoutPart, usePart, preloadPart, codePart].join("\n\n");
     }
 
-    override renderResult(result: ProviderToolMessage): string {
-        return `${CODE_BLOCK}json\n${result.content}\n${CODE_BLOCK}`;
+    override renderResult(content: string): string {
+        return `${CODE_BLOCK}json\n${content}\n${CODE_BLOCK}`;
     }
 }

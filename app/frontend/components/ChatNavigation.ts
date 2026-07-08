@@ -34,6 +34,7 @@ const ChatNavigationStyle = css`
 
         padding-inline: 0.6em;
         padding-block: 1em;
+        overflow: hidden;
     }
 
     ul {
@@ -41,6 +42,10 @@ const ChatNavigationStyle = css`
         display: block grid;
         gap: 0.3em;
         align-content: start;
+
+        grid-auto-rows: max-content;
+        overflow-y: auto;
+        scrollbar-width: thin;
     }
 
     li {
