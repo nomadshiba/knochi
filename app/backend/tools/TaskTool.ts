@@ -94,7 +94,7 @@ export class TaskTool extends Tool {
         }
 
         try {
-            await chat.pushMessage({
+            await subChat.pushMessage({
                 id: v7.generate(),
                 content: {
                     kind: "user",
