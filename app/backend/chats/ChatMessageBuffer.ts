@@ -76,7 +76,7 @@ export class ChatMessageBuffer {
         return this.messages.values();
     }
 
-    public toJSON(): string {
+    public json(): string {
         return "[" +
             [this.prefixMessagesJson, this.messagesJson, this.suffixMessagesJson].filter(Boolean).join(",") +
             "]";

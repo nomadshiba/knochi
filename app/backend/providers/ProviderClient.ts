@@ -75,15 +75,16 @@ export class ProviderClient {
     }
 
     async *chatStream(input: ProviderChatInput): AsyncIterable<ProviderStream> {
-        const body = {
-            model: input.model,
-            messages: input.messages,
-            temperature: input.temperature,
-            max_tokens: input.max_tokens,
-            stream: true,
-            tools: input.tools,
-            tool_choice: input.tool_choice,
-        };
+        const json = `${
+            JSON.stringify({
+                model: input.model,
+                temperature: input.temperature,
+                max_tokens: input.max_tokens,
+                stream: true,
+                tools: input.tools,
+                tool_choice: input.tool_choice,
+            }).slice(0, -1)
+        },"messages":${input.messages.json()}}`;
 
         const response = await fetch(`${this.base}/chat/completions`, {
             method: "POST",
@@ -91,7 +92,7 @@ export class ProviderClient {
                 "Authorization": `Bearer ${this.key}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(body),
+            body: json,
         });
 
         if (!response.ok) {
