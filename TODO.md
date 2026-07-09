@@ -29,3 +29,5 @@
 - [ ] reasoning is not handled
 - [ ] copy, edit buttons
 - [ ] scroll down button
+- [ ] bucket based storage for scopes, (chat, user), only primary agents can see the user's bucket, for subagents to see them they have to
+      give them permission as well. or copy it to their chat bucket. buckets similar to s3 api, but on disk.
