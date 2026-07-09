@@ -39,13 +39,13 @@ Deno.serve({
         return new Response(appHtmlTransformed, { headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
 
-    if (url.pathname.startsWith("/icons/")) {
+    if (url.pathname.startsWith("/static/")) {
         return serveDir(request, {
             showIndex: false,
             showDirListing: false,
             showDotfiles: false,
-            fsRoot: new URL("./frontend/icons/", import.meta.url).pathname,
-            urlRoot: "icons",
+            fsRoot: new URL("./frontend/static/", import.meta.url).pathname,
+            urlRoot: "static",
         });
     }
 

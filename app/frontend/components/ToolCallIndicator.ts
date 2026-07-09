@@ -2,6 +2,7 @@ import { tags } from "@purifyjs/core";
 import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
 import { css } from "~/frontend/kit/css.ts";
+import { StatusTextMixin } from "~/frontend/styles/StatusMixin.ts";
 
 export function ToolCallIndicator(
     call: ToolCall,
@@ -10,6 +11,9 @@ export function ToolCallIndicator(
     const { button, dialog, header, section, span } = tags;
 
     const { summary, content } = call.value.display;
+
+    const status = call.value.result ? "Done" : options.streaming ? `Generating…${call.value.arguments.slice(-16)}` : "Running…";
+    const busy = call.value.result ? "false" : "true";
 
     const modal = !options.streaming
         ? dialog()
@@ -27,9 +31,9 @@ export function ToolCallIndicator(
                     span({ class: "label" }).textContent("Call"),
                     Markdown(content),
                 ),
-                section().ariaLabel("Result").append$(
+                section().ariaLabel("Result").ariaBusy(call.value.result ? "false" : "true").append$(
                     span({ class: "label" }).textContent("Result"),
-                    call.value.result ? Markdown(call.value.result.display) : span({ class: "status pending" }).textContent("Running…"),
+                    call.value.result ? Markdown(call.value.result.display) : span().ariaBusy(busy).role("status").textContent(status),
                 ),
             )
         : undefined;
@@ -39,9 +43,7 @@ export function ToolCallIndicator(
         .$bind(ToolCallStyle.useScope())
         .append$(
             Markdown(summary),
-            call.value.result ? null : span({ class: "status pending" }).textContent(
-                options.streaming ? `Writing…${call.value.arguments.slice(-16)}` : "Running…",
-            ),
+            span().role("status").ariaBusy(busy).textContent(status),
         )
         .onclick(() => {
             if (!modal) return;
@@ -77,29 +79,7 @@ const ToolCallStyle = css`
         display: inline;
     }
 
-    .status {
-        display: inline flow-root;
-        max-inline-size: 64ch;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        font-weight: var(--weight-regular);
-        color: var(--subtle);
-    }
-
-    .status.pending {
-        animation: tool-pulse 1.4s ease-in-out infinite;
-    }
-
-    @keyframes tool-pulse {
-        0%,
-        100% {
-            opacity: 0.45;
-        }
-        50% {
-            opacity: 1;
-        }
-    }
+    ${StatusTextMixin};
 `;
 
 const ToolCallsModalStyle = css`
@@ -149,8 +129,5 @@ const ToolCallsModalStyle = css`
         color: var(--subtle);
     }
 
-    .pending {
-        color: var(--subtle);
-        animation: tool-pulse 1.4s ease-in-out infinite;
-    }
+    ${StatusTextMixin};
 `;

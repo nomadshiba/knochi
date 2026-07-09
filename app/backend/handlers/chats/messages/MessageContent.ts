@@ -1,4 +1,4 @@
-import { ArrayCodec, Codec, EnumCodec, ModelCodec, NullableCodec, Str, StructCodec } from "@nomadshiba/codec";
+import { ArrayCodec, Bool, Codec, EnumCodec, NullableCodec, Str, StructCodec } from "@nomadshiba/codec";
 
 export type MessageContentUser = Codec.InferOutput<typeof MessageContentUser>;
 export const MessageContentUser = new StructCodec({
@@ -31,7 +31,8 @@ export const ToolCall = new EnumCodec({
 });
 
 export type MessageContentAssistant = Codec.InferOutput<typeof MessageContentAssistant>;
-export const MessageContentAssistant = new ModelCodec({
+export const MessageContentAssistant = new StructCodec({
+    partial: Bool,
     content: Str,
     refusal: Str,
     tool_calls: new ArrayCodec(ToolCall),

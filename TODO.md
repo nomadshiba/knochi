@@ -15,7 +15,7 @@
 - [+] more tool info within the chat
 - [ ] nostr identity for auth is the easiest way to have authentication
 - [ ] api endpoint encryption, https is not secure enough, especially with cf.
-- [ ] there is no indication that the agent is not done yet. should be.
+- [+] there is no indication that the agent is not done yet. should be.
 - [ ] queue user messages after agent+tool messages, don't start another agent loop
 - [ ] MessageBuffer can have a delta message array which gets appended at the end and encoded every time, until the same id is seen at
       add(), at which point it gets added to the regular json and buffer messages. this way we don't have to query the db at
@@ -35,3 +35,5 @@
       or not.
 - [ ] rebuilding tool call indicator objects causes modal to be recreated as well. create modal seperately. so it can update. or memoize it
       with an Map
+- [ ] handle partial assitant messages and unfinished tool calls in db at startup. probably give an error for the tool call, and make the
+      message non-partial.

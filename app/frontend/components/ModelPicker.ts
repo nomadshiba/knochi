@@ -203,7 +203,7 @@ const ModelModalStyle = css`
         &::before {
             content: "";
             display: block flow;
-            mask-image: url("/icons/refresh.svg");
+            mask-image: url("/static/icons/refresh.svg");
             mask-size: contain;
             mask-position: center;
             background-color: currentcolor;

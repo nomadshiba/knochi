@@ -1,11 +1,11 @@
 import { sync, tags, toChild } from "@purifyjs/core";
+import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
+import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
 import { ToolCallIndicator } from "~/frontend/components/ToolCallIndicator.ts";
 import { ChatAssistantMessageEmittter } from "~/frontend/events/ChatAssistantMessageEmittter.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { relativeDate } from "~/frontend/utils/date.ts";
-import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
-import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 
 const RELATIVE_STEPS = [
     60 * 60 * 1000,
@@ -16,7 +16,7 @@ export function ChatBubble(message: ChatMessageOutput) {
     const { content } = message;
     const { kind } = content;
 
-    const { article, header, strong, time, p, ul, li } = tags;
+    const { article, header, strong, time, p, ul, li, span } = tags;
 
     const relative = sync<string>((set) => {
         const created = message.created.getTime();
@@ -50,13 +50,13 @@ export function ChatBubble(message: ChatMessageOutput) {
             const callBuffer = content.value.tool_calls;
 
             let markdown = Markdown(refusalBuffer || contentBuffer);
-
-            // TODO: dont forget to nice scrolling arguments text next to the Writing...
-
-            const list = ul().ariaLabel("Tool calls").append$(content.value.tool_calls.map((call) => {
+            const status = span().role("status").ariaBusy(content.value.partial ? "true" : "false").ariaLabel("Generating…");
+            const tools = ul().ariaLabel("Tool calls").append$(content.value.tool_calls.map((call) => {
                 const domId = call.value.id.slice(-8);
                 return li().id(`tool-call-${domId}`).append$(ToolCallIndicator(call, { streaming: false }));
             }));
+
+            self.append$(markdown, tools, status);
 
             const updateMarkdown = () => {
                 const newMarkdown = Markdown(refusalBuffer || contentBuffer);
@@ -67,9 +67,9 @@ export function ChatBubble(message: ChatMessageOutput) {
             const updateCall = (call: ToolCall, streaming: boolean) => {
                 const domId = call.value.id.slice(-8);
                 const item = li().append$(ToolCallIndicator(call, { streaming })).id(`tool-call-${domId}`);
-                const exist = list.$node.querySelector(`#tool-call-${domId}`);
+                const exist = tools.$node.querySelector(`#tool-call-${domId}`);
                 if (exist) exist.replaceWith(toChild(item));
-                else list.append$(item); // Visual order not that important
+                else tools.append$(item); // Visual order not that important
             };
 
             self.$bind(() => {
@@ -126,10 +126,11 @@ export function ChatBubble(message: ChatMessageOutput) {
                     }
 
                     if (event.delta.kind === "done") {
-                        list.replaceChildren$(callBuffer.map((call) => {
+                        tools.replaceChildren$(callBuffer.map((call) => {
                             const domId = call.value.id.slice(-8);
                             return li().id(`tool-call-${domId}`).append$(ToolCallIndicator(call, { streaming: false }));
                         }));
+                        status.ariaBusy("false");
                         return;
                     }
                 });
@@ -139,7 +140,7 @@ export function ChatBubble(message: ChatMessageOutput) {
                 };
             });
 
-            return self.append$(markdown, list);
+            return self;
         }
         case "user": {
             return self.append$(
@@ -205,5 +206,24 @@ const ChatMessageStyle = css`
         gap: 0.4em;
         list-style: none;
         justify-items: start;
+    }
+
+    [role="status"][aria-busy="true"] {
+        display: block grid;
+        inline-size: 1em;
+        aspect-ratio: 1;
+
+        &::before {
+            content: "";
+            display: block flow;
+            mask-image: url("/static/anim/busy.svg");
+            mask-size: contain;
+            mask-position: center;
+            background-color: currentcolor;
+        }
+    }
+
+    [role="status"][aria-busy="false"] {
+        display: none;
     }
 `;

@@ -8,7 +8,7 @@ import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 import { runAgent } from "~/backend/chats/run.ts";
 import { db } from "~/backend/database/client.ts";
 import { DB } from "~/backend/database/generated/types.ts";
-import { ChatAssistantMessageStream } from "~/backend/handlers/chats/messages/ChatAssistantMessageStream.ts";
+import { ChatAssistantStream } from "~/backend/handlers/chats/messages/ChatAssistantStream.ts";
 import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
 import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
@@ -104,6 +104,7 @@ export class ChatClient {
                     content: {
                         kind: "assistant",
                         value: {
+                            partial: Boolean(row.RoleAssistant.partial),
                             content: row.RoleAssistant.content,
                             refusal: row.RoleAssistant.refusal,
                             tool_calls: row.RoleAssistant.ToolCalls.map((call) => {
@@ -167,7 +168,7 @@ export class ChatClient {
         this.messages.setPrefix([{ role: "system", content: agent.prompt }]);
     }
 
-    public async pushStream(stream: ChatAssistantMessageStream) {
+    public async pushStream(stream: ChatAssistantStream) {
         const { id, delta } = stream;
         const { kind } = delta;
         const tx = await db.startTransaction().execute();
@@ -247,7 +248,9 @@ export class ChatClient {
         }
     }
 
-    public async pushMessage(message: ChatMessageOutput, options?: { wait?: boolean; partial?: boolean }) {
+    public async pushMessage(message: ChatMessageOutput<"user">, options?: { wait?: boolean }): Promise<void>;
+    public async pushMessage(message: ChatMessageOutput): Promise<void>;
+    public async pushMessage(message: ChatMessageOutput, options?: { wait?: boolean }): Promise<void> {
         const { id, content } = message;
         const { kind } = content;
         const tx = await db.startTransaction().execute();
@@ -257,15 +260,15 @@ export class ChatClient {
 
             if (kind === "system") {
                 await tx.insertInto("chat_message_role_system").values({ id, content: content.value.content }).execute();
-                if (!options?.partial) this.messages.add(message);
+                this.messages.add(message);
                 this.emitter.emit({ kind: "message", value: message });
             } else if (kind === "user") {
                 await tx.insertInto("chat_message_role_user").values({ id, content: content.value.content }).execute();
-                if (!options?.partial) this.messages.add(message);
+                this.messages.add(message);
                 this.emitter.emit({ kind: "message", value: message });
             } else if (kind === "assistant") {
                 await tx.insertInto("chat_message_role_assistant")
-                    .values({ id, content: content.value.content, refusal: content.value.refusal, partial: 0 })
+                    .values({ id, content: content.value.content, refusal: content.value.refusal, partial: content.value.partial ? 1 : 0 })
                     .execute();
                 if (content.value.tool_calls.length) {
                     await tx.insertInto("tool_call").values(content.value.tool_calls.map((call, index) => ({
@@ -277,7 +280,7 @@ export class ChatClient {
                         result: call.value.result?.content,
                     }))).execute();
                 }
-                if (!options?.partial) this.messages.add(message);
+                if (!content.value.partial) this.messages.add(message);
                 this.emitter.emit({ kind: "message", value: message });
             } else {
                 throw new Error(`Unknown message role: ${kind satisfies never}`);
@@ -330,6 +333,7 @@ export async function messagesFromDatabase(
                     .select([
                         "chat_message_role_assistant.content",
                         "chat_message_role_assistant.refusal",
+                        "chat_message_role_assistant.partial",
                     ])
                     .select((eb) => [
                         jsonArrayFrom(

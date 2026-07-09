@@ -1,9 +1,10 @@
 import { v7 } from "@std/uuid";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
+import { ChatAssistantDelta } from "~/backend/handlers/chats/messages/ChatAssistantStream.ts";
 import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
+import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { ProviderStream, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
-import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 
 const MAX_TOOL_ROUNDS = 100;
 
@@ -19,12 +20,17 @@ export async function runAgent(chat: ChatClient): Promise<void> {
         const now = Date.now();
         const message: ChatMessageOutput<"assistant"> = {
             id: v7.generate(now),
-            content: { kind: "assistant", value: { content: "", refusal: "", tool_calls: [] } },
+            content: { kind: "assistant", value: { partial: true, content: "", refusal: "", tool_calls: [] } },
             created: new Date(now),
         };
-        await chat.pushMessage(message, { partial: true });
+        await chat.pushMessage(message);
 
         let providerDone: ProviderStream & { kind: "done" } | undefined;
+        const finish = async (delta: ChatAssistantDelta) => {
+            message.content.value.partial = false;
+            chat.messages.add(message);
+            await chat.pushStream({ id: message.id, delta });
+        };
 
         try {
             const stream = model.provider.chatStream({
@@ -114,20 +120,12 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             if (!providerDone) throw new Error("Stream ended without calling 'done'");
         } catch (reason) {
             console.error(reason);
-            chat.messages.add(message);
-            await chat.pushStream({
-                id: message.id,
-                delta: { kind: "done", value: { kind: "fail", value: String(reason) } },
-            });
+            await finish({ kind: "done", value: { kind: "fail", value: String(reason) } });
             return;
         }
 
         if (!message.content.value.tool_calls.length) {
-            chat.messages.add(message);
-            await chat.pushStream({
-                id: message.id,
-                delta: { kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } },
-            });
+            await finish({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
             break;
         }
 
@@ -161,10 +159,6 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             });
         }));
 
-        chat.messages.add(message);
-        await chat.pushStream({
-            id: message.id,
-            delta: { kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } },
-        });
+        await finish({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
     }
 }

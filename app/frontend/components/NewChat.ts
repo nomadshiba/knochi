@@ -173,7 +173,7 @@ const NewChatStyle = css`
             content: "";
             display: block flow;
             background-color: currentcolor;
-            mask-image: url("/icons/send.svg");
+            mask-image: url("/static/icons/send.svg");
             mask-size: contain;
             mask-position: center;
         }

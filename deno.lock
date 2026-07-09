@@ -913,7 +913,9 @@
     "https://esm.sh/sha.js@2.4.12/denonext/sha1.mjs": "caf121f847585163f555ea16d3581ea09e11be46dfff22ace4557b435e7e9cd9",
     "https://esm.sh/sha.js@2.4.12/sha1?target=denonext": "3c3f2fa7c0e7493414cbb6df3f69727a80ca96d5336bb963d0ed77b48cf0086a",
     "https://esm.sh/to-buffer@1.2.2/denonext/to-buffer.mjs": "911d9fd37d1c82b81cd714f7a22696d301487ec6535fb775334aaad16f09da1c",
-    "https://esm.sh/to-buffer@1.2.2?target=denonext": "42a9f7ee4da713c226ac1b57b1c6e5e4834edbf1a3735a676f4534d68f927264"
+    "https://esm.sh/to-buffer@1.2.2?target=denonext": "42a9f7ee4da713c226ac1b57b1c6e5e4834edbf1a3735a676f4534d68f927264",
+    "https://esm.sh/youtube-transcript@1.2.1": "b1b9c1f5a8da174233eb51a31e709f046ec17bf968be00f73ee1d4426ff2ece2",
+    "https://esm.sh/youtube-transcript@1.2.1/denonext/youtube-transcript.mjs": "e92d23c6f96843ef5db2158883d0bf421316e8b386666729d52edb381216000d"
   },
   "workspace": {
     "dependencies": [
