@@ -3,6 +3,7 @@ import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { ProviderToolCall, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
 import { Tool } from "~/backend/tools/Tool.ts";
 import { assertSafeImports } from "~/backend/tools/guard.ts";
+import { db } from "~/backend/database/client.ts";
 
 const DEFAULT_PERMISSIONS = {
     net: false,
@@ -71,7 +72,7 @@ export class ScriptTool extends Tool {
                             type: "array",
                             items: { type: "string" },
                             description:
-                                'tool_call_ids of earlier results to expose as `e.data["<tool_call_id>"]` (pre-parsed if JSON). Prefer this over recomputing.',
+                                'call_id(s) of earlier results to expose as `e.data["<call_id>"]` (pre-parsed if JSON). Prefer this over recomputing. (Tool calls has to be sequential))',
                         },
                         preload: {
                             type: "array",
@@ -136,24 +137,12 @@ export class ScriptTool extends Tool {
         }
 
         const useIds = args.use ?? [];
+        const results = await db.selectFrom("tool_call")
+            .where("call_id", "in", useIds)
+            .select(["call_id", "result"])
+            .execute().then((rows) => Object.fromEntries(rows.map((row) => [row.call_id, row.result])));
 
-        const results: Record<string, unknown> = {};
-        const iter = chat.messages.iter();
-        while (true) {
-            const { value: message, done } = iter.next();
-            if (done) break;
-            if (message.content.kind === "assistant") {
-                for (const toolCall of message.content.value.tool_calls) {
-                    if (useIds.includes(toolCall.value.id) && toolCall.value.result) {
-                        results[toolCall.value.id] = this.tryParse(toolCall.value.result.content);
-                    }
-                }
-            }
-        }
-
-        const boundTools = chat.agent.tools;
-
-        const workerUrl = "data:application/typescript," + encodeURIComponent(this.buildBridge(boundTools) + code);
+        const workerUrl = "data:application/typescript," + encodeURIComponent(this.buildBridge(chat.agent.tools) + code);
         let worker: Worker;
         try {
             worker = new Worker(workerUrl, {
@@ -199,7 +188,7 @@ export class ScriptTool extends Tool {
             }, timeoutMs);
 
             toolPort.onmessage = (e: MessageEvent) => {
-                void this.handleBoundToolCall(chat, call, boundTools, e.data).then((response) => {
+                void this.handleBoundToolCall(chat, call, chat.agent.tools, e.data).then((response) => {
                     if (settled) return;
                     toolPort.postMessage(response);
                 });

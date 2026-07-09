@@ -3,7 +3,7 @@ import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessage
 import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { Markdown } from "~/frontend/components/Markdown.ts";
 import { ToolCallIndicator } from "~/frontend/components/ToolCallIndicator.ts";
-import { ChatAssistantMessageEmittter } from "~/frontend/events/ChatAssistantMessageEmittter.ts";
+import { ChatAssistantStreamEmittter } from "~/frontend/events/ChatAssistantStreamEmittter.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { relativeDate } from "~/frontend/utils/date.ts";
 
@@ -52,8 +52,7 @@ export function ChatBubble(message: ChatMessageOutput) {
             let markdown = Markdown(refusalBuffer || contentBuffer);
             const status = span().role("status").ariaBusy(content.value.partial ? "true" : "false").ariaLabel("Generating…");
             const tools = ul().ariaLabel("Tool calls").append$(content.value.tool_calls.map((call) => {
-                const domId = call.value.id.slice(-8);
-                return li().id(`tool-call-${domId}`).append$(ToolCallIndicator(call, { streaming: false }));
+                return li().id(`tool-call-${call.value.id}`).append$(ToolCallIndicator(call, { streaming: false }));
             }));
 
             self.append$(markdown, tools, status);
@@ -65,15 +64,14 @@ export function ChatBubble(message: ChatMessageOutput) {
             };
 
             const updateCall = (call: ToolCall, streaming: boolean) => {
-                const domId = call.value.id.slice(-8);
-                const item = li().append$(ToolCallIndicator(call, { streaming })).id(`tool-call-${domId}`);
-                const exist = tools.$node.querySelector(`#tool-call-${domId}`);
+                const item = li().append$(ToolCallIndicator(call, { streaming })).id(`tool-call-${call.value.id}`);
+                const exist = tools.$node.querySelector(`#tool-call-${call.value.id}`);
                 if (exist) exist.replaceWith(toChild(item));
                 else tools.append$(item); // Visual order not that important
             };
 
             self.$bind(() => {
-                const unsubscribe = ChatAssistantMessageEmittter.subscribe(message.id, (event) => {
+                const unsubscribe = ChatAssistantStreamEmittter.subscribe(message.id, (event) => {
                     if (event.delta.kind === "text") {
                         contentBuffer += event.delta.value;
                         return updateMarkdown();
@@ -127,8 +125,7 @@ export function ChatBubble(message: ChatMessageOutput) {
 
                     if (event.delta.kind === "done") {
                         tools.replaceChildren$(callBuffer.map((call) => {
-                            const domId = call.value.id.slice(-8);
-                            return li().id(`tool-call-${domId}`).append$(ToolCallIndicator(call, { streaming: false }));
+                            return li().id(`tool-call-${call.value.id}`).append$(ToolCallIndicator(call, { streaming: false }));
                         }));
                         status.ariaBusy("false");
                         return;

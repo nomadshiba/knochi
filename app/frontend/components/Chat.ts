@@ -7,7 +7,7 @@ import { ChatBox } from "~/frontend/components/ChatBox.ts";
 import { ChatBubble } from "~/frontend/components/ChatBubble.ts";
 import { ChatNavigationItem } from "~/frontend/components/ChatNavigation.ts";
 import { ModelPicker } from "~/frontend/components/ModelPicker.ts";
-import { ChatAssistantMessageEmittter } from "~/frontend/events/ChatAssistantMessageEmittter.ts";
+import { ChatAssistantStreamEmittter } from "~/frontend/events/ChatAssistantStreamEmittter.ts";
 import { css } from "~/frontend/kit/css.ts";
 import { PersistentSocket } from "~/frontend/utils/websocket.ts";
 
@@ -24,10 +24,9 @@ export async function Chat(chatId: string) {
     const log = ol().role("log").ariaLabel("Messages");
 
     const addMessage = (message: ChatMessageOutput) => {
-        const domId = message.id.slice(-8);
-        const exist = log.$node.querySelector<HTMLLIElement>(`li#chat-message-${domId}`);
+        const exist = log.$node.querySelector<HTMLLIElement>(`li#chat-message-${message.id}`);
         if (exist) return;
-        log.append$(li().id(`chat-message-${domId}`).append$(ChatBubble(message)));
+        log.append$(li().id(`chat-message-${message.id}`).append$(ChatBubble(message)));
     };
 
     self.$bind(() => {
@@ -61,7 +60,7 @@ export async function Chat(chatId: string) {
                 if (message.content.kind === "user") shouldScroll = true;
                 addMessage(message);
             } else if (event.kind === "stream") {
-                ChatAssistantMessageEmittter.emit(event.value.id, event.value);
+                ChatAssistantStreamEmittter.emit(event.value.id, event.value);
             }
 
             if (shouldScroll) {
