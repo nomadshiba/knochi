@@ -27,3 +27,5 @@
 - [ ] all above applies to subagent chats as well, ability to pause, interrupt, and inject user message to subagents.
 - [ ] we also need subagent chat view on the ui
 - [ ] reasoning is not handled
+- [ ] copy, edit buttons
+- [ ] scroll down button
