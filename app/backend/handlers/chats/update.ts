@@ -1,4 +1,4 @@
-import { Updateable } from "kysely";
+import { Updateable } from "@kysely/kysely";
 import { agentsByName } from "~/backend/agents/mod.ts";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
 import { db } from "~/backend/database/client.ts";

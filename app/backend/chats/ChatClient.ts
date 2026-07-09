@@ -1,12 +1,13 @@
+import { SelectQueryBuilder } from "@kysely/kysely";
+import { jsonArrayFrom, jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
 import { Codec } from "@nomadshiba/codec";
 import { v7 } from "@std/uuid";
-import { SelectQueryBuilder } from "kysely";
-import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { Agent } from "~/backend/agents/Agent.ts";
 import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 import { runAgent } from "~/backend/chats/run.ts";
 import { db } from "~/backend/database/client.ts";
+import { DB } from "~/backend/database/generated/types.ts";
 import { ChatAssistantMessageStream } from "~/backend/handlers/chats/messages/ChatAssistantMessageStream.ts";
 import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
@@ -14,7 +15,6 @@ import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "
 import { ProviderClient, ProviderToolCall } from "~/backend/providers/ProviderClient.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
 import { Emitter } from "~/libs/events/Emitter.ts";
-import { DB } from "~/backend/database/generated/types.ts";
 
 type ChatEvent = Codec.InferInput<typeof ChatStreamOutput>;
 
@@ -40,13 +40,19 @@ export class ChatClient {
             .select(["agent", "model", "provider_id"])
             .executeTakeFirst();
 
+        // TODO: maybe this should be handled on the frontend? like frontend has to tell us during chat creation
+        // Backend should decide what is the default.
+        const agent = options?.agent?.name ?? lastChat?.agent ?? agents[0].name;
+        const provider_id = options?.providerId ?? lastChat?.provider_id;
+        const model = options?.model ?? lastChat?.model;
+
         await db.insertInto("chat").values({
             id,
             name,
             root_tool_call_id: options?.callId,
-            agent: options?.agent?.name ?? lastChat?.agent ?? agents[0].name,
-            model: options?.model ?? lastChat?.model,
-            provider_id: options?.providerId ?? lastChat?.provider_id,
+            agent,
+            model,
+            provider_id,
             created: now,
             updated: now,
         }).execute();

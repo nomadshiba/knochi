@@ -24,13 +24,13 @@
         }
     },
     "imports": {
-        "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
         "@noble/hashes": "jsr:@noble/hashes@^2.2.0",
+        "@pomdtr/sqlite": "jsr:@pomdtr/sqlite@^3.9.1",
         "@purifyjs/core": "jsr:@purifyjs/core@0.5.0-preview.5",
+        "@std/async": "jsr:@std/async@^1.5.0",
         "@std/encoding": "jsr:@std/encoding@^1.0.11",
-        "kysely": "jsr:@kysely/kysely@^0.28.16",
+        "@kysely/kysely": "jsr:@kysely/kysely@^0.28.16",
         "@maheshbansod/kysely-codegen": "jsr:@maheshbansod/kysely-codegen@^0.1.1",
-        "@marshift/kysely-deno-sqlite3": "jsr:@marshift/kysely-deno-sqlite3@^1.0.0",
         "@nomadshiba/codec": "jsr:@nomadshiba/codec@0.5.0-preview.6",
         "@std/cli": "jsr:@std/cli@^1.0.31",
         "@std/http": "jsr:@std/http@^1.1.0",

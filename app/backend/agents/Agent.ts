@@ -1,6 +1,6 @@
 import { Tool } from "~/backend/tools/Tool.ts";
 
-export type AgentKind = "primary" | "subagent" | "all";
+export type AgentKind = "primary" | "subagent";
 
 export type Agent = {
     name: string;

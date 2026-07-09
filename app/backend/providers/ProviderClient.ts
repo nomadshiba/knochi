@@ -1,6 +1,6 @@
+import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 import { db } from "~/backend/database/client.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
-import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 import { Suggestion } from "~/types.ts";
 
 export class ProviderClient {

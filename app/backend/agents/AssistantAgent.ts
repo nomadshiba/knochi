@@ -1,10 +1,11 @@
 import { Agent } from "~/backend/agents/Agent.ts";
 import { ScriptTool } from "~/backend/tools/ScriptTool.ts";
+import { TaskTool } from "~/backend/tools/TaskTool.ts";
 
-export const AssistantAgent = {
+export const AssistantAgent: Agent = {
     name: "Assistant",
     description: "A general-purpose assistant with a scripting tool.",
-    kind: "all",
+    kind: "primary",
     prompt: [
         "You are a helpful assistant. Answer the user's questions clearly and concisely.",
         "You have access to tools — refer to each tool's own description and parameters for how to use it.",
@@ -17,6 +18,19 @@ export const AssistantAgent = {
                 "deno.land",
             ],
         }),
-        // new TaskTool(),
+        new TaskTool(),
     ],
-} as const satisfies Agent;
+};
+
+export const AssistantSubAgent: Agent = {
+    ...AssistantAgent,
+    tools: [
+        new ScriptTool({
+            net: true,
+            import: [
+                "esm.sh",
+                "deno.land",
+            ],
+        }),
+    ],
+};

@@ -1,4 +1,4 @@
-import { Updateable } from "kysely";
+import { Updateable } from "@kysely/kysely";
 import { db } from "~/backend/database/client.ts";
 import { Provider } from "~/backend/database/generated/types.ts";
 import { RouteHandlerResult } from "~/libs/routing/Router.ts";
