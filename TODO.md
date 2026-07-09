@@ -31,3 +31,5 @@
 - [ ] scroll down button
 - [ ] bucket based storage for scopes, (chat, user), only primary agents can see the user's bucket, for subagents to see them they have to
       give them permission as well. or copy it to their chat bucket. buckets similar to s3 api, but on disk.
+- [ ] agents can use the buckets for note taking, but as i said i want an obsidian like notepad for the agent. this can be a seperate tool
+      or not.
