@@ -17,9 +17,8 @@
 - [ ] api endpoint encryption, https is not secure enough, especially with cf.
 - [+] there is no indication that the agent is not done yet. should be.
 - [ ] queue user messages after agent+tool messages, don't start another agent loop
-- [ ] MessageBuffer can have a delta message array which gets appended at the end and encoded every time, until the same id is seen at
-      add(), at which point it gets added to the regular json and buffer messages. this way we don't have to query the db at
-      messages/many.ts
+- [+] MessageBuffer can have a delta message array which gets appended at the end and encoded every time, until the same id is seen at
+  add(), at which point it gets added to the regular json and buffer messages. this way we don't have to query the db at messages/many.ts
 - [ ] we don't show fails on the ui; we should — they come with done with kind fail.
 - [ ] remove suffixes like `Output` from things, more consistent naming.
 - [ ] ability to queue a pause-agent command while typing something, instead of having to interrupt the agent.
@@ -37,3 +36,4 @@
       with an Map
 - [ ] handle partial assitant messages and unfinished tool calls in db at startup. probably give an error for the tool call, and make the
       message non-partial.
+- [ ] mobile responsive tweaks

@@ -51,16 +51,20 @@ export async function Chat(chatId: string) {
         socket.addEventListener("message", async (e) => {
             const blob = e.data as Blob;
             const [event] = ChatStreamOutput.decode(await blob.bytes());
-            console.log("socket", `kind:${event.kind}`, event.value);
+            const { kind } = event;
 
             let shouldScroll = scroller.scrollHeight - scroller.scrollTop - innerHeight < 50;
 
-            if (event.kind === "message") {
+            if (kind === "message") {
+                console.log("socket message", event.value.content.kind, event.value);
                 const message = event.value;
                 if (message.content.kind === "user") shouldScroll = true;
                 addMessage(message);
-            } else if (event.kind === "stream") {
+            } else if (kind === "stream") {
+                console.log("socket stream", event.value.delta.kind, event.value);
                 ChatAssistantStreamEmittter.emit(event.value.id, event.value);
+            } else {
+                throw new Error(`Unhandled stream kind: ${kind satisfies never}`);
             }
 
             if (shouldScroll) {

@@ -15,6 +15,7 @@ import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "
 import { ProviderClient, ProviderToolCall } from "~/backend/providers/ProviderClient.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
 import { Emitter } from "~/libs/events/Emitter.ts";
+import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
 
 type ChatEvent = Codec.InferInput<typeof ChatStreamOutput>;
 
@@ -87,19 +88,19 @@ export class ChatClient {
         const rows = await messagesFromDatabase(chatId);
         for (const row of rows) {
             if (row.RoleSystem) {
-                messageBuffer.add({
+                messageBuffer.push({
                     id: row.id,
                     content: { kind: "system", value: { content: row.RoleSystem.content } },
                     created: new Date(row.created),
                 });
             } else if (row.RoleUser) {
-                messageBuffer.add({
+                messageBuffer.push({
                     id: row.id,
                     content: { kind: "user", value: { content: row.RoleUser.content } },
                     created: new Date(row.created),
                 });
             } else if (row.RoleAssistant) {
-                messageBuffer.add({
+                messageBuffer.push({
                     id: row.id,
                     content: {
                         kind: "assistant",
@@ -157,7 +158,6 @@ export class ChatClient {
 
     public async changeModel(providerId: string, model: string) {
         await db.updateTable("chat").where("chat.id", "=", this.id).set({ provider_id: providerId, model }).execute();
-
         const provider = await ProviderClient.open(providerId);
         this.model = provider ? { name: model, provider } : undefined;
     }
@@ -168,7 +168,7 @@ export class ChatClient {
         this.messages.setPrefix([{ role: "system", content: agent.prompt }]);
     }
 
-    public async pushStream(stream: ChatAssistantStream) {
+    public async pushStream(stream: ChatAssistantStream): Promise<void> {
         const { id, delta } = stream;
         const { kind } = delta;
         const tx = await db.startTransaction().execute();
@@ -186,14 +186,12 @@ export class ChatClient {
                     await tx.updateTable("chat_message_role_assistant").where("id", "=", id).set({
                         content: (eb) => eb(eb.ref("chat_message_role_assistant.content"), "||", delta.value),
                     }).execute();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "refusal": {
                     await tx.updateTable("chat_message_role_assistant").where("id", "=", id).set({
                         refusal: (eb) => eb(eb.ref("chat_message_role_assistant.refusal"), "||", delta.value),
                     }).execute();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "tool_call_new": {
@@ -205,7 +203,6 @@ export class ChatClient {
                             name: "",
                             arguments: "",
                         }).executeTakeFirstOrThrow();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "tool_call_delta": {
@@ -216,11 +213,9 @@ export class ChatClient {
                             name: eb(eb.ref("name"), "||", delta.value.name),
                             arguments: eb(eb.ref("arguments"), "||", delta.value.arguments),
                         })).executeTakeFirstOrThrow();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "tool_call_done": {
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "tool_call_result": {
@@ -229,12 +224,10 @@ export class ChatClient {
                         .where("index", "=", delta.value.index)
                         .set({ result: delta.value.result.content })
                         .executeTakeFirstOrThrow();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 case "done": {
                     await tx.updateTable("chat_message_role_assistant").where("id", "=", id).set({ partial: 0 }).execute();
-                    this.emitter.emit({ kind: "stream", value: stream });
                     break;
                 }
                 default:
@@ -246,6 +239,9 @@ export class ChatClient {
             await tx.rollback().execute();
             throw reason;
         }
+
+        this.messages.delta(stream.delta);
+        this.emitter.emit({ kind: "stream", value: stream });
     }
 
     public async pushMessage(message: ChatMessageOutput<"user">, options?: { wait?: boolean }): Promise<void>;
@@ -260,12 +256,8 @@ export class ChatClient {
 
             if (kind === "system") {
                 await tx.insertInto("chat_message_role_system").values({ id, content: content.value.content }).execute();
-                this.messages.add(message);
-                this.emitter.emit({ kind: "message", value: message });
             } else if (kind === "user") {
                 await tx.insertInto("chat_message_role_user").values({ id, content: content.value.content }).execute();
-                this.messages.add(message);
-                this.emitter.emit({ kind: "message", value: message });
             } else if (kind === "assistant") {
                 await tx.insertInto("chat_message_role_assistant")
                     .values({ id, content: content.value.content, refusal: content.value.refusal, partial: content.value.partial ? 1 : 0 })
@@ -280,8 +272,6 @@ export class ChatClient {
                         result: call.value.result?.content,
                     }))).execute();
                 }
-                if (!content.value.partial) this.messages.add(message);
-                this.emitter.emit({ kind: "message", value: message });
             } else {
                 throw new Error(`Unknown message role: ${kind satisfies never}`);
             }
@@ -291,6 +281,9 @@ export class ChatClient {
             await tx.rollback().execute();
             throw reason;
         }
+
+        this.messages.push(message);
+        this.emitter.emit({ kind: "message", value: message });
 
         if (kind === "user") {
             const promise = runAgent(this);

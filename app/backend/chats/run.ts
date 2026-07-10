@@ -2,10 +2,9 @@ import { encodeBase32 } from "@std/encoding";
 import { v7 } from "@std/uuid";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
 import { ChatAssistantDelta } from "~/backend/handlers/chats/messages/ChatAssistantStream.ts";
-import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
-import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { ProviderStream, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
+import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 
 const MAX_TOOL_ROUNDS = 100;
 
@@ -27,9 +26,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
         await chat.pushMessage(message);
 
         let providerDone: ProviderStream & { kind: "done" } | undefined;
-        const finish = async (delta: ChatAssistantDelta) => {
-            message.content.value.partial = false;
-            chat.messages.add(message);
+        const done = async (delta: ChatAssistantDelta) => {
             await chat.pushStream({ id: message.id, delta });
         };
 
@@ -43,14 +40,9 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             for await (const delta of stream) {
                 const { kind } = delta;
                 switch (kind) {
-                    case "text": {
-                        message.content.value.content += delta.value;
-                        await chat.pushStream({ id: message.id, delta: { kind: "text", value: delta.value } });
-                        break;
-                    }
+                    case "text":
                     case "refusal": {
-                        message.content.value.refusal += delta.value;
-                        await chat.pushStream({ id: message.id, delta: { kind: "refusal", value: delta.value } });
+                        await chat.pushStream({ id: message.id, delta: { kind, value: delta.value } });
                         break;
                     }
                     case "reasoning": {
@@ -59,32 +51,15 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                         break;
                     }
                     case "tool_call": {
-                        const cache = message.content.value.tool_calls[delta.value.index];
-                        let call: ToolCall;
-                        if (cache) {
-                            call = cache;
-                        } else {
-                            call = message.content.value.tool_calls[delta.value.index] = {
-                                kind: "function",
-                                value: {
-                                    id: `call${encodeBase32(crypto.getRandomValues(new Uint8Array(8)))}`,
-                                    name: "",
-                                    arguments: "",
-                                    display: { content: "", summary: "" },
-                                    result: null,
-                                },
-                            };
-                        }
-
-                        if (!cache) {
+                        let call = message.content.value.tool_calls[delta.value.index];
+                        if (!call) {
+                            const id = `call${encodeBase32(crypto.getRandomValues(new Uint8Array(8)))}`;
                             await chat.pushStream({
                                 id: message.id,
-                                delta: { kind: "tool_call_new", value: { id: call.value.id, index: delta.value.index } },
+                                delta: { kind: "tool_call_new", value: { id, index: delta.value.index } },
                             });
+                            call = message.content.value.tool_calls[delta.value.index]!;
                         }
-
-                        if (delta.value.name) call.value.name += delta.value.name;
-                        if (delta.value.arguments) call.value.arguments += delta.value.arguments;
 
                         const summary = renderToolCallSummary({
                             id: call.value.id,
@@ -121,24 +96,31 @@ export async function runAgent(chat: ChatClient): Promise<void> {
             if (!providerDone) throw new Error("Stream ended without calling 'done'");
         } catch (reason) {
             console.error(reason);
-            await finish({ kind: "done", value: { kind: "fail", value: String(reason) } });
+            await done({ kind: "done", value: { kind: "fail", value: String(reason) } });
             return;
         }
 
         if (!message.content.value.tool_calls.length) {
-            await finish({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
+            await done({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
             break;
         }
 
         await Promise.allSettled(message.content.value.tool_calls.map(async (call, index) => {
-            call.value.display.content = renderToolCallContent({
-                id: call.value.id,
-                type: "function",
-                function: { name: call.value.name, arguments: call.value.arguments },
-            });
             await chat.pushStream({
                 id: message.id,
-                delta: { kind: "tool_call_done", value: { index, display: call.value.display } },
+                delta: {
+                    kind: "tool_call_done",
+                    value: {
+                        index,
+                        display: {
+                            content: renderToolCallContent({
+                                id: call.value.id,
+                                type: "function",
+                                function: { name: call.value.name, arguments: call.value.arguments },
+                            }),
+                        },
+                    },
+                },
             });
             const tool = toolsByName.get(call.value.name);
 
@@ -153,13 +135,15 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                 content = `Error: unknown tool "${call.value.name}"`;
             }
 
-            call.value.result = { content, display: renderToolResult(call.value.name, content) };
             await chat.pushStream({
                 id: message.id,
-                delta: { kind: "tool_call_result", value: { index, result: call.value.result } },
+                delta: {
+                    kind: "tool_call_result",
+                    value: { index, result: { content, display: renderToolResult(call.value.name, content) } },
+                },
             });
         }));
 
-        await finish({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
+        await done({ kind: "done", value: { kind: "provider", value: providerDone.value.finish_reason } });
     }
 }
