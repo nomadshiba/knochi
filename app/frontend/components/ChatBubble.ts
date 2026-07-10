@@ -52,7 +52,7 @@ export function ChatBubble(message: ChatMessageOutput) {
             let markdown = Markdown(refusalBuffer || contentBuffer);
             const status = span().role("status").ariaBusy(content.value.partial ? "true" : "false").ariaLabel("Generating…");
             const tools = ul().ariaLabel("Tool calls").append$(content.value.tool_calls.map((call) => {
-                return li().id(`tool-call-${call.value.id}`).append$(ToolCallWidget(call, { streaming: false }));
+                return li().id(`tool-call-${call.value.id}`).append$(ToolCallWidget(call, { streaming: content.value.partial }));
             }));
 
             self.append$(markdown, tools, status);

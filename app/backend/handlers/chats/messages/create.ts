@@ -15,6 +15,7 @@ router.registerHandler("POST /v1/chats/:chatId/messages", async ({ params, data 
         },
         created: new Date(now),
     });
+    void chat.startAgent();
 
     return { status: "OK", data: null } as const;
 });

@@ -20,7 +20,8 @@
     },
     "lint": {
         "rules": {
-            "exclude": ["no-namespace"]
+            "exclude": ["no-namespace"],
+            "include": ["require-await"]
         }
     },
     "imports": {

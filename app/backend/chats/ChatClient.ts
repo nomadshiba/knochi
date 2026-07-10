@@ -209,7 +209,7 @@ export class ChatClient {
                 }
                 case "tool_call_delta": {
                     await tx.updateTable("tool_call")
-                        .where("chat_message_id", "=", stream.id)
+                        .where("chat_message_id", "=", id)
                         .where("index", "=", delta.value.index)
                         .set((eb) => ({
                             name: eb(eb.ref("name"), "||", delta.value.name),
@@ -246,15 +246,22 @@ export class ChatClient {
         this.emitter.emit({ kind: "stream", value: stream });
     }
 
-    public async pushMessage(message: ChatMessageOutput<"user">, options?: { wait?: boolean }): Promise<void>;
-    public async pushMessage(message: ChatMessageOutput): Promise<void>;
-    public async pushMessage(message: ChatMessageOutput, options?: { wait?: boolean }): Promise<void> {
-        if (this.agentLoop) {
-            // TODO: later make sure queued messages are stored on db as queued and also visible on the ui.
-            // Just makes sure everything keeps working even after restarts
-            await this.agentLoop;
+    private queue: ChatMessageOutput<"user">[] = [];
+    private pushMessageChain: Promise<void> = Promise.resolve();
+    public pushMessage(message: ChatMessageOutput): Promise<void> | void {
+        if (this.agentLoop && message.content.kind === "user") {
+            // TODO: later make sure this also persist in db.
+            // TODO: https://github.com/microsoft/TypeScript/issues/42384
+            this.queue.push(message as never);
+            return;
         }
 
+        const run = () => this.persistMessage(message);
+        this.pushMessageChain = this.pushMessageChain.then(run, run);
+        return this.pushMessageChain;
+    }
+
+    private async persistMessage(message: ChatMessageOutput): Promise<void> {
         const { id, content } = message;
         const { kind } = content;
         const tx = await db.startTransaction().execute();
@@ -292,9 +299,12 @@ export class ChatClient {
 
         this.messages.push(message);
         this.emitter.emit({ kind: "message", value: message });
+    }
 
-        if (kind === "user") {
-            const promise = this.agentLoop = (async () => {
+    public startAgent(): Promise<void> | void {
+        if (this.agentLoop) return;
+        return this.agentLoop = (async () => {
+            try {
                 for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
                     this.agentAbortController = new AbortController();
                     const signal = this.agentAbortController.signal;
@@ -308,13 +318,20 @@ export class ChatClient {
                         break;
                     }
                 }
-            })();
-            promise.finally(() => this.agentLoop = null);
-            if (options?.wait) await promise;
-        }
+            } finally {
+                this.agentLoop = null;
+                const queued = this.queue;
+                this.queue = [];
+                if (queued.length) {
+                    for (const message of queued) {
+                        await this.pushMessage(message);
+                    }
+                    await this.startAgent();
+                }
+            }
+        })();
     }
 
-    /** Aborts the active agent run, if any. The agent loop catches the abort, emits a fail-done, and stops. */
     public abortAgent(): void {
         this.agentAbortController?.abort();
     }

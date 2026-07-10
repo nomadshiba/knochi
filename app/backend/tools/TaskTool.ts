@@ -98,7 +98,8 @@ export class TaskTool extends Tool {
                     value: { content: args.prompt },
                 },
                 created: new Date(),
-            }, { wait: true });
+            });
+            await subChat.startAgent();
         } catch (reason) {
             return `Error running subagent: ${String(reason)}`;
         } finally {

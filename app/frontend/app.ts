@@ -31,7 +31,6 @@ const AppStyle = css`
         color: var(--pop);
         background-color: var(--layout-base);
         gap: var(--layout-gap);
-        padding: var(--layout-gap);
     }
 
     header {

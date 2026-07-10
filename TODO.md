@@ -12,7 +12,7 @@
 - [ ] api endpoint encryption, https is not secure enough, especially with cf.
 - [ ] we don't show fails on the ui; we should — they come with done with kind fail.
 - [ ] remove suffixes like `Output` from things, more consistent naming.
-- [ ] ability to queue a pause-agent command while typing something, instead of having to interrupt the agent.
+- [ ] ability to queue a `pause-agent` command while typing something, instead of having to interrupt the agent.
 - [ ] add agent interrupt
 - [ ] all above applies to subagent chats as well, ability to pause, interrupt, and inject user message to subagents.
 - [ ] we also need subagent chat view on the ui
@@ -26,3 +26,4 @@
 - [ ] handle partial assitant messages and unfinished tool calls in db at startup. probably give an error for the tool call, and make the
       message non-partial.
 - [/] mobile responsive tweaks
+- [ ] auto focus on related text field.
