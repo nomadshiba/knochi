@@ -53,7 +53,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                     case "tool_call": {
                         let call = message.content.value.tool_calls[delta.value.index];
                         if (!call) {
-                            const id = `call${encodeBase32(crypto.getRandomValues(new Uint8Array(8)))}`;
+                            const id = `call${encodeBase32(crypto.getRandomValues(new Uint8Array(8))).replace(/=+$/, "")}`;
                             await chat.pushStream({
                                 id: message.id,
                                 delta: { kind: "tool_call_new", value: { id, index: delta.value.index } },
