@@ -1,4 +1,3 @@
-import { SelectQueryBuilder } from "@kysely/kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "@kysely/kysely/helpers/sqlite";
 import { Codec } from "@nomadshiba/codec";
 import { v7 } from "@std/uuid";
@@ -7,7 +6,6 @@ import { agents, agentsByName } from "~/backend/agents/mod.ts";
 import { ChatMessageBuffer } from "~/backend/chats/ChatMessageBuffer.ts";
 import { runAgent } from "~/backend/chats/run.ts";
 import { db } from "~/backend/database/client.ts";
-import { DB } from "~/backend/database/generated/types.ts";
 import { ChatAssistantStream } from "~/backend/handlers/chats/messages/ChatAssistantStream.ts";
 import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessageOutput.ts";
 import { ChatStreamOutput } from "~/backend/handlers/chats/messages/ChatStreamOutput.ts";
@@ -15,7 +13,6 @@ import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "
 import { ProviderClient, ProviderToolCall } from "~/backend/providers/ProviderClient.ts";
 import { WeakRefMap } from "~/libs/collections/WeakRefMap.ts";
 import { Emitter } from "~/libs/events/Emitter.ts";
-import { MessageContent } from "~/backend/handlers/chats/messages/MessageContent.ts";
 
 type ChatEvent = Codec.InferInput<typeof ChatStreamOutput>;
 
@@ -228,6 +225,7 @@ export class ChatClient {
                 }
                 case "done": {
                     await tx.updateTable("chat_message_role_assistant").where("id", "=", id).set({ partial: 0 }).execute();
+                    this.messages.done(id);
                     break;
                 }
                 default:
@@ -240,7 +238,6 @@ export class ChatClient {
             throw reason;
         }
 
-        this.messages.delta(stream.delta);
         this.emitter.emit({ kind: "stream", value: stream });
     }
 
@@ -292,15 +289,10 @@ export class ChatClient {
     }
 }
 
-export async function messagesFromDatabase(
-    chatId: string,
-    filter?: (query: SelectQueryBuilder<DB, "chat_message", {}>) => SelectQueryBuilder<DB, "chat_message", {}>,
-) {
-    const query = db.selectFrom("chat_message")
+export async function messagesFromDatabase(chatId: string) {
+    const rows = await db.selectFrom("chat_message")
         .where("chat_message.chat_id", "=", chatId)
-        .orderBy("chat_message.created", "asc");
-
-    const rows = await (filter?.(query) ?? query)
+        .orderBy("chat_message.created", "asc")
         .select([
             "chat_message.id",
             "chat_message.chat_id",
