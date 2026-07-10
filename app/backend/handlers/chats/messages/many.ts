@@ -12,7 +12,7 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
     const memory = chat.messages.iter().toArray();
     const lastMessage = memory.at(-1);
     if (lastMessage) {
-        const storage = await messagesFromDatabase(chatId, (query) => query.where("chat_message.chat_id", ">", lastMessage.id));
+        const storage = await messagesFromDatabase(chatId, (query) => query.where("chat_message.id", ">", lastMessage.id));
         for (const row of storage) {
             if (row.RoleSystem) {
                 memory.push({
@@ -32,6 +32,7 @@ router.registerHandler("GET /v1/chats/:chatId/messages", async ({ params }) => {
                     content: {
                         kind: "assistant",
                         value: {
+                            partial: Boolean(row.RoleAssistant.partial),
                             content: row.RoleAssistant.content,
                             refusal: row.RoleAssistant.refusal,
                             tool_calls: row.RoleAssistant.ToolCalls.map((call) => {

@@ -307,9 +307,7 @@ export async function messagesFromDatabase(
         .where("chat_message.chat_id", "=", chatId)
         .orderBy("chat_message.created", "asc");
 
-    filter?.(query);
-
-    const rows = await query
+    const rows = await (filter?.(query) ?? query)
         .select([
             "chat_message.id",
             "chat_message.chat_id",

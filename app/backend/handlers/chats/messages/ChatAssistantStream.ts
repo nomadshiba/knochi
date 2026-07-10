@@ -8,7 +8,7 @@ export const ChatAssistantDelta = new EnumCodec({
     refusal: Str,
     tool_call_new: new StructCodec({
         index: U8,
-        id: UUID,
+        id: Str,
     }),
     tool_call_delta: new StructCodec({
         index: U8,

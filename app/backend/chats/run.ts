@@ -1,3 +1,4 @@
+import { encodeBase32 } from "@std/encoding";
 import { v7 } from "@std/uuid";
 import { ChatClient } from "~/backend/chats/ChatClient.ts";
 import { ChatAssistantDelta } from "~/backend/handlers/chats/messages/ChatAssistantStream.ts";
@@ -5,7 +6,6 @@ import { ChatMessageOutput } from "~/backend/handlers/chats/messages/ChatMessage
 import { ToolCall } from "~/backend/handlers/chats/messages/MessageContent.ts";
 import { renderToolCallContent, renderToolCallSummary, renderToolResult } from "~/backend/handlers/chats/messages/utils.ts";
 import { ProviderStream, ProviderToolDefinition } from "~/backend/providers/ProviderClient.ts";
-import { encodeBase58 } from "@std/encoding";
 
 const MAX_TOOL_ROUNDS = 100;
 
@@ -67,7 +67,7 @@ export async function runAgent(chat: ChatClient): Promise<void> {
                             call = message.content.value.tool_calls[delta.value.index] = {
                                 kind: "function",
                                 value: {
-                                    id: `call${encodeBase58(crypto.getRandomValues(new Uint8Array(8)))}`,
+                                    id: `call${encodeBase32(crypto.getRandomValues(new Uint8Array(8)))}`,
                                     name: "",
                                     arguments: "",
                                     display: { content: "", summary: "" },
