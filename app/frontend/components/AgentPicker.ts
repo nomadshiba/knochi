@@ -64,9 +64,7 @@ export function AgentPicker(agent: Sync.Ref<string>) {
                 strong().textContent("Select Agent"),
                 button({ class: "close" }).type("button").ariaLabel("Close").textContent("×").onclick(() => modal.close()),
                 new Builder(document.createElement("search")).append$(
-                    input().type("search").placeholder("Search agents...")
-                        .$bind(useValue(search))
-                        .$bind((element) => element.focus()),
+                    input().type("search").placeholder("Search agents...").$bind(useValue(search)),
                     button()
                         .type("button")
                         .ariaLabel("Refresh agents")
@@ -89,6 +87,7 @@ export function AgentPicker(agent: Sync.Ref<string>) {
         .append$(small().textContent("Agent"), strong().textContent(agent))
         .onclick(async () => {
             modal.showModal();
+            modal.$node.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
             if (agents.get()) {
                 scrollToSelected();
                 return;

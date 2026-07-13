@@ -76,9 +76,7 @@ export function ModelPicker(model: Sync.Ref<SelectedModel | undefined>) {
                 strong().textContent("Select Model"),
                 button({ class: "close" }).type("button").ariaLabel("Close").textContent("×").onclick(() => modal.close()),
                 new Builder(document.createElement("search")).append$(
-                    input().type("search").placeholder("Search models...")
-                        .$bind(useValue(search))
-                        .$bind((element) => element.focus()),
+                    input().type("search").placeholder("Search models...").$bind(useValue(search)),
                     button()
                         .type("button")
                         .ariaLabel("Refresh models")
@@ -101,6 +99,7 @@ export function ModelPicker(model: Sync.Ref<SelectedModel | undefined>) {
         .append$(small().textContent("Model"), strong().textContent(model.derive((model) => model?.name ?? "None")))
         .onclick(async () => {
             modal.showModal();
+            modal.$node.querySelector<HTMLInputElement>('input[type="search"]')?.focus();
             if (loaded.get()) {
                 scrollToSelected();
                 return;
